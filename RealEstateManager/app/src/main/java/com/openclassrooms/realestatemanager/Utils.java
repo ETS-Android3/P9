@@ -14,15 +14,31 @@ import java.util.Date;
 public class Utils {
 
     /**
+     * rate used to convert dollars to euros
+     * @return
+     */
+    private static double getRate(){
+        return 0.812f;
+    }
+
+    /**
      * Conversion d'un prix d'un bien immobilier (Dollars vers Euros)
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
      * @param dollars
      * @return
      */
     public static int convertDollarToEuro(int dollars){
-        return (int) Math.round(dollars * 0.812);
+        return (int) Math.round(dollars * Utils.getRate());
     }
 
+    /**
+     *  Converting euros to dollars
+     * @param euros
+     * @return
+     */
+    public static int convertEuroToDollar(int euros){
+        return (int) Math.round(euros / Utils.getRate());
+    }
     /**
      * Conversion de la date d'aujourd'hui en un format plus approprié
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
