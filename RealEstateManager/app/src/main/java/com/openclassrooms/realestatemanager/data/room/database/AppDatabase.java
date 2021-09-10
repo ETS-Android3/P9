@@ -65,9 +65,9 @@ public abstract class AppDatabase extends RoomDatabase {
                     AppDatabase.class, DB_NAME)
                     .addCallback(prepopulateDatabase(application, executor));
 
-        if (BuildConfig.DEBUG) {
+/*        if (BuildConfig.DEBUG) {
             builder.fallbackToDestructiveMigration();
-        }
+        }*/
         return builder.build();
     }
 
@@ -77,6 +77,7 @@ public abstract class AppDatabase extends RoomDatabase {
             @Override
             public void onCreate(@NonNull SupportSQLiteDatabase db) {
                 super.onCreate(db);
+
                 executor.execute(() -> {
                     populateAgents(application, executor);
                     populatePropertyCategory(application, executor);

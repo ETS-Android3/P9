@@ -11,7 +11,7 @@ import com.openclassrooms.realestatemanager.data.room.repository.PropertyTypeRep
 
 import java.util.concurrent.Executor;
 
-public class Injection {
+public class InjectionDao {
 
     public static AgentRepository getAgentRepositiory(Application application, Executor executor) {
         return new AgentRepository(AppDatabase.getInstance(application, executor).getAgentDao());
