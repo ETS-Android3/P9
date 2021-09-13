@@ -15,6 +15,7 @@ public class PropertyCategoryRepository {
     }
 
     public LiveData<List<PropertyCategory>> getCategories() {return propertyCategoryDao.getCategories();}
+    public LiveData<PropertyCategory> getCategoryById(long id) {return propertyCategoryDao.getCategoryById(id);}
     public void insert(PropertyCategory propertyCategory) {propertyCategoryDao.insert(propertyCategory);}
     public void update(PropertyCategory propertyCategory) {propertyCategoryDao.update(propertyCategory);}
     public void delete(long id) {propertyCategoryDao.delete(id);}

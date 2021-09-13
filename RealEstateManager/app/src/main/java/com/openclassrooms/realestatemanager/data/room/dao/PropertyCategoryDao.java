@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyCategory;
 
 import java.util.List;
@@ -14,6 +15,9 @@ import java.util.List;
 public interface PropertyCategoryDao {
     @Query("SELECT * FROM propertycategory ORDER BY propertycategory.id")
     LiveData<List<PropertyCategory>> getCategories();
+
+    @Query("SELECT * FROM propertycategory WHERE propertycategory.id = :id")
+    LiveData<PropertyCategory> getCategoryById(long id);
 
     @Insert
     long insert(PropertyCategory propertyCategory);
