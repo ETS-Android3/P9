@@ -15,6 +15,9 @@ public interface AgentDao {
     @Query("SELECT * FROM agent ORDER BY agent.id")
     LiveData<List<Agent>> getAgents();
 
+    @Query("SELECT * FROM agent WHERE agent.id = :id")
+    LiveData<Agent> getAgentById(long id);
+
     @Insert
     long insert(Agent agent);
 

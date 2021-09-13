@@ -16,6 +16,8 @@ public class AgentRepository {
     }
 
     public LiveData<List<Agent>> getAgents() {return agentDao.getAgents();}
+    public LiveData<Agent> getAgentById(long id) {return agentDao.getAgentById(id);}
+
     public void insert(Agent agent) {agentDao.insert(agent);}
     public void update(Agent agent) {agentDao.update(agent);}
     public void delete(long id) {agentDao.delete(id);}
