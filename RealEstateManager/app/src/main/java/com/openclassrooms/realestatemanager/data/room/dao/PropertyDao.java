@@ -15,6 +15,9 @@ public interface PropertyDao {
     @Query("SELECT * FROM property ORDER BY property.id")
     LiveData<List<Property>> getProperties();
 
+    @Query("SELECT * FROM property WHERE property.id = :id")
+    LiveData<Property> getPropertyById(Long id);
+
     @Insert
     long insert(Property property);
 

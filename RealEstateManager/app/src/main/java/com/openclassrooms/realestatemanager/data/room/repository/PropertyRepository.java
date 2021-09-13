@@ -15,6 +15,7 @@ public class PropertyRepository {
     }
 
     public LiveData<List<Property>> getProperties() {return propertyDao.getProperties();}
+    public LiveData<Property> getPropertyById(long id) {return propertyDao.getPropertyById(id);}
     public void insert(Property property) {propertyDao.insert(property);}
     public void update(Property property) {propertyDao.update(property);}
     public void delete(long id) {propertyDao.delete(id);}
