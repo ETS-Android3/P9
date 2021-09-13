@@ -15,6 +15,7 @@ public class PropertyTypeRepository {
     }
 
     public LiveData<List<PropertyType>> getPropertyTypes() {return propertyTypeDao.getPropertyTypes();}
+    public LiveData<PropertyType> getPropertyTypeById(long id) {return propertyTypeDao.getPropertyTypeById(id);}
     public void insert(PropertyType propertyType) {propertyTypeDao.insert(propertyType);}
     public void update(PropertyType propertyType) {propertyTypeDao.update(propertyType);}
     public void delete(long id) {propertyTypeDao.delete(id);}
