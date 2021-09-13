@@ -14,7 +14,7 @@ public class PropertyRepository {
         this.propertyDao = propertyDao;
     }
 
-    public LiveData<List<Property>> getPropertys() {return propertyDao.getPropertys();}
+    public LiveData<List<Property>> getProperties() {return propertyDao.getProperties();}
     public void insert(Property property) {propertyDao.insert(property);}
     public void update(Property property) {propertyDao.update(property);}
     public void delete(long id) {propertyDao.delete(id);}

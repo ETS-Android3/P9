@@ -13,7 +13,7 @@ import java.util.List;
 @Dao
 public interface PropertyDao {
     @Query("SELECT * FROM property ORDER BY property.id")
-    LiveData<List<Property>> getPropertys();
+    LiveData<List<Property>> getProperties();
 
     @Insert
     long insert(Property property);
