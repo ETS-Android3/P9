@@ -30,102 +30,121 @@ import com.openclassrooms.realestatemanager.tag.Tag;
 
 import java.text.ParseException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.LogManager;
 
-@Database(entities = {Agent.class, Photo.class, PropertyCategory.class, PropertyType.class, Property.class},
-        version = 1, exportSchema = false)
+@Database(entities = {Agent.class,
+                    Photo.class,
+                    PropertyCategory.class,
+                    PropertyType.class,
+                    Property.class},
+                    version = 1,
+                    exportSchema = true)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "RealEstate.db";
 
     // --- SINGLETON ---
     private static volatile AppDatabase instance;
+    private static final int NUMBER_OF_THREADS = 4;
+    static final ExecutorService databaseWriteExecutor =
+            Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+
+    public static ExecutorService getExecutor() {
+        return databaseWriteExecutor;
+    }
 
     // --- DAO ---
-    public abstract AgentDao getAgentDao();
-    public abstract PhotoDao getPhotoDao();
-    public abstract PropertyDao getPropertyDao();
-    public abstract PropertyCategoryDao getPropertyCategoryDao();
-    public abstract PropertyTypeDao getPropertyTypeDao();
+    public abstract AgentDao agentDao();
+    public abstract PhotoDao photoDao();
+    public abstract PropertyDao propertyDao();
+    public abstract PropertyCategoryDao propertyCategoryDao();
+    public abstract PropertyTypeDao propertyTypeDao();
 
     // --- INSTANCE ---
-    public static AppDatabase getInstance(Application application, Executor executor) {
+    public static AppDatabase getInstance(Application application) {
 
         if (instance == null) {
             synchronized (AppDatabase.class) {
                 if (instance == null) {
                     int d = Log.d(Tag.TAG, "RealEstateDatabase.getInstance()");
-                    instance = create(application, executor);
+                    instance = create(application);
                 }
             }
         }
         return instance;
     }
 
-    private static AppDatabase create(Application application, Executor executor){
+    private static AppDatabase create(Application application){
+        Log.d(Tag.TAG, "create() called with: application");
         Builder<AppDatabase> builder = Room.databaseBuilder(application.getApplicationContext(),
                     AppDatabase.class, DB_NAME)
-                    .addCallback(prepopulateDatabase(application, executor));
+                    .addCallback(prepopulateDatabase(application));
 
-/*        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             builder.fallbackToDestructiveMigration();
-        }*/
+        }
         return builder.build();
     }
 
-    private static Callback prepopulateDatabase(Application application, Executor executor){
+    private static Callback prepopulateDatabase(Application application){
+        Log.d(Tag.TAG, "prepopulateDatabase()");
         return new Callback() {
 
             @Override
             public void onCreate(@NonNull SupportSQLiteDatabase db) {
                 super.onCreate(db);
-
-                executor.execute(() -> {
-                    populateAgents(application, executor);
-                    populatePropertyCategory(application, executor);
-                    populatePropertyType(application, executor);
+                Log.d(Tag.TAG, "prepopulateDatabase() 2");
+                databaseWriteExecutor.execute(() -> {
+                    Log.d(Tag.TAG, "prepopulateDatabase() 3");
+                    populateAgents(application);
+                    populatePropertyCategory(application);
+                    populatePropertyType(application);
                     try {
-                        populateProperty(application, executor);
+                        populateProperty(application);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    populatePhoto(application, executor);
+                    populatePhoto(application);
                 });
             }
         };
     }
 
-    private static void populateAgents(Application application, Executor executor) {
+    private static void populateAgents(Application application) {
+        Log.d(Tag.TAG, "populateAgents()");
         SampleAgent sampleAgent = new SampleAgent();
         for (Agent agent : sampleAgent.getSample()){
             // use insert Dao instead db with ContentValue
-            AppDatabase.getInstance(application, executor).getAgentDao().insert(agent);
+            AppDatabase.getInstance(application).agentDao().insert(agent);
         }
     }
 
-    private static void populatePropertyCategory(Application application, Executor executor){
+    private static void populatePropertyCategory(Application application){
         SamplePropertyCategory samplePropertyCategory = new SamplePropertyCategory();
         for (PropertyCategory propertyCategory : samplePropertyCategory.getSample()){
-            AppDatabase.getInstance(application, executor).getPropertyCategoryDao().insert(propertyCategory);
+            AppDatabase.getInstance(application).propertyCategoryDao().insert(propertyCategory);
         }
     }
 
-    private static void populatePropertyType(Application application, Executor executor){
+    private static void populatePropertyType(Application application){
         SamplePropertyType samplePropertyType = new SamplePropertyType();
         for (PropertyType propertyType : samplePropertyType.getSample()){
-            AppDatabase.getInstance(application, executor).getPropertyTypeDao().insert(propertyType);
+            AppDatabase.getInstance(application).propertyTypeDao().insert(propertyType);
         }
     }
 
-    private static void populateProperty(Application application, Executor executor) throws ParseException {
+    private static void populateProperty(Application application) throws ParseException {
         SampleProperty sampleProperty = new SampleProperty();
         for (Property property : sampleProperty.getSample()){
-            AppDatabase.getInstance(application, executor).getPropertyDao().insert(property);
+            AppDatabase.getInstance(application).propertyDao().insert(property);
         }
     }
 
-    private static void populatePhoto(Application application, Executor executor) {
+    private static void populatePhoto(Application application) {
         SamplePhoto samplePhoto = new SamplePhoto();
         for (Photo photo : samplePhoto.getSample()){
-            AppDatabase.getInstance(application, executor).getPhotoDao().insert(photo);
+            AppDatabase.getInstance(application).photoDao().insert(photo);
         }
     }
 

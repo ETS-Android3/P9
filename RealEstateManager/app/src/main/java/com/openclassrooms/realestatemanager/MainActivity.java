@@ -10,9 +10,14 @@ import android.widget.TextView;
 
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.tag.Tag;
-import com.openclassrooms.realestatemanager.ui.viewmodel.MainViewModel;
-import com.openclassrooms.realestatemanager.ui.viewmodelfactory.MainViewModelFactory;
+import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
+import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.PropertyDetailViewModelFactory;
+import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
+import com.openclassrooms.realestatemanager.ui.propertylist.viewmodel.PropertyListViewModel;
+import com.openclassrooms.realestatemanager.ui.propertylist.viewmodelfactory.PropertyListViewModelFactory;
+import com.openclassrooms.realestatemanager.ui.propertylist.viewstate.PropertyListViewState;
 
 import java.util.List;
 
@@ -21,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewMain;
     private TextView textViewQuantity;
 
-    private MainViewModel mainViewModel;
+    private PropertyListViewModel propertyListViewModel;
+    private PropertyDetailViewModel propertyDetailViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
 
         this.configureTextViewMain();
         this.configureTextViewQuantity();
-        configureViewModel();
+        configureListViewModel();
+        configureDetailViewModel();
+
     }
 
     private void configureTextViewMain(){
@@ -47,31 +55,52 @@ public class MainActivity extends AppCompatActivity {
         this.textViewQuantity.setText(String.format("%d", quantity));
     }
 
-    private void configureViewModel(){
-        mainViewModel = new ViewModelProvider( this, MainViewModelFactory.getInstance())
-                .get(MainViewModel.class);
+    private void configureListViewModel(){
+        propertyListViewModel = new ViewModelProvider( this, PropertyListViewModelFactory.getInstance())
+                .get(PropertyListViewModel.class);
 
-        mainViewModel.load();
-        mainViewModel.getAgentLiveData().observe(this, new Observer<List<Agent>>() {
+        //propertyListViewModel.load();
+        propertyListViewModel.getViewState().observe(this, new Observer<PropertyListViewState>() {
             @Override
-            public void onChanged(List<Agent> agents) {
-                Log.d(Tag.TAG, "onChanged() called with: agents = [" + agents + "]");
-                for (Agent agent : agents) {
+            public void onChanged(PropertyListViewState propertyListViewState) {
+                for (Agent agent : propertyListViewState.getAgents()) {
                     Log.d(Tag.TAG, "agent.id=" + agent.getId() + " agent.name=" + agent.getName());
                 }
-            }
-        });
-        mainViewModel.getPropertysLiveData().observe(this, new Observer<List<Property>>() {
-            @Override
-            public void onChanged(List<Property> properties) {
-                Log.d(Tag.TAG, "onChanged() called with: properties = [" + properties + "]");
-                for (Property property : properties) {
+                for (PropertyType type : propertyListViewState.getTypes()){
+                    Log.d(Tag.TAG, "type.id=" + type.getId() + " type.name=" + type.getName());
+                }
+                for (Property property : propertyListViewState.getProperties()){
                     Log.d(Tag.TAG, "property.id=" + property.getId() +
                             " property.price=" + property.getPrice() +
                             " property.description=" + property.getDescription().substring(0, 20));
                 }
+            }
+        });
+    }
+
+    private void configureDetailViewModel(){
+        propertyDetailViewModel = new ViewModelProvider( this, PropertyDetailViewModelFactory.getInstance())
+                .get(PropertyDetailViewModel.class);
+
+        //propertyListViewModel.load();
+        propertyDetailViewModel.getViewState().observe(this, new Observer<PropertyDetailViewState>() {
+            @Override
+            public void onChanged(PropertyDetailViewState propertyDetailViewState) {
+                Log.d(Tag.TAG, "agent.id = " + propertyDetailViewState.getAgent().getId());
+                Log.d(Tag.TAG, "agent.name = " + propertyDetailViewState.getAgent().getName());
+
+                Log.d(Tag.TAG, "type.id = " + propertyDetailViewState.getPropertyType().getId());
+                Log.d(Tag.TAG, "type.name = " + propertyDetailViewState.getPropertyType().getName());
+
+
+                Log.d(Tag.TAG, "" + propertyDetailViewState.getProperty().getId());
+                Log.d(Tag.TAG, "" + propertyDetailViewState.getProperty().getPrice());
+                Log.d(Tag.TAG, "" + propertyDetailViewState.getProperty().getSurface());
+                Log.d(Tag.TAG, "PointsOfInterest = " + propertyDetailViewState.getProperty().getPointsOfInterest());
 
             }
         });
+        //propertyDetailViewModel.load(1);
+        propertyDetailViewModel.load(2);
     }
 }

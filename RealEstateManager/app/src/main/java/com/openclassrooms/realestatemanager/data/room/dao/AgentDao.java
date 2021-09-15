@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.data.room.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -18,7 +19,7 @@ public interface AgentDao {
     @Query("SELECT * FROM agent WHERE agent.id = :id")
     LiveData<Agent> getAgentById(long id);
 
-    @Insert
+    @Insert (onConflict = OnConflictStrategy.REPLACE)
     long insert(Agent agent);
 
     @Update

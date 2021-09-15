@@ -1,10 +1,13 @@
 package com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
+import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
@@ -12,50 +15,37 @@ import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyCategory;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.AgentRepository;
+import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.data.room.repository.PhotoRepository;
 import com.openclassrooms.realestatemanager.data.room.repository.PropertyCategoryRepository;
 import com.openclassrooms.realestatemanager.data.room.repository.PropertyRepository;
 import com.openclassrooms.realestatemanager.data.room.repository.PropertyTypeRepository;
+import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
 
 import java.util.List;
 
-public class PropertyDetailViewModel {
-    private long propertyId;
+public class PropertyDetailViewModel extends ViewModel {
 
-    private final AgentRepository agentRepository;
-    private final PhotoRepository photoRepository;
-    private final PropertyRepository propertyRepository;
-    private final PropertyCategoryRepository propertyCategoryRepository;
-    private final PropertyTypeRepository propertyTypeRepository;
+    private long propertyId;
+    private final DatabaseRepository databaseRepository;
 
     /**
      * Mediator expose PropertyListViewState
      */
     private final MediatorLiveData<PropertyDetailViewState> propertyDetailViewStateMediatorLiveData = new MediatorLiveData<>();
-    public MediatorLiveData<PropertyDetailViewState> getPropertyDetailViewStateMediatorLiveData() { return propertyDetailViewStateMediatorLiveData; }
+    public LiveData<PropertyDetailViewState> getViewState() { return propertyDetailViewStateMediatorLiveData; }
 
-    public PropertyDetailViewModel(long propertyId,
-                                   AgentRepository agentRepository,
-                                   PhotoRepository photoRepository,
-                                   PropertyRepository propertyRepository,
-                                   PropertyCategoryRepository propertyCategoryRepository,
-                                   PropertyTypeRepository propertyTypeRepository) {
-        this.propertyId = propertyId;
-        this.agentRepository = agentRepository;
-        this.photoRepository = photoRepository;
-        this.propertyRepository = propertyRepository;
-        this.propertyCategoryRepository = propertyCategoryRepository;
-        this.propertyTypeRepository = propertyTypeRepository;
-
-        configureMediatorLiveData();
+    public PropertyDetailViewModel(DatabaseRepository databaseRepository) {
+        this.databaseRepository = databaseRepository;
+        //configureMediatorLiveData();
     }
 
-    private void configureMediatorLiveData() {
+    private void configureMediatorLiveData(long propertyId) {
         // property
-        LiveData<Property> propertyLiveData = propertyRepository.getPropertyById(propertyId);
+        LiveData<Property> propertyLiveData = databaseRepository.getPropertyRepository().getPropertyById(propertyId);
         // photos
-        LiveData<List<Photo>> photosLiveData = photoRepository.getPhotosByPropertyId(propertyId);
+        LiveData<List<Photo>> photosLiveData = databaseRepository.getPhotoRepository().getPhotosByPropertyId(propertyId);
 
         // get Agent id from property
         LiveData<Long> agentIdLiveData = Transformations.map(propertyLiveData, property -> {
@@ -63,7 +53,7 @@ public class PropertyDetailViewModel {
         });
         // get Agent from agent id
         LiveData<Agent> agentLiveData = Transformations.switchMap(agentIdLiveData, id ->{
-            return agentRepository.getAgentById(id);
+            return databaseRepository.getAgentRepository().getAgentById(id);
         });
 
         // get category id from property and send liveData with category id in categoryIdLiveData
@@ -72,7 +62,7 @@ public class PropertyDetailViewModel {
         });
         // get PropertyCategory from category id emit by categoryIdLiveData.
         LiveData<PropertyCategory> categoryLiveData = Transformations.switchMap(categoryIdLiveData, id -> {
-            return propertyCategoryRepository.getCategoryById(id);
+            return databaseRepository.getPropertyCategoryRepository().getCategoryById(id);
         });
 
         // get type id from property
@@ -81,7 +71,7 @@ public class PropertyDetailViewModel {
         });
         // get PropertyType from type id
         LiveData<PropertyType> propertyTypeLiveData = Transformations.switchMap(typeIdLiveData, id ->{
-            return propertyTypeRepository.getPropertyTypeById(id);
+            return databaseRepository.getPropertyTypeRepository().getPropertyTypeById(id);
         });
 
         propertyDetailViewStateMediatorLiveData.addSource(propertyLiveData, new Observer<Property>() {
@@ -160,7 +150,9 @@ public class PropertyDetailViewModel {
         });
     }
 
-    public void load(){
+    public void load(long propertyId){
+        this.propertyId = propertyId;
+        configureMediatorLiveData(propertyId);
     }
 
     private void combine(@Nullable Property property,
@@ -173,6 +165,7 @@ public class PropertyDetailViewModel {
                 propertyType == null || agent == null) {
             return;
         }
+        Log.d(Tag.TAG, "combine() called with: property = [" + property + "], photos = [" + photos + "], category = [" + category + "], propertyType = [" + propertyType + "], agent = [" + agent + "]");
 
         // ViewModel emit ViewState
         propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(

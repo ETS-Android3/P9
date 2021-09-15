@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.data.room.dao;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -19,7 +20,7 @@ public interface PropertyTypeDao {
     @Query("SELECT * FROM propertytype WHERE propertytype.id = :id")
     LiveData<PropertyType> getPropertyTypeById(long id);
 
-    @Insert
+    @Insert (onConflict = OnConflictStrategy.REPLACE)
     long insert(PropertyType propertyType);
 
     @Update
