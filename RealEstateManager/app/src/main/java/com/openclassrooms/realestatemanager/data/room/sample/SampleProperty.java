@@ -27,7 +27,7 @@ public class SampleProperty {
                         29900000,
                         4296,
                         "Wrap yourself in the ultimate ambience of luxury, style and sophistication in this expansive residence occupying half of the 86th floor at the coveted new Central Park Tower. Boasting impeccably-designed, finely-finished 4,295 sf interiors and 70+ of stunning Central Park frontage, there is truly no other living destination like this, with views beyond compare. The generous 4 bedroom, 4.5 bathroom",
-                        "Central Park Tower, 217 W 57TH ST , 86E CENTRAL PARK TOWER, 217 WEST 57TH ST, MIDTOWN MANHATTAN, NEW YORK, NY",
+                        "86E CENTRAL PARK TOWER, 217 WEST 57TH ST, MIDTOWN MANHATTAN, NEW YORK, NY",
                         "Central Park",
                         true,
                         date1,
@@ -46,7 +46,19 @@ public class SampleProperty {
                         null,
                         5,
                         1,
-                        2)
+                        2),
+                new Property(4,
+                        135000000,
+                        8055,
+                        "Among the clouds, at one thousand feet, is the Floating Inner Garden. A one-of-a-kind Hiroshi Sugimoto-designed masterpiece. This serene full-floor residence offers 8,055 square feet (748 square meters) of living space, five bedrooms, five bathrooms, two powder rooms, unobstructed helicopter views in all directions, soaring ceilings, two private elevator landings, custom-built mechanical, electrical, plumbing, and HVAC systems, and a hand selection of the finest natural",
+                        "432 Park Ave #79",
+                        "Central Park",
+                        true,
+                        date1,
+                        null,
+                        1,
+                        1,
+                        1)
         };
     }
 }

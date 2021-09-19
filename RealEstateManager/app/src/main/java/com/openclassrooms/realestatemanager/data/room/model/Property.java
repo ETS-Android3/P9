@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.data.room.model;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
@@ -25,8 +26,11 @@ public class Property {
     private Date entryDate;
     @TypeConverters(DateConverter.class)
     private Date saleDate;
+    @ColumnInfo(index = true)
     private long propertyTypeId;
+    @ColumnInfo(index = true)
     private long propertyCategoryId;
+    @ColumnInfo(index = true)
     private long agentId;
 
     public Property(long id, int price, int surface, String description, String address, String pointsOfInterest, boolean available, Date entryDate, Date saleDate, long propertyTypeId, long propertyCategoryId, long agentId) {

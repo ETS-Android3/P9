@@ -151,6 +151,7 @@ public class PropertyDetailViewModel extends ViewModel {
     }
 
     public void load(long propertyId){
+        Log.d(Tag.TAG, "load() called with: propertyId = [" + propertyId + "]");
         this.propertyId = propertyId;
         configureMediatorLiveData(propertyId);
     }

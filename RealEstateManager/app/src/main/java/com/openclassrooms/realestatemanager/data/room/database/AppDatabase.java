@@ -40,7 +40,8 @@ import java.util.logging.LogManager;
                     PropertyType.class,
                     Property.class},
                     version = 1,
-                    exportSchema = true)
+                    exportSchema = true
+                    )
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "RealEstate.db";
 

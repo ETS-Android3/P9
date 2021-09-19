@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_propertyListFragment"
+            android:icon="@drawable/ic_menu_home"
+            android:title="@string/property_list_title" />
+        <item
+            android:id="@+id/nav_propertyDetailFragment"
+            android:icon="@drawable/ic_menu_detail"
+            android:title="@string/property_detail_title" />
+        <item
+            android:id="@+id/nav_propertyEditFragment"
+            android:icon="@drawable/ic_menu_add"
+            android:title="@string/property_edit_title_create" />
+
+    </group>
+</menu>
