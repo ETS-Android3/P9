@@ -7,11 +7,13 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -19,8 +21,10 @@ import androidx.navigation.ui.NavigationUI;
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding;
 
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.tag.Tag;
+import com.openclassrooms.realestatemanager.ui.propertylist.view.PropertyListFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PropertyListFragment.OnPropertyClickedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -60,10 +64,25 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * burger menu can open drawer
+     * @return
+     */
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onPropertyClicked(long propertyId) {
+        Log.d(Tag.TAG, "*** MainActivity.onPropertyClicked() called with: propertyId = [" + propertyId + "]");
+        //PropertyListFragmentDirections.actionNavPropertyListFragmentToNavPropertyDetailFragment().getArguments().putLong("property_id_arg", propertyId);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        Bundle bundle = new Bundle();
+        bundle.putLong("property_id_arg", propertyId);
+        navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyDetailFragment, bundle);
+
     }
 }

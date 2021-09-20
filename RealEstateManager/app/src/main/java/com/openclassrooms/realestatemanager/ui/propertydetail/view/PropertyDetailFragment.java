@@ -36,7 +36,7 @@ import java.util.Date;
 public class PropertyDetailFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param_property_id";
+    private static final String ARG_PARAM1 = "property_id_arg";
 
     private long propertyId;
     private PropertyDetailViewModel propertyDetailViewModel;
@@ -84,9 +84,6 @@ public class PropertyDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            propertyId = getArguments().getLong(ARG_PARAM1);
-        }
     }
 
     @Override
@@ -102,7 +99,23 @@ public class PropertyDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         configureDetailViewModel();
-        //propertyDetailViewModel.load(propertyId);
+/*        if (savedInstanceState != null){
+            if (savedInstanceState.containsKey(ARG_PARAM1)){
+                long propertyId = savedInstanceState.getLong(ARG_PARAM1, -1);
+                if (propertyId > -1) {
+                    propertyDetailViewModel.load(propertyId);
+                }
+            }
+        }*/
+
+        if (getArguments() != null) {
+            if (getArguments().containsKey(ARG_PARAM1)){
+                long propertyId = getArguments().getLong(ARG_PARAM1, -1);
+                if (propertyId > -1) {
+                    propertyDetailViewModel.load(propertyId);
+                }
+            }
+        }
     }
 
     private void configureComponents(View view){

@@ -8,7 +8,11 @@
         android:id="@+id/nav_propertyListFragment"
         android:name="com.openclassrooms.realestatemanager.ui.propertylist.view.PropertyListFragment"
         android:label="@string/property_list_title"
-        tools:layout="@layout/fragment_property_list" />
+        tools:layout="@layout/fragment_property_list">
+        <action
+            android:id="@+id/action_nav_propertyListFragment_to_nav_propertyDetailFragment"
+            app:destination="@id/nav_propertyDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/nav_propertyDetailFragment"
         android:name="com.openclassrooms.realestatemanager.ui.propertydetail.view.PropertyDetailFragment"

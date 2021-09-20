@@ -74,4 +74,6 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
 
+    <string name="row_property_list_picture_description">Property picture</string>
+
 </resources>

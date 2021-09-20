@@ -21,7 +21,9 @@ import com.openclassrooms.realestatemanager.data.room.repository.PropertyReposit
 import com.openclassrooms.realestatemanager.data.room.repository.PropertyTypeRepository;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewstate.PropertyListViewState;
+import com.openclassrooms.realestatemanager.ui.propertylist.viewstate.RowPropertyViewState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PropertyListViewModel extends ViewModel {
@@ -111,6 +113,28 @@ public class PropertyListViewModel extends ViewModel {
         databaseRepository.getAgentRepository().getAgents();
     }
 
+    private String findFirstPhotoUrlByPropertyId(List<Photo> photos, long id){
+        for (Photo photo : photos){
+            if (photo.getPropertyId() == id) {
+                return photo.getUrl();
+            }
+        }
+        return "";
+    }
+
+    private String findTypeNameById(List<PropertyType> types, long id){
+        for (PropertyType propertyType : types) {
+            if (propertyType.getId() == id) {
+                return  propertyType.getName();
+            }
+        }
+        return "";
+    }
+
+    private String convertPriceToString(int price){
+        return "" + price;
+    }
+
     private void combine(@Nullable List<Agent> agents,
                          @Nullable List<Photo> photos,
                          @Nullable List<Property> properties,
@@ -123,8 +147,16 @@ public class PropertyListViewModel extends ViewModel {
             return;
         }
 
+        List<RowPropertyViewState> rowPropertyViewStates = new ArrayList<>();
+        for (Property property : properties) {
+            rowPropertyViewStates.add(new RowPropertyViewState(property.getId(),
+                    findFirstPhotoUrlByPropertyId(photos, property.getId()),
+                    findTypeNameById(types, property.getPropertyTypeId()),
+                    property.getAddress(),
+                    convertPriceToString(property.getPrice())));
+        }
+
         // ViewModel emit ViewState
-        propertyListViewStateMediatorLiveData.setValue(new PropertyListViewState(
-                agents, photos, properties, categories, types));
+        propertyListViewStateMediatorLiveData.setValue(new PropertyListViewState(rowPropertyViewStates));
     }
 }
