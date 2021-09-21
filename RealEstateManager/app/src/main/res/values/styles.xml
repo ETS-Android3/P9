@@ -6,7 +6,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+
+
     </style>
+
     <style name="TextviewStyle" parent="@android:style/Widget.TextView">
     </style>
     <style name="TextviewStyle.Title">
@@ -45,6 +49,29 @@
         <item name="android:textColor">#0088CC</item>
         <item name="android:textSize">14dp</item>
         <item name="android:layout_margin">0dp</item>
+    </style>
+
+    <style name="Widget.App.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="BottomNavigation">
+<!--        <item name="android:background">@color/indigo</item>-->
+<!--        <item name="itemBackground">@drawable/navigation_bar_item_bg</item>-->
+<!--        <item name="itemIconTint">@color/navigation_bar_txt_color</item>-->
+<!--        <item name="itemTextColor">@color/navigation_bar_txt_color</item>-->
+<!--        <item name="paddingStart">@dimen/bottom_navigation_padding</item>-->
+<!--        <item name="paddingEnd">@dimen/bottom_navigation_padding</item>-->
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="itemIconTint">@color/white</item>
+        <item name="itemTextColor">@color/white</item>
+        <item name="itemBackground">@drawable/navigation_bar_item_bg</item>
+        <item name="android:background">@color/colorPrimary</item>
     </style>
 
 </resources>

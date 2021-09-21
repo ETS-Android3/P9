@@ -217,5 +217,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/fragment_property_detail_bottom_navigation_menu"/>
+        app:menu="@menu/fragment_property_detail_bottom_navigation_menu"
+        style="@style/BottomNavigation"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
