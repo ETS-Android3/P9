@@ -42,7 +42,7 @@ public class PropertyListFragment extends Fragment {
     /**
      * this interface is for sending propertyId to MainActivity
      */
-    private OnPropertySelectedListener callbackPropertyClicked;
+    private OnPropertySelectedListener callbackPropertySelected;
     public interface OnPropertySelectedListener {
         public void onPropertySelectedClicked(long propertyId);
     }
@@ -62,7 +62,7 @@ public class PropertyListFragment extends Fragment {
 
     private void createCallbackToParentActivity() {
         try {
-            callbackPropertyClicked = (OnPropertySelectedListener) getActivity();
+            callbackPropertySelected = (OnPropertySelectedListener) getActivity();
         } catch (ClassCastException e) {
             throw new ClassCastException(e.toString() + "must implement OnPropertyClickedListener");
         }
@@ -115,8 +115,8 @@ public class PropertyListFragment extends Fragment {
             public void onClickRowProperty(long propertyId) {
                 // send property id to activity
                 Log.d(Tag.TAG, "PropertyListFragment.onClickRowProperty() called with: propertyId = [" + propertyId + "]");
-                if (callbackPropertyClicked != null) {
-                    callbackPropertyClicked.onPropertySelectedClicked(propertyId);
+                if (callbackPropertySelected != null) {
+                    callbackPropertySelected.onPropertySelectedClicked(propertyId);
                 }
             }
         });
