@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.propertydetail.view;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,11 +11,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.ui.propertylist.view.PropertyListFragment;
 import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
@@ -36,11 +40,6 @@ public class PropertyDetailFragment extends Fragment {
     private static final String ARG_PARAM1 = "property_id_arg";
 
     private long propertyId;
-    private PropertyDetailViewModel propertyDetailViewModel;
-
-    private void setPropertyDetailViewModel(PropertyDetailViewModel propertyDetailViewModel) {
-        this.propertyDetailViewModel = propertyDetailViewModel;
-    }
 
     TextView textViewPrice;
     TextView textViewSurface;
@@ -56,6 +55,11 @@ public class PropertyDetailFragment extends Fragment {
     TextView textViewCategory;
     TextView textViewType;
     TextView textViewPhotoLegend;
+
+    private PropertyDetailViewModel propertyDetailViewModel;
+    private void setPropertyDetailViewModel(PropertyDetailViewModel propertyDetailViewModel) {
+        this.propertyDetailViewModel = propertyDetailViewModel;
+    }
 
     public PropertyDetailFragment() {
         // Required empty public constructor
@@ -78,6 +82,28 @@ public class PropertyDetailFragment extends Fragment {
         return fragment;
     }
 
+    /*
+    this interface used to edit property
+     */
+    private OnEditPropertyListener callbackEditProperty;
+    public interface OnEditPropertyListener{
+        public void onEditPropertyClicked(long propertyId);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.createCallbackToParentActivity();
+    }
+
+    private void createCallbackToParentActivity() {
+        try {
+            callbackEditProperty = (OnEditPropertyListener) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(e.toString() + "must implement OnPropertyClickedListener");
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +115,7 @@ public class PropertyDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_detail, container, false);
         configureComponents(view);
+        configureBottomNavigationBar(view);
         return view;
     }
 
@@ -96,18 +123,11 @@ public class PropertyDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         configureDetailViewModel();
-/*        if (savedInstanceState != null){
-            if (savedInstanceState.containsKey(ARG_PARAM1)){
-                long propertyId = savedInstanceState.getLong(ARG_PARAM1, -1);
-                if (propertyId > -1) {
-                    propertyDetailViewModel.load(propertyId);
-                }
-            }
-        }*/
+
 
         if (getArguments() != null) {
             if (getArguments().containsKey(ARG_PARAM1)){
-                long propertyId = getArguments().getLong(ARG_PARAM1, -1);
+                this.propertyId = getArguments().getLong(ARG_PARAM1, -1);
                 if (propertyId > -1) {
                     propertyDetailViewModel.load(propertyId);
                 }
@@ -132,6 +152,25 @@ public class PropertyDetailFragment extends Fragment {
         textViewPhotoLegend = view.findViewById(R.id.property_detail_photo_legend_value);
     }
 
+    private void configureBottomNavigationBar(View view) {
+        BottomNavigationView bottomNavigationView = view.findViewById(R.id.fragment_property_detail_bottom_navigation_view);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                return navigate(item);
+            }
+        });
+    }
+
+    private boolean navigate(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_propertyEditFragment:
+                callbackEditProperty.onEditPropertyClicked(this.propertyId);
+                return true;
+        }
+        return false;
+    }
+
     private void configureDetailViewModel(){
         propertyDetailViewModel = new ViewModelProvider(
                 requireActivity(), PropertyDetailViewModelFactory.getInstance())
@@ -140,19 +179,7 @@ public class PropertyDetailFragment extends Fragment {
         propertyDetailViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyDetailViewState>() {
             @Override
             public void onChanged(PropertyDetailViewState propertyDetailViewState) {
-                Log.d(Tag.TAG, "agent.id = " + propertyDetailViewState.getAgent().getId());
-                Log.d(Tag.TAG, "agent.name = " + propertyDetailViewState.getAgent().getName());
-
-                Log.d(Tag.TAG, "type.id = " + propertyDetailViewState.getPropertyType().getId());
-                Log.d(Tag.TAG, "type.name = " + propertyDetailViewState.getPropertyType().getName());
-
-                Log.d(Tag.TAG, "" + propertyDetailViewState.getProperty().getAddress());
-                Log.d(Tag.TAG, "" + propertyDetailViewState.getProperty().getId());
-                Log.d(Tag.TAG, "" + propertyDetailViewState.getProperty().getPrice());
-                Log.d(Tag.TAG, "" + propertyDetailViewState.getProperty().getSurface());
-                Log.d(Tag.TAG, "PointsOfInterest = " + propertyDetailViewState.getProperty().getPointsOfInterest());
-
-                setPrice(propertyDetailViewState.getProperty().getPrice());
+                 setPrice(propertyDetailViewState.getProperty().getPrice());
                 setSurface(propertyDetailViewState.getProperty().getSurface());
                 setDescription(propertyDetailViewState.getProperty().getDescription());
                 setAddress(propertyDetailViewState.getProperty().getAddress());
