@@ -83,7 +83,9 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
     public void onAddPropertyClicked() {
         Log.d(Tag.TAG, "MainActivity.onAddPropertyCLicked() called");
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyEditFragment);
+        Bundle bundle = new Bundle();
+        bundle.putString("title", getString(R.string.property_edit_title_create));
+        navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyEditFragment, bundle);
     }
 
     @Override
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         Bundle bundle = new Bundle();
         bundle.putLong("property_id_arg", propertyId);
+        bundle.putString("title", getString(R.string.property_edit_title_modify));
         navController.navigate(R.id.action_nav_propertyDetailFragment_to_nav_propertyEditFragment, bundle);
     }
 }

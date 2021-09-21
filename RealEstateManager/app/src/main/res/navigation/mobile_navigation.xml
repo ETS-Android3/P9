@@ -28,7 +28,12 @@
     <fragment
         android:id="@+id/nav_propertyEditFragment"
         android:name="com.openclassrooms.realestatemanager.ui.PropertyEditFragment.view.PropertyEditFragment"
-        android:label="@string/property_edit_title_create"
-        tools:layout="@layout/fragment_property_edit" />
+        android:label="{title}"
+        tools:layout="@layout/fragment_property_edit" >
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue="titre test" />
+    </fragment>
 
 </navigation>
