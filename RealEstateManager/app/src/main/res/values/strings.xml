@@ -59,6 +59,7 @@
     <string name="property_edit_title_modify">Modify property</string>
 
     <string name="menu_add_property">Add property</string>
+    <string name="menu_edit_property">Edit property</string>
     <string name="search">search</string>
     <string name="title_activity_main">MainActivity</string>
 

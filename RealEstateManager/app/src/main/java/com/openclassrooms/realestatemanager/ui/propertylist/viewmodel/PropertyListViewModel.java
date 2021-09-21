@@ -1,25 +1,18 @@
 package com.openclassrooms.realestatemanager.ui.propertylist.viewmodel;
 
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyCategory;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
-import com.openclassrooms.realestatemanager.data.room.repository.AgentRepository;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
-import com.openclassrooms.realestatemanager.data.room.repository.PhotoRepository;
-import com.openclassrooms.realestatemanager.data.room.repository.PropertyCategoryRepository;
-import com.openclassrooms.realestatemanager.data.room.repository.PropertyRepository;
-import com.openclassrooms.realestatemanager.data.room.repository.PropertyTypeRepository;
-import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewstate.PropertyListViewState;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewstate.RowPropertyViewState;
 
@@ -131,10 +124,6 @@ public class PropertyListViewModel extends ViewModel {
         return "";
     }
 
-    private String convertPriceToString(int price){
-        return "" + price;
-    }
-
     private void combine(@Nullable List<Agent> agents,
                          @Nullable List<Photo> photos,
                          @Nullable List<Property> properties,
@@ -153,7 +142,7 @@ public class PropertyListViewModel extends ViewModel {
                     findFirstPhotoUrlByPropertyId(photos, property.getId()),
                     findTypeNameById(types, property.getPropertyTypeId()),
                     property.getAddress(),
-                    convertPriceToString(property.getPrice())));
+                    Utils.convertPriceToString(property.getPrice())));
         }
 
         // ViewModel emit ViewState

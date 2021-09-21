@@ -14,17 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.openclassrooms.realestatemanager.MainApplication;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.room.injection.InjectionDao;
+import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.PropertyDetailViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
 
 import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -174,11 +171,12 @@ public class PropertyDetailFragment extends Fragment {
     }
 
     private void setPrice(int price){
-        textViewPrice.setText("" + price);
+        textViewPrice.setText(Utils.convertPriceToString(price));
     }
 
     private void setSurface(int surface){
-        textViewSurface.setText("" + surface);
+
+        textViewSurface.setText(Utils.convertSurfaceToString(surface));
     }
 
     private void setDescription(String description){

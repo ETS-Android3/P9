@@ -29,24 +29,24 @@
 
         <TextView
             android:id="@+id/row_property_list_type"
+            style="@style/TextviewStyle.ThreeText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:layout_marginLeft="@dimen/default_margin"
-            android:layout_marginRight="@dimen/default_margin"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/property_type"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            app:layout_constraintTop_toTopOf="@id/row_property_list_picture"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/row_property_list_picture"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="@id/row_property_list_picture" />
 
         <TextView
             android:id="@+id/row_property_list_address"
+            style="@style/TextviewStyle.ThreeText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/property_address"
@@ -58,11 +58,9 @@
 
         <TextView
             android:id="@+id/row_property_list_price"
+            style="@style/TextviewStyle.ThreeText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
-            android:layout_marginLeft="@dimen/default_margin"
-            android:layout_marginRight="@dimen/default_margin"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/property_price"

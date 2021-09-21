@@ -1,7 +1,8 @@
 package com.openclassrooms.realestatemanager;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import org.junit.Test;
 
