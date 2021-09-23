@@ -8,6 +8,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +21,8 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.ui.photoList.OnRowPhotoListener;
+import com.openclassrooms.realestatemanager.ui.photoList.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.ui.propertylist.view.PropertyListFragment;
 import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.tag.Tag;
@@ -38,25 +43,29 @@ public class PropertyDetailFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "property_id_arg";
-
     private long propertyId;
 
     TextView textViewPrice;
     TextView textViewSurface;
     TextView textViewDescription;
+    TextView textViewAddressTitle;
     TextView textViewAddress;
     TextView textViewPointOfInterest;
-    TextView textViewAvailable;
+    TextView textViewState;
     TextView textViewEntryDate;
     TextView textViewSaleDate;
     TextView textViewAgentName;
     TextView textViewAgentEmail;
     TextView textViewAgentPhone;
-    TextView textViewCategory;
     TextView textViewType;
     TextView textViewPhotoLegend;
 
     private PropertyDetailViewModel propertyDetailViewModel;
+
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    PhotoListAdapter photoListAdapter;
+
     private void setPropertyDetailViewModel(PropertyDetailViewModel propertyDetailViewModel) {
         this.propertyDetailViewModel = propertyDetailViewModel;
     }
@@ -115,6 +124,7 @@ public class PropertyDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_detail, container, false);
         configureComponents(view);
+        configureRecyclerView(view);
         configureBottomNavigationBar(view);
         return view;
     }
@@ -139,18 +149,34 @@ public class PropertyDetailFragment extends Fragment {
         textViewPrice = view.findViewById(R.id.property_detail_prive_value);
         textViewSurface = view.findViewById(R.id.property_detail_surface_value);
         textViewDescription = view.findViewById(R.id.property_detail_description_value);
+        textViewAddressTitle = view.findViewById(R.id.property_detail_address_title_value);
         textViewAddress = view.findViewById(R.id.property_detail_address_value);
         textViewPointOfInterest = view.findViewById(R.id.property_detail_point_of_interest_value);
-        textViewAvailable = view.findViewById(R.id.property_detail_available_value);
+        textViewState = view.findViewById(R.id.property_detail_state_value);
         textViewEntryDate = view.findViewById(R.id.property_detail_entry_date_value);
         textViewSaleDate = view.findViewById(R.id.property_detail_sale_date_value);
         textViewAgentName = view.findViewById(R.id.property_detail_agent_name_value);
         textViewAgentEmail = view.findViewById(R.id.property_detail_agent_email_value);
         textViewAgentPhone = view.findViewById(R.id.property_detail_agent_phone_value);
-        textViewCategory = view.findViewById(R.id.property_detail_category_value);
         textViewType = view.findViewById(R.id.property_detail_type_value);
         textViewPhotoLegend = view.findViewById(R.id.property_detail_photo_legend_value);
     }
+
+    private void configureRecyclerView(View view) {
+        recyclerView = view.findViewById(R.id.property_detail_recycler_view);
+        layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+
+        photoListAdapter = new PhotoListAdapter(getContext(), new OnRowPhotoListener() {
+            @Override
+            public void onClickRowPhoto(long photoId) {
+                // open photo with call back
+            }
+        });
+
+        recyclerView.setAdapter(photoListAdapter);
+    }
+
 
     private void configureBottomNavigationBar(View view) {
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.fragment_property_detail_bottom_navigation_view);
@@ -179,20 +205,23 @@ public class PropertyDetailFragment extends Fragment {
         propertyDetailViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyDetailViewState>() {
             @Override
             public void onChanged(PropertyDetailViewState propertyDetailViewState) {
-                 setPrice(propertyDetailViewState.getProperty().getPrice());
+                setPrice(propertyDetailViewState.getProperty().getPrice());
                 setSurface(propertyDetailViewState.getProperty().getSurface());
                 setDescription(propertyDetailViewState.getProperty().getDescription());
+                setAddressTitle(propertyDetailViewState.getProperty().getAddressTitle());
                 setAddress(propertyDetailViewState.getProperty().getAddress());
                 setPointOfInterest(propertyDetailViewState.getProperty().getPointsOfInterest());
-                setAvailable(propertyDetailViewState.getProperty().isAvailable());
-                setEntryDate(propertyDetailViewState.getProperty().getEntryDate());
-                setSaleDate(propertyDetailViewState.getProperty().getSaleDate());
+                setState(propertyDetailViewState.getPropertyState());
+                setEntryDate(propertyDetailViewState.getEntryDate());
+                setSaleDate(propertyDetailViewState.getSaleDate());
                 setAgentName(propertyDetailViewState.getAgent().getName());
                 setAgentEmail(propertyDetailViewState.getAgent().getEmail());
                 setAgentPhone(propertyDetailViewState.getAgent().getPhone());
-                setCategoryName(propertyDetailViewState.getCategory().getName());
                 setTypeName(propertyDetailViewState.getPropertyType().getName());
                 setPhotoLegend("");
+                // list photos
+                photoListAdapter.updateData(propertyDetailViewState.getPhotos());
+
             }
         });
     }
@@ -210,6 +239,10 @@ public class PropertyDetailFragment extends Fragment {
         textViewDescription.setText(description);
     }
 
+    private void setAddressTitle(String addressTitle){
+        textViewAddressTitle.setText(addressTitle);
+    }
+
     private void setAddress(String address){
         Log.d(Tag.TAG, "setAddress() called with: address = [" + address + "]");
         textViewAddress.setText(address);
@@ -219,34 +252,16 @@ public class PropertyDetailFragment extends Fragment {
         textViewPointOfInterest.setText(pointOfInterest);
     }
 
-    private void setAvailable(boolean available){
-        if (available) {
-            textViewAvailable.setText(R.string.yes);
-        } else {
-            textViewAvailable.setText(R.string.no);
-        };
+    private void setState(String available){
+        textViewState.setText(available);
     }
 
-    private void setEntryDate(Date entryDate) {
-        // todo logique à déplacer dans le VM
-        if (entryDate == null){
-            textViewEntryDate.setText(R.string.no_date);
-        } else {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");
-            String strDate = dateFormat.format(entryDate);
-            textViewEntryDate.setText(strDate);
-        }
+    private void setEntryDate(String entryDate) {
+        textViewEntryDate.setText(entryDate);
     }
 
-    private void setSaleDate(Date saleDate){
-        // todo logique à déplacer dans le VM
-        if (saleDate == null){
-            textViewSaleDate.setText(R.string.no_date);
-        } else {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");
-            String strDate = dateFormat.format(saleDate);
-            textViewSaleDate.setText(strDate);
-        }
+    private void setSaleDate(String saleDate){
+        textViewSaleDate.setText(saleDate);
     }
 
     private void setAgentName(String agentName) {
@@ -254,15 +269,11 @@ public class PropertyDetailFragment extends Fragment {
     }
 
     private void setAgentEmail(String agentEmail) {
-        textViewAgentName.setText(agentEmail);
+        textViewAgentEmail.setText(agentEmail);
     }
 
     private void setAgentPhone(String agentPhone) {
-        textViewAgentName.setText(agentPhone);
-    }
-
-    private void setCategoryName(String categoryName) {
-        textViewCategory.setText(categoryName);
+        textViewAgentPhone.setText(agentPhone);
     }
 
     private void setTypeName(String typeName) {

@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 import com.google.android.material.navigation.NavigationView;

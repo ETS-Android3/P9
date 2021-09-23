@@ -22,11 +22,14 @@ import com.openclassrooms.realestatemanager.data.room.repository.PropertyReposit
 import com.openclassrooms.realestatemanager.data.room.repository.PropertyTypeRepository;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.List;
 
 public class PropertyDetailViewModel extends ViewModel {
 
+    private static final int CATEGORY_FOR_SAL_ID = 1;
+    private static final int CATEGORY_FOR_RENT_ID = 2;
     private long propertyId;
     private final DatabaseRepository databaseRepository;
 
@@ -168,9 +171,26 @@ public class PropertyDetailViewModel extends ViewModel {
         }
         Log.d(Tag.TAG, "combine() called with: property = [" + property + "], photos = [" + photos + "], category = [" + category + "], propertyType = [" + propertyType + "], agent = [" + agent + "]");
 
+        String propertyState = "";
+
+        if (property.getPropertyCategoryId() == CATEGORY_FOR_SAL_ID) {
+            if (property.isAvailable()){
+                propertyState = "For sal";
+            } else
+                propertyState = "Sold";
+        } else {
+            if (property.isAvailable()){
+                propertyState = "For rent";
+            } else
+                propertyState = "Rented";
+        }
+
+        String entryDate = Utils.convertDateToString(property.getEntryDate());
+        String saleDate = Utils.convertDateToString(property.getSaleDate());
+
         // ViewModel emit ViewState
         propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(
-                property, photos, category, propertyType, agent));
+                property, photos, category, propertyType, agent, propertyState, entryDate, saleDate));
     }
 }
 

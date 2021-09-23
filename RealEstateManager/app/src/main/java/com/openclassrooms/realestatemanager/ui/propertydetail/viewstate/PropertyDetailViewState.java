@@ -14,13 +14,19 @@ public class PropertyDetailViewState {
     private PropertyCategory category;
     private PropertyType propertyType;
     private Agent agent;
+    private String propertyState;
+    private String entryDate;
+    private String saleDate;
 
-    public PropertyDetailViewState(Property property, List<Photo> photos, PropertyCategory category, PropertyType propertyType, Agent agent) {
+    public PropertyDetailViewState(Property property, List<Photo> photos, PropertyCategory category, PropertyType propertyType, Agent agent, String propertyState, String entryDate, String saleDate) {
         this.property = property;
         this.photos = photos;
         this.category = category;
         this.propertyType = propertyType;
         this.agent = agent;
+        this.propertyState = propertyState;
+        this.entryDate = entryDate;
+        this.saleDate = saleDate;
     }
 
     public Property getProperty() {
@@ -41,5 +47,17 @@ public class PropertyDetailViewState {
 
     public Agent getAgent() {
         return agent;
+    }
+
+    public String getPropertyState() {
+        return propertyState;
+    }
+
+    public String getEntryDate() {
+        return entryDate;
+    }
+
+    public String getSaleDate() {
+        return saleDate;
     }
 }

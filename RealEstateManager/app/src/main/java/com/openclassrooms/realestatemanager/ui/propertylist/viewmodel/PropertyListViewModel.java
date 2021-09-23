@@ -141,7 +141,7 @@ public class PropertyListViewModel extends ViewModel {
             rowPropertyViewStates.add(new RowPropertyViewState(property.getId(),
                     findFirstPhotoUrlByPropertyId(photos, property.getId()),
                     findTypeNameById(types, property.getPropertyTypeId()),
-                    property.getAddress(),
+                    property.getAddressTitle(),
                     Utils.convertPriceToString(property.getPrice())));
         }
 

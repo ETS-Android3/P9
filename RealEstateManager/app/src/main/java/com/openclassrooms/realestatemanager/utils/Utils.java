@@ -116,6 +116,8 @@ public class Utils {
     }
 
     public static String convertDateToString(Date date){
+        if (date == null) return "";
+
         if (UnitLocale.getDefault() == UnitLocale.Imperial) {
             return formatDateToUS(date);
         }

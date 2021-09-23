@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "cbc11d7dec4bafdd9f19e574d4bbdab8",
+    "identityHash": "476e8de3d03c21c338462e752d6e4eb4",
     "entities": [
       {
         "tableName": "Agent",
@@ -134,7 +134,7 @@
       },
       {
         "tableName": "Property",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `price` INTEGER NOT NULL, `surface` INTEGER NOT NULL, `description` TEXT, `address` TEXT, `pointsOfInterest` TEXT, `available` INTEGER NOT NULL, `entryDate` INTEGER, `saleDate` INTEGER, `propertyTypeId` INTEGER NOT NULL, `propertyCategoryId` INTEGER NOT NULL, `agentId` INTEGER NOT NULL, FOREIGN KEY(`agentId`) REFERENCES `Agent`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`propertyCategoryId`) REFERENCES `PropertyCategory`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`propertyTypeId`) REFERENCES `PropertyType`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `price` INTEGER NOT NULL, `surface` INTEGER NOT NULL, `description` TEXT, `addressTitle` TEXT, `address` TEXT, `pointsOfInterest` TEXT, `available` INTEGER NOT NULL, `entryDate` INTEGER, `saleDate` INTEGER, `propertyTypeId` INTEGER NOT NULL, `propertyCategoryId` INTEGER NOT NULL, `agentId` INTEGER NOT NULL, FOREIGN KEY(`agentId`) REFERENCES `Agent`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`propertyCategoryId`) REFERENCES `PropertyCategory`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`propertyTypeId`) REFERENCES `PropertyType`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -157,6 +157,12 @@
           {
             "fieldPath": "description",
             "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "addressTitle",
+            "columnName": "addressTitle",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -281,7 +287,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cbc11d7dec4bafdd9f19e574d4bbdab8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '476e8de3d03c21c338462e752d6e4eb4')"
     ]
   }
 }

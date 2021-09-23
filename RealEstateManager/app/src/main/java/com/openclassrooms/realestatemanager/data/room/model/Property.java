@@ -19,6 +19,7 @@ public class Property {
     private int price;
     private int surface;
     private String description;
+    private String addressTitle;
     private String address;
     private String pointsOfInterest;
     private boolean available;
@@ -33,11 +34,12 @@ public class Property {
     @ColumnInfo(index = true)
     private long agentId;
 
-    public Property(long id, int price, int surface, String description, String address, String pointsOfInterest, boolean available, Date entryDate, Date saleDate, long propertyTypeId, long propertyCategoryId, long agentId) {
+    public Property(long id, int price, int surface, String description, String addressTitle, String address, String pointsOfInterest, boolean available, Date entryDate, Date saleDate, long propertyTypeId, long propertyCategoryId, long agentId) {
         this.id = id;
         this.price = price;
         this.surface = surface;
         this.description = description;
+        this.addressTitle = addressTitle;
         this.address = address;
         this.pointsOfInterest = pointsOfInterest;
         this.available = available;
@@ -62,6 +64,10 @@ public class Property {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getAddressTitle() {
+        return addressTitle;
     }
 
     public String getAddress() {
