@@ -1,6 +1,8 @@
 package com.openclassrooms.realestatemanager.ui;
 
+import android.app.Fragment;
 import android.content.pm.ActivityInfo;
+import android.graphics.Point;
 import android.os.Bundle;
 
 import com.google.android.material.navigation.NavigationView;
@@ -8,9 +10,11 @@ import com.google.android.material.navigation.NavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -22,6 +26,7 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertydetail.view.PropertyDetailFragment;
 import com.openclassrooms.realestatemanager.ui.propertylist.view.PropertyListFragment;
+import com.openclassrooms.realestatemanager.utils.LandscapeHelper;
 
 public class MainActivity extends AppCompatActivity implements PropertyListFragment.OnPropertySelectedListener,
         PropertyListFragment.OnAddPropertyListener, PropertyDetailFragment.OnEditPropertyListener {
@@ -49,6 +54,17 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        logScreen();
+    }
+
+    private void logScreen(){
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        Log.d(Tag.TAG, String.format("logScreen(). width = %d, height = %d", width, height));
     }
 
     @Override
@@ -76,7 +92,19 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         Bundle bundle = new Bundle();
         bundle.putLong("property_id_arg", propertyId);
-        navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyDetailFragment, bundle);
+
+        if (LandscapeHelper.isLandscape()) {
+            PropertyDetailFragment propertyDetailFragment = PropertyDetailFragment.newInstance(propertyId);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container_view, propertyDetailFragment)
+                    .addToBackStack(null)
+                    .commit();
+
+        }
+        else {
+            navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyDetailFragment, bundle);
+        }
     }
 
 

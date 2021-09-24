@@ -226,8 +226,8 @@
                     style="@style/TextviewStyle.Value"/>
             </LinearLayout>
             <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:id="@+id/property_detail_agent_name"
                     android:layout_width="0dp"
@@ -292,6 +292,7 @@
     </ScrollView>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/fragment_property_detail_bottom_navigation_view"
+        style="@style/BottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

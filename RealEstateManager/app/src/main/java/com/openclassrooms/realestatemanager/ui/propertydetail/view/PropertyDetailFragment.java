@@ -82,9 +82,8 @@ public class PropertyDetailFragment extends Fragment {
      * @return A new instance of fragment PropertyDetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PropertyDetailFragment newInstance(long propertyId, PropertyDetailViewModel propertyDetailViewModel) {
+    public static PropertyDetailFragment newInstance(long propertyId) {
         PropertyDetailFragment fragment = new PropertyDetailFragment();
-        fragment.setPropertyDetailViewModel(propertyDetailViewModel);
         Bundle args = new Bundle();
         args.putLong(ARG_PARAM1, propertyId);
         fragment.setArguments(args);
