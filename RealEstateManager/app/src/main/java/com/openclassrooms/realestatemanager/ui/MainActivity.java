@@ -88,11 +88,6 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
     @Override
     public void onPropertySelectedClicked(long propertyId) {
         Log.d(Tag.TAG, "MainActivity.onPropertySelectedClicked() called with: propertyId = [" + propertyId + "]");
-        //PropertyListFragmentDirections.actionNavPropertyListFragmentToNavPropertyDetailFragment().getArguments().putLong("property_id_arg", propertyId);
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        Bundle bundle = new Bundle();
-        bundle.putLong("property_id_arg", propertyId);
-
         if (LandscapeHelper.isLandscape()) {
             PropertyDetailFragment propertyDetailFragment = PropertyDetailFragment.newInstance(propertyId);
 
@@ -100,9 +95,11 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
                     .replace(R.id.fragment_container_view, propertyDetailFragment)
                     .addToBackStack(null)
                     .commit();
-
         }
         else {
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            Bundle bundle = new Bundle();
+            bundle.putLong("property_id_arg", propertyId);
             navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyDetailFragment, bundle);
         }
     }
