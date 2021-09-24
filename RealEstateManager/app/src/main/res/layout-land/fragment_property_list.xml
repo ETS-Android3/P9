@@ -14,7 +14,7 @@
         android:scrollbars="vertical"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
 
-        app:layout_constraintHorizontal_weight="4"
+        app:layout_constraintHorizontal_weight="3"
         android:layout_width="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/fragment_container_view"
@@ -29,7 +29,7 @@
         android:id="@+id/fragment_container_view"
         android:name="com.openclassrooms.realestatemanager.ui.propertydetail.view.PropertyDetailFragment"
 
-        app:layout_constraintHorizontal_weight="6"
+        app:layout_constraintHorizontal_weight="7"
         android:layout_width="0dp"
         app:layout_constraintStart_toEndOf="@+id/fragment_property_list_recyclerview"
         app:layout_constraintEnd_toEndOf="parent"
