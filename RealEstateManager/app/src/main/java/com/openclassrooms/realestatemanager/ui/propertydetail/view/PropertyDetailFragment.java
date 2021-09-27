@@ -137,16 +137,8 @@ public class PropertyDetailFragment extends Fragment {
         if (getArguments() != null) {
             if (getArguments().containsKey(ARG_PARAM1)){
                 this.propertyId = getArguments().getLong(ARG_PARAM1, -1);
-                if (propertyId == LOAD_FIRST_PROPERTY) {
-                    Log.d(Tag.TAG, "*** onViewCreated() loadFirstPropertyId()");
-                    propertyDetailViewModel.loadFirstPropertyId();
-                }
-                else {
-                    if (propertyId >= 0) {
-                        Log.d(Tag.TAG, "*** onViewCreated() load(" + propertyId + ")");
-                        propertyDetailViewModel.load(propertyId);
-                    }
-                }
+                Log.d(Tag.TAG, "*** onViewCreated() load(" + propertyId + ")");
+                propertyDetailViewModel.load(propertyId);
             }
         }
     }
@@ -227,15 +219,6 @@ public class PropertyDetailFragment extends Fragment {
                 setPhotoLegend("");
                 // list photos
                 photoListAdapter.updateData(propertyDetailViewState.getPhotos());
-            }
-        });
-
-        propertyDetailViewModel.getFirstPropertyId().observe(getViewLifecycleOwner(), new Observer<Long>() {
-            @Override
-            public void onChanged(Long aLong) {
-                Log.d(Tag.TAG, "*** getFirstPropertyIdLiveData().observe called with: integer = [" + aLong + "]");
-                propertyDetailViewModel.load(aLong);
-                propertyDetailViewModel.getFirstPropertyId().removeObserver(this);
             }
         });
     }

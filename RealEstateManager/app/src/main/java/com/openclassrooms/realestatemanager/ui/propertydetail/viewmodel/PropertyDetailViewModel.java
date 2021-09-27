@@ -26,11 +26,20 @@ import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.Property
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class PropertyDetailViewModel extends ViewModel {
 
     private static final int CATEGORY_FOR_SAL_ID = 1;
     private static final int CATEGORY_FOR_RENT_ID = 2;
+    private static final int LOAD_FIRST_PROPERTY = -1;
+
     private long propertyId;
     private final DatabaseRepository databaseRepository;
 
@@ -40,17 +49,13 @@ public class PropertyDetailViewModel extends ViewModel {
     private final MediatorLiveData<PropertyDetailViewState> propertyDetailViewStateMediatorLiveData = new MediatorLiveData<>();
     public LiveData<PropertyDetailViewState> getViewState() { return propertyDetailViewStateMediatorLiveData; }
 
-    private MediatorLiveData<Long> firstPropertyIdMediatorLiveData = new MediatorLiveData<>();
-    public LiveData<Long> getFirstPropertyId() {
-        return firstPropertyIdMediatorLiveData;
-    }
-
     public PropertyDetailViewModel(DatabaseRepository databaseRepository) {
         this.databaseRepository = databaseRepository;
         //configureMediatorLiveData();
     }
 
     private void configureMediatorLiveData(long propertyId) {
+        Log.d(Tag.TAG, "*** configureMediatorLiveData() called with: propertyId = [" + propertyId + "]");
         // property
         LiveData<Property> propertyLiveData = databaseRepository.getPropertyRepository().getPropertyById(propertyId);
         // photos
@@ -161,8 +166,26 @@ public class PropertyDetailViewModel extends ViewModel {
 
     public void load(long propertyId){
         Log.d(Tag.TAG, "*** load() called with: propertyId = [" + propertyId + "]");
-        this.propertyId = propertyId;
-        configureMediatorLiveData(propertyId);
+        if (propertyId == LOAD_FIRST_PROPERTY) {
+            // when don't know propertyId load first property
+            ExecutorService executor = Executors.newFixedThreadPool(1);
+            Callable<Long> callableTask = () -> {
+                return databaseRepository.getPropertyRepository().getFirstPropertyId();
+            };
+            Future<Long> future = executor.submit(callableTask);
+            try {
+                long id = future.get();
+                Log.d(Tag.TAG, "*** load() in future with id = [" + id + "]");
+                this.propertyId = id;
+            } catch (ExecutionException |InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            this.propertyId = propertyId;
+        }
+
+        configureMediatorLiveData(this.propertyId);
     }
 
     private void combine(@Nullable Property property,
@@ -197,20 +220,6 @@ public class PropertyDetailViewModel extends ViewModel {
         // ViewModel emit ViewState
         propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(
                 property, photos, category, propertyType, agent, propertyState, entryDate, saleDate));
-    }
-
-    public void loadFirstPropertyId() {
-        Log.d(Tag.TAG, "*** loadFirstPropertyId() called");
-        LiveData<Long> propertyLiveData = databaseRepository.getPropertyRepository().getFirstPropertyId();
-
-        firstPropertyIdMediatorLiveData.addSource(propertyLiveData, new Observer<Long>() {
-            @Override
-            public void onChanged(Long aLong) {
-                Log.d(Tag.TAG, "*** onChanged() called with: [" + aLong + "]");
-                firstPropertyIdMediatorLiveData.setValue(aLong);
-                firstPropertyIdMediatorLiveData.removeSource(propertyLiveData);
-            }
-        });
     }
 }
 
