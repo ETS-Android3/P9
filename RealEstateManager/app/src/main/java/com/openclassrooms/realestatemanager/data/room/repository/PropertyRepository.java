@@ -21,8 +21,9 @@ public class PropertyRepository {
 
     public LiveData<List<Property>> getProperties() {return propertyDao.getProperties();}
     public LiveData<Property> getPropertyById(long id) {return propertyDao.getPropertyById(id);}
+
+    // use it with asynchronous mode like ExecutorService
     public Long getFirstPropertyId() {
-        Log.d(Tag.TAG, "*** getFirstPropertyId() called");
         return propertyDao.getFirstPropertyId();
     }
 

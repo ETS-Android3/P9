@@ -5,7 +5,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
@@ -15,30 +14,23 @@ import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyCategory;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
-import com.openclassrooms.realestatemanager.data.room.repository.AgentRepository;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
-import com.openclassrooms.realestatemanager.data.room.repository.PhotoRepository;
-import com.openclassrooms.realestatemanager.data.room.repository.PropertyCategoryRepository;
-import com.openclassrooms.realestatemanager.data.room.repository.PropertyRepository;
-import com.openclassrooms.realestatemanager.data.room.repository.PropertyTypeRepository;
 import com.openclassrooms.realestatemanager.tag.Tag;
+import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class PropertyDetailViewModel extends ViewModel {
 
     private static final int CATEGORY_FOR_SAL_ID = 1;
     private static final int CATEGORY_FOR_RENT_ID = 2;
-    private static final int LOAD_FIRST_PROPERTY = -1;
 
     private long propertyId;
     private final DatabaseRepository databaseRepository;
@@ -51,11 +43,10 @@ public class PropertyDetailViewModel extends ViewModel {
 
     public PropertyDetailViewModel(DatabaseRepository databaseRepository) {
         this.databaseRepository = databaseRepository;
-        //configureMediatorLiveData();
     }
 
     private void configureMediatorLiveData(long propertyId) {
-        Log.d(Tag.TAG, "*** configureMediatorLiveData() called with: propertyId = [" + propertyId + "]");
+        Log.d(Tag.TAG, "PropertyDetailViewModel.configureMediatorLiveData(propertyId=" + propertyId + ")");
         // property
         LiveData<Property> propertyLiveData = databaseRepository.getPropertyRepository().getPropertyById(propertyId);
         // photos
@@ -165,8 +156,8 @@ public class PropertyDetailViewModel extends ViewModel {
     }
 
     public void load(long propertyId){
-        Log.d(Tag.TAG, "*** load() called with: propertyId = [" + propertyId + "]");
-        if (propertyId == LOAD_FIRST_PROPERTY) {
+        Log.d(Tag.TAG, "PropertyDetailViewModel.load(" + propertyId + ")");
+        if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
             // when don't know propertyId load first property
             ExecutorService executor = Executors.newFixedThreadPool(1);
             Callable<Long> callableTask = () -> {
@@ -175,7 +166,7 @@ public class PropertyDetailViewModel extends ViewModel {
             Future<Long> future = executor.submit(callableTask);
             try {
                 long id = future.get();
-                Log.d(Tag.TAG, "*** load() in future with id = [" + id + "]");
+                Log.d(Tag.TAG, "PropertyDetailViewModel.load() id = future.get() = [" + id + "]");
                 this.propertyId = id;
             } catch (ExecutionException |InterruptedException e) {
                 e.printStackTrace();
@@ -198,7 +189,7 @@ public class PropertyDetailViewModel extends ViewModel {
                 propertyType == null || agent == null) {
             return;
         }
-        Log.d(Tag.TAG, "combine() called with: property = [" + property + "], photos = [" + photos + "], category = [" + category + "], propertyType = [" + propertyType + "], agent = [" + agent + "]");
+        Log.d(Tag.TAG, "PropertyDetailViewModel.combine() called");
 
         String propertyState = "";
 

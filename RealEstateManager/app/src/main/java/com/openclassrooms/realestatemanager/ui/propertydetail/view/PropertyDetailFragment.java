@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,18 +20,14 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.photoList.OnRowPhotoListener;
 import com.openclassrooms.realestatemanager.ui.photoList.PhotoListAdapter;
-import com.openclassrooms.realestatemanager.ui.propertylist.view.PropertyListFragment;
 import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.PropertyDetailViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,8 +37,6 @@ import java.util.Date;
 public class PropertyDetailFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "property_id_arg";
-    private static final int LOAD_FIRST_PROPERTY = -1;
     private long propertyId;
 
     TextView textViewPrice;
@@ -86,7 +79,7 @@ public class PropertyDetailFragment extends Fragment {
     public static PropertyDetailFragment newInstance(long propertyId) {
         PropertyDetailFragment fragment = new PropertyDetailFragment();
         Bundle args = new Bundle();
-        args.putLong(ARG_PARAM1, propertyId);
+        args.putLong(PropertyConst.ARG_PROPERTY_ID_KEY, propertyId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -135,9 +128,9 @@ public class PropertyDetailFragment extends Fragment {
         configureDetailViewModel();
 
         if (getArguments() != null) {
-            if (getArguments().containsKey(ARG_PARAM1)){
-                this.propertyId = getArguments().getLong(ARG_PARAM1, -1);
-                Log.d(Tag.TAG, "*** onViewCreated() load(" + propertyId + ")");
+            if (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY)){
+                this.propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
+                Log.d(Tag.TAG, "PropertyDetailFragment.onViewCreated() propertyId= [" + propertyId + "]");
                 propertyDetailViewModel.load(propertyId);
             }
         }
@@ -241,7 +234,6 @@ public class PropertyDetailFragment extends Fragment {
     }
 
     private void setAddress(String address){
-        Log.d(Tag.TAG, "setAddress() called with: address = [" + address + "]");
         textViewAddress.setText(address);
     }
 

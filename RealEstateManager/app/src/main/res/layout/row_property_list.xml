@@ -28,13 +28,13 @@
             />
 
         <TextView
-            android:id="@+id/row_property_list_type"
+            android:id="@+id/row_property_list_address"
             style="@style/TextviewStyle.ThreeText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@string/property_type"
+            android:text="@string/property_address"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -43,13 +43,13 @@
             app:layout_constraintTop_toTopOf="@id/row_property_list_picture" />
 
         <TextView
-            android:id="@+id/row_property_list_address"
+            android:id="@+id/row_property_list_type"
             style="@style/TextviewStyle.ThreeText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@string/property_address"
+            android:text="@string/property_type"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintTop_toTopOf="@id/row_property_list_picture"
             app:layout_constraintBottom_toBottomOf="@id/row_property_list_picture"
