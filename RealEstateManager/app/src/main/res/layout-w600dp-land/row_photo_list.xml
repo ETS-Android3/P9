@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="150dp"
-    android:layout_height="150dp"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -11,10 +11,9 @@
         android:layout_height="match_parent"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
-        tools:background="@color/colorPrimary"
         android:layout_marginLeft="@dimen/default_margin"
         android:layout_marginRight="@dimen/default_margin"
-        tools:layout_editor_absoluteX="10dp" />
+        tools:background="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/row_photo_text_view"

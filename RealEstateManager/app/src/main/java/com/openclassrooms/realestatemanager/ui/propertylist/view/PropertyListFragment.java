@@ -123,7 +123,7 @@ public class PropertyListFragment extends Fragment {
 
         recyclerView.setAdapter(propertyListAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
+                DividerItemDecoration.HORIZONTAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
