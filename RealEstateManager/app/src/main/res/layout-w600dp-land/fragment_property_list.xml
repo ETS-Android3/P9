@@ -24,10 +24,10 @@
         app:layout_constraintBottom_toTopOf="@id/fragment_property_list_bottom_navigation_view">
     </androidx.recyclerview.widget.RecyclerView>
 
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
         tools:layout="@layout/fragment_property_detail"
         android:id="@+id/fragment_container_view"
-        android:name="com.openclassrooms.realestatemanager.ui.propertydetail.view.PropertyDetailFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
 
         app:layout_constraintHorizontal_weight="7"
         android:layout_width="0dp"

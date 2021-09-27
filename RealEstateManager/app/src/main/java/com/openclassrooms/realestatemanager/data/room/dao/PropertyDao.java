@@ -19,6 +19,9 @@ public interface PropertyDao {
     @Query("SELECT * FROM property WHERE property.id = :id")
     LiveData<Property> getPropertyById(Long id);
 
+    @Query("SELECT property.id FROM property ORDER BY property.id LIMIT 1")
+    LiveData<Long> getFirstPropertyId();
+
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     long insert(Property property);
 

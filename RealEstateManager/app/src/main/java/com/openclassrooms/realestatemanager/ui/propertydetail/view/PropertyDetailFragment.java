@@ -43,6 +43,7 @@ public class PropertyDetailFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "property_id_arg";
+    private static final int LOAD_FIRST_PROPERTY = -1;
     private long propertyId;
 
     TextView textViewPrice;
@@ -133,12 +134,18 @@ public class PropertyDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         configureDetailViewModel();
 
-
         if (getArguments() != null) {
             if (getArguments().containsKey(ARG_PARAM1)){
                 this.propertyId = getArguments().getLong(ARG_PARAM1, -1);
-                if (propertyId > -1) {
-                    propertyDetailViewModel.load(propertyId);
+                if (propertyId == LOAD_FIRST_PROPERTY) {
+                    Log.d(Tag.TAG, "*** onViewCreated() loadFirstPropertyId()");
+                    propertyDetailViewModel.loadFirstPropertyId();
+                }
+                else {
+                    if (propertyId >= 0) {
+                        Log.d(Tag.TAG, "*** onViewCreated() load(" + propertyId + ")");
+                        propertyDetailViewModel.load(propertyId);
+                    }
                 }
             }
         }
@@ -220,7 +227,15 @@ public class PropertyDetailFragment extends Fragment {
                 setPhotoLegend("");
                 // list photos
                 photoListAdapter.updateData(propertyDetailViewState.getPhotos());
+            }
+        });
 
+        propertyDetailViewModel.getFirstPropertyId().observe(getViewLifecycleOwner(), new Observer<Long>() {
+            @Override
+            public void onChanged(Long aLong) {
+                Log.d(Tag.TAG, "*** getFirstPropertyIdLiveData().observe called with: integer = [" + aLong + "]");
+                propertyDetailViewModel.load(aLong);
+                propertyDetailViewModel.getFirstPropertyId().removeObserver(this);
             }
         });
     }

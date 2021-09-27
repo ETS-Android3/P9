@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
@@ -38,6 +39,11 @@ public class PropertyDetailViewModel extends ViewModel {
      */
     private final MediatorLiveData<PropertyDetailViewState> propertyDetailViewStateMediatorLiveData = new MediatorLiveData<>();
     public LiveData<PropertyDetailViewState> getViewState() { return propertyDetailViewStateMediatorLiveData; }
+
+    private MediatorLiveData<Long> firstPropertyIdMediatorLiveData = new MediatorLiveData<>();
+    public LiveData<Long> getFirstPropertyId() {
+        return firstPropertyIdMediatorLiveData;
+    }
 
     public PropertyDetailViewModel(DatabaseRepository databaseRepository) {
         this.databaseRepository = databaseRepository;
@@ -154,7 +160,7 @@ public class PropertyDetailViewModel extends ViewModel {
     }
 
     public void load(long propertyId){
-        Log.d(Tag.TAG, "load() called with: propertyId = [" + propertyId + "]");
+        Log.d(Tag.TAG, "*** load() called with: propertyId = [" + propertyId + "]");
         this.propertyId = propertyId;
         configureMediatorLiveData(propertyId);
     }
@@ -191,6 +197,20 @@ public class PropertyDetailViewModel extends ViewModel {
         // ViewModel emit ViewState
         propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(
                 property, photos, category, propertyType, agent, propertyState, entryDate, saleDate));
+    }
+
+    public void loadFirstPropertyId() {
+        Log.d(Tag.TAG, "*** loadFirstPropertyId() called");
+        LiveData<Long> propertyLiveData = databaseRepository.getPropertyRepository().getFirstPropertyId();
+
+        firstPropertyIdMediatorLiveData.addSource(propertyLiveData, new Observer<Long>() {
+            @Override
+            public void onChanged(Long aLong) {
+                Log.d(Tag.TAG, "*** onChanged() called with: [" + aLong + "]");
+                firstPropertyIdMediatorLiveData.setValue(aLong);
+                firstPropertyIdMediatorLiveData.removeSource(propertyLiveData);
+            }
+        });
     }
 }
 

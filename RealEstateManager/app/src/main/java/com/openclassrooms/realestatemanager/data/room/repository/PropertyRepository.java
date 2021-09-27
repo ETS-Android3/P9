@@ -1,12 +1,14 @@
 package com.openclassrooms.realestatemanager.data.room.repository;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
 import com.openclassrooms.realestatemanager.data.room.dao.PropertyDao;
 import com.openclassrooms.realestatemanager.data.room.database.AppDatabase;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
+import com.openclassrooms.realestatemanager.tag.Tag;
 
 import java.util.List;
 
@@ -19,6 +21,10 @@ public class PropertyRepository {
 
     public LiveData<List<Property>> getProperties() {return propertyDao.getProperties();}
     public LiveData<Property> getPropertyById(long id) {return propertyDao.getPropertyById(id);}
+    public LiveData<Long> getFirstPropertyId() {
+        Log.d(Tag.TAG, "*** getFirstPropertyId() called");
+        return propertyDao.getFirstPropertyId();
+    }
 
     public void insert(Property property) {
         AppDatabase.getExecutor().execute(() -> {
