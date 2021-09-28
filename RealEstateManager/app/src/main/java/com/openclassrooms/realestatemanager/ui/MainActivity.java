@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.ui;
 
 
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
+import android.view.WindowManager;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -25,17 +27,23 @@ import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding;
 
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
+import com.openclassrooms.realestatemanager.ui.bundle.PropertyBundle;
+import com.openclassrooms.realestatemanager.ui.propertydetail.listener.OnEditPropertyListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.view.PropertyEditFragment;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertydetail.view.PropertyDetailFragment;
+import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnAddPropertyListener;
+import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnPropertySelectedListener;
 import com.openclassrooms.realestatemanager.ui.propertylist.view.PropertyListFragment;
 import com.openclassrooms.realestatemanager.utils.LandscapeHelper;
 
 import org.jetbrains.annotations.NotNull;
 
-public class MainActivity extends AppCompatActivity implements PropertyListFragment.OnPropertySelectedListener,
-        PropertyListFragment.OnAddPropertyListener, PropertyDetailFragment.OnEditPropertyListener, PropertyEditListener {
+public class MainActivity extends AppCompatActivity implements OnPropertySelectedListener,
+                                                               OnAddPropertyListener,
+                                                               OnEditPropertyListener,
+                                                               PropertyEditListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -73,6 +81,14 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
         int width = size.x;
         int height = size.y;
         Log.d(Tag.TAG, String.format("logScreen(). width = %d, height = %d", width, height));
+
+        WindowManager manager = (WindowManager) this.getSystemService(Activity.WINDOW_SERVICE);
+        if (manager != null && manager.getDefaultDisplay() != null) {
+            int rotation = manager.getDefaultDisplay().getRotation();
+            Log.d(Tag.TAG, "logScreen() rotation = " + rotation);
+            int orientation = this.getResources().getConfiguration().orientation;
+            Log.d(Tag.TAG, "logScreen() orientation = " + orientation);
+        }
     }
 
     @Override
@@ -129,12 +145,6 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
                 // go to main view with detail
                 NavController navControllerMain = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
                 navControllerMain.navigate(R.id.nav_propertyListFragment);
-
-                // Add detail
-/*                Bundle bundle = new Bundle();
-                bundle.putLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
-                NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
-                navController.navigate(R.id.propertyDetailFragment, bundle);*/
             }
         }
     }
@@ -142,19 +152,15 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
     @Override
     public void onPropertySelectedClicked(long propertyId) {
         Log.d(Tag.TAG, "MainActivity.onPropertySelectedClicked() called with: propertyId = [" + propertyId + "]");
-
-        Bundle bundle = new Bundle();
-        bundle.putLong(PropertyConst.ARG_PROPERTY_ID_KEY, propertyId);
-
         if (LandscapeHelper.isLandscape()) {
             Log.d(Tag.TAG, "onPropertySelectedClicked() isLandscape");
-            NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
-            navController.navigate(R.id.propertyDetailFragment, bundle);
+            navToDetailWithLandscapeOrientation(propertyId);
         }
         else {
             Log.d(Tag.TAG, "onPropertySelectedClicked() isLandscape = false");
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyDetailFragment, bundle);
+            navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyDetailFragment,
+                    PropertyBundle.createDetailBundle(propertyId));
         }
     }
 
@@ -163,19 +169,16 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
     public void onAddPropertyClicked() {
         Log.d(Tag.TAG, "MainActivity.onAddPropertyCLicked() called");
 
-        Bundle bundle = new Bundle();
-        bundle.putLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
-        bundle.putString(PropertyConst.ARG_PROPERTY_TITLE, getString(R.string.property_edit_title_create));
-
         if (LandscapeHelper.isLandscape()) {
             Log.d(Tag.TAG, "MainActivity.onAddPropertyCLicked() isLandscape");
-            NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
-            navController.navigate(R.id.propertyEditFragment, bundle);
+            navToEditWithLandscapeOrientation(PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
         }
         else {
             Log.d(Tag.TAG, "MainActivity.onAddPropertyCLicked() isLandscape = false");
+
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyEditFragment, bundle);
+            navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyEditFragment,
+                    PropertyBundle.createEditBundle(PropertyConst.PROPERTY_ID_NOT_INITIALIZED));
         }
     }
 
@@ -183,19 +186,16 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
     public void onEditPropertyClicked(long propertyId) {
         Log.d(Tag.TAG, "MainActivity.onEditPropertyClicked() called with: propertyId = [" + propertyId + "]");
 
-        Bundle bundle = new Bundle();
-        bundle.putLong(PropertyConst.ARG_PROPERTY_ID_KEY, propertyId);
-        bundle.putString(PropertyConst.ARG_PROPERTY_TITLE, getString(R.string.property_edit_title_modify));
-
         if (LandscapeHelper.isLandscape()) {
             Log.d(Tag.TAG, "MainActivity.onEditPropertyClicked() isLandscape");
-            NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
-            navController.navigate(R.id.propertyEditFragment, bundle);
+            navToEditWithLandscapeOrientation((propertyId));
         }
         else {
             Log.d(Tag.TAG, "MainActivity.onEditPropertyClicked() isLandscape = false");
+
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_propertyDetailFragment_to_nav_propertyEditFragment, bundle);
+            navController.navigate(R.id.action_nav_propertyDetailFragment_to_nav_propertyEditFragment,
+                    PropertyBundle.createEditBundle(propertyId));
         }
     }
 
@@ -228,11 +228,9 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
      * @param propertyId
      */
     @Override
-    public void onCancel(long propertyId) {
-        Log.d(Tag.TAG, "onCancel() called with: propertyId = [" + propertyId + "]");
-        // close fragment call back
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        navController.popBackStack();
+    public void onCancelEditProperty(long propertyId) {
+        Log.d(Tag.TAG, "MainActivity.onCancelEditProperty() called with: propertyId = [" + propertyId + "]");
+        navFromEditToDetail(propertyId);
     }
 
     /**
@@ -240,11 +238,10 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
      * @param propertyId
      */
     @Override
-    public void onValidate(long propertyId) {
+    public void onValidateEditProperty(long propertyId) {
         // close fragment call back
-        Log.d(Tag.TAG, "onValidate() called with: propertyId = [" + propertyId + "]");
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        navController.popBackStack();
+        Log.d(Tag.TAG, "MainActivity.onValidateEditProperty() called with: propertyId = [" + propertyId + "]");
+        navFromEditToDetail(propertyId);
     }
 
     /**
@@ -252,9 +249,41 @@ public class MainActivity extends AppCompatActivity implements PropertyListFragm
      * @param propertyId
      */
     @Override
-    public void onSell(long propertyId) {
-        Log.d(Tag.TAG, "onSell() called with: propertyId = [" + propertyId + "]");
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        navController.popBackStack();
+    public void onSellProperty(long propertyId) {
+        Log.d(Tag.TAG, "MainActivity.onSellProperty() called with: propertyId = [" + propertyId + "]");
+        navFromEditToDetail(propertyId);
     }
+
+    /**
+     * go back to detail
+     * @param propertyId
+     */
+    private void navFromEditToDetail(long propertyId) {
+        Log.d(Tag.TAG, "MainActivity.navFromEditToDetail() called with: propertyId = [" + propertyId + "]");
+        if (LandscapeHelper.isLandscape()) {
+            Log.d(Tag.TAG, "MainActivity.navFromEditToDetail() isLandscape");
+            navToDetailWithLandscapeOrientation(propertyId);
+        }
+        else {
+            Log.d(Tag.TAG, "MainActivity.navFromEditToDetail() isLandscape = false");
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.popBackStack();
+        }
+    }
+
+    private void navToDetailWithLandscapeOrientation(long propertyId) {
+        Log.d(Tag.TAG, "MainActivity.navToDetailWithLandscapeOrientation() called with: propertyId = [" + propertyId + "]");
+
+        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
+        navController.navigate(R.id.propertyDetailFragment, PropertyBundle.createDetailBundle(propertyId));
+    }
+
+    private void navToEditWithLandscapeOrientation(long propertyId){
+        Log.d(Tag.TAG, "MainActivity.navToEditWithLandscapeOrientation() called with: propertyId = [" + propertyId + "]");
+
+        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
+        navController.navigate(R.id.propertyEditFragment, PropertyBundle.createEditBundle(propertyId));
+    }
+
+
 }

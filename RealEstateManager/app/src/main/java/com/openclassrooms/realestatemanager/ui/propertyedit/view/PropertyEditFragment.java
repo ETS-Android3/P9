@@ -17,7 +17,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
-import com.openclassrooms.realestatemanager.ui.propertydetail.view.PropertyDetailFragment;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
 
 /**
@@ -104,13 +103,13 @@ public class PropertyEditFragment extends Fragment {
     private boolean navigate(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.fragment_property_edit_cancel:
-                callbackEditProperty.onCancel(this.propertyId);
+                callbackEditProperty.onCancelEditProperty(this.propertyId);
                 return true;
             case R.id.fragment_property_edit_ok:
-                callbackEditProperty.onValidate(this.propertyId);
+                callbackEditProperty.onValidateEditProperty(this.propertyId);
                 return true;
             case R.id.fragment_property_edit_sell:
-                callbackEditProperty.onSell(this.propertyId);
+                callbackEditProperty.onSellProperty(this.propertyId);
                 return true;
         }
         return false;

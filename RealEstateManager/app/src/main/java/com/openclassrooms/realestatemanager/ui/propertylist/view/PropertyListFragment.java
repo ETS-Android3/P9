@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
+import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnAddPropertyListener;
+import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnPropertySelectedListener;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnRowPropertyClickListener;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewmodel.PropertyListViewModel;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewmodelfactory.PropertyListViewModelFactory;
@@ -43,16 +45,10 @@ public class PropertyListFragment extends Fragment {
      * this interface is for sending propertyId to MainActivity
      */
     private OnPropertySelectedListener callbackPropertySelected;
-    public interface OnPropertySelectedListener {
-        public void onPropertySelectedClicked(long propertyId);
-    }
 
     /** this interface is for adding new property
      */
     private OnAddPropertyListener callbackAddProperty;
-    public interface OnAddPropertyListener {
-        void onAddPropertyClicked();
-    }
 
     @Override
     public void onAttach(@NonNull Context context) {

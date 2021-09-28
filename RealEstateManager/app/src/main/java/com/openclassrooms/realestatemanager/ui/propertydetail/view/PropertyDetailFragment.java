@@ -23,6 +23,7 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.photoList.OnRowPhotoListener;
 import com.openclassrooms.realestatemanager.ui.photoList.PhotoListAdapter;
+import com.openclassrooms.realestatemanager.ui.propertydetail.listener.OnEditPropertyListener;
 import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
@@ -88,9 +89,6 @@ public class PropertyDetailFragment extends Fragment {
     this interface used to edit property
      */
     private OnEditPropertyListener callbackEditProperty;
-    public interface OnEditPropertyListener{
-        public void onEditPropertyClicked(long propertyId);
-    }
 
     @Override
     public void onAttach(@NonNull Context context) {
