@@ -5,7 +5,9 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.RawQuery;
 import androidx.room.Update;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 
@@ -30,4 +32,8 @@ public interface PropertyDao {
 
     @Query("DELETE FROM property WHERE property.id = :id")
     int delete(long id);
+
+    //For Search
+    @RawQuery(observedEntities = Property.class)
+    LiveData<List<Property>> getSearch(SupportSQLiteQuery query);
 }

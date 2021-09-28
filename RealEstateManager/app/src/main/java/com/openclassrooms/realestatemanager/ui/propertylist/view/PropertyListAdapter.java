@@ -64,7 +64,6 @@ public class PropertyListAdapter extends RecyclerView.Adapter<PropertyListViewHo
                     .apply(RequestOptions.fitCenterTransform())
                     .into(holder.image);
         } else {
-            Log.d(Tag.TAG, "rowPropertyViewState.getUrl() = [" + rowPropertyViewState.getUrl() + "]");
             //load picture
             Glide.with(holder.image.getContext())
                     .load(rowPropertyViewState.getUrl())

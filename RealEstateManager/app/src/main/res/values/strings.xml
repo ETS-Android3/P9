@@ -82,4 +82,8 @@
 
     <string name="row_property_list_picture_description">Property picture</string>
 
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="sell">Sell</string>
+
 </resources>

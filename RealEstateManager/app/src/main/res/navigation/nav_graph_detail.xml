@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_detail"
+    app:startDestination="@id/propertyDetailFragment">
+
+    <fragment
+        android:id="@+id/propertyDetailFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.propertydetail.view.PropertyDetailFragment"
+        android:label="fragment_property_detail"
+        tools:layout="@layout/fragment_property_detail" />
+    <fragment
+        android:id="@+id/propertyEditFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.propertyedit.view.PropertyEditFragment"
+        android:label="fragment_property_edit"
+        tools:layout="@layout/fragment_property_edit" />
+</navigation>

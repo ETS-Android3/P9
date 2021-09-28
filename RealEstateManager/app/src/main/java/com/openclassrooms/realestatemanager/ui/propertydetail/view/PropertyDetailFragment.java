@@ -126,14 +126,12 @@ public class PropertyDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         configureDetailViewModel();
-
-        if (getArguments() != null) {
-            if (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY)){
-                this.propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
-                Log.d(Tag.TAG, "PropertyDetailFragment.onViewCreated() propertyId= [" + propertyId + "]");
-                propertyDetailViewModel.load(propertyId);
-            }
+        propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
+        if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
+            propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
         }
+        Log.d(Tag.TAG, "PropertyDetailFragment.onViewCreated() propertyId=" + propertyId + "");
+        propertyDetailViewModel.load(propertyId);
     }
 
     private void configureComponents(View view){
