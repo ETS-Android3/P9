@@ -18,6 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
@@ -35,7 +40,9 @@ import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.Property
  * Use the {@link PropertyDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PropertyDetailFragment extends Fragment {
+public class PropertyDetailFragment extends Fragment implements OnMapReadyCallback {
+
+    private GoogleMap mMap;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private long propertyId;
@@ -267,5 +274,22 @@ public class PropertyDetailFragment extends Fragment {
 
     private void setPhotoLegend(String photoLegend) {
         textViewPhotoLegend.setText(photoLegend);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(Tag.TAG, "MapFragment.onStart() called");
+/*        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        assert mapFragment != null;
+        mapFragment.getMapAsync(this);*/
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+/*        mMap = googleMap;
+        googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(0, 0))
+                .title("Marker"));*/
     }
 }

@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class PropertyDetailViewModel extends ViewModel {
 
@@ -160,15 +161,20 @@ public class PropertyDetailViewModel extends ViewModel {
         if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
             // when don't know propertyId load first property
             ExecutorService executor = Executors.newFixedThreadPool(1);
-            Callable<Long> callableTask = () -> {
-                return databaseRepository.getPropertyRepository().getFirstPropertyId();
-            };
-            Future<Long> future = executor.submit(callableTask);
+            Future<Long> future = executor.submit(new Callable<Long>() {
+                @Override
+                public Long call() throws Exception {
+                    return databaseRepository.getPropertyRepository().getFirstPropertyId();
+                }
+            });
+            executor.shutdown();
             try {
+                executor.awaitTermination(300, TimeUnit.SECONDS);
+                Log.d(Tag.TAG, "PropertyDetailViewModel.load() with future = [" + future + "]");
                 long id = future.get();
                 Log.d(Tag.TAG, "PropertyDetailViewModel.load() id = future.get() = [" + id + "]");
                 this.propertyId = id;
-            } catch (ExecutionException |InterruptedException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }

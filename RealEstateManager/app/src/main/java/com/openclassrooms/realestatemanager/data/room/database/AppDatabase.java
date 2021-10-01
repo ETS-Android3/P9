@@ -80,7 +80,8 @@ public abstract class AppDatabase extends RoomDatabase {
         Log.d(Tag.TAG, "create() called with: application");
         Builder<AppDatabase> builder = Room.databaseBuilder(application.getApplicationContext(),
                     AppDatabase.class, DB_NAME)
-                    .addCallback(prepopulateDatabase(application));
+                    .createFromAsset("RealEstate.db");
+                    //.addCallback(prepopulateDatabase(application));
 
         if (BuildConfig.DEBUG) {
             builder.fallbackToDestructiveMigration();

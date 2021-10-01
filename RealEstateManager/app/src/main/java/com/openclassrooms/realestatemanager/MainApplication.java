@@ -1,7 +1,13 @@
 package com.openclassrooms.realestatemanager;
 
 import android.app.Application;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageItemInfo;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.util.Log;
+import android.content.pm.ApplicationInfo;
 
 import com.openclassrooms.realestatemanager.tag.Tag;
 
@@ -10,12 +16,12 @@ public class MainApplication extends Application {
     private static Application application;
     private static String googleApiKey;
 
+
     @Override
     public void onCreate() {
         super.onCreate();
         application = this;
-        googleApiKey = com.openclassrooms.realestatemanager.BuildConfig.GOOGLE_PLACES_KEY;
-        Log.d(Tag.TAG, "MainApplication.onCreate() called googleApiKey=\"" + googleApiKey +"\"");
+        googleApiKey = BuildConfig.GOOGLE_PLACES_KEY_P9;
     }
 
     public static Application getApplication() {

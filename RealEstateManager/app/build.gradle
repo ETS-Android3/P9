@@ -28,9 +28,9 @@ android {
         }
         vectorDrawables.useSupportLibrary = true
 
-        buildConfigField("String", "GOOGLE_PLACES_KEY", "${OC_P9_GOOGLE_API_KEY}")
-        println("*** buildConfigField *** ")
-        println("${OC_P9_GOOGLE_API_KEY}")
+        buildConfigField("String", "GOOGLE_PLACES_KEY_P9", "${GOOGLE_API_KEY_P9}")
+        resValue "string", "google_places_key_p9", "${GOOGLE_API_KEY_P9}"
+
     }
     buildTypes {
         release {
