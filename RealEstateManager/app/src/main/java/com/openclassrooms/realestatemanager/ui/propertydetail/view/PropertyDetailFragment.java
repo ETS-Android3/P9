@@ -127,13 +127,14 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         configureComponents(view);
         configureRecyclerView(view);
         configureBottomNavigationBar(view);
+        configureDetailViewModel();
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        configureDetailViewModel();
+
         propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
         if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
             propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
@@ -307,6 +308,22 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latlng).title("You position"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 10));
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(Tag.TAG, "MapFragment.onResume()");
+        if ((mMap != null) && (this.location != null) && (propertyDetailViewModel != null)) {
+
+            propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
+            if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
+                propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
+            }
+            Log.d(Tag.TAG, "PropertyDetailFragment.onViewCreated() propertyId=" + propertyId + "");
+
+            propertyDetailViewModel.load(propertyId);
         }
     }
 }

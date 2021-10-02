@@ -107,6 +107,8 @@ public class PropertyDetailViewModel extends ViewModel {
                             categoryLiveData.getValue(),
                             propertyTypeLiveData.getValue(),
                             agentLiveData.getValue());
+                    // must remove source to avoid bug "This source was already added with the different observer"
+                    propertyDetailViewStateMediatorLiveData.removeSource(locationLiveData);
                 }
             }
         });
@@ -194,6 +196,8 @@ public class PropertyDetailViewModel extends ViewModel {
 
     public void load(long propertyId){
         Log.d(Tag.TAG, "PropertyDetailViewModel.load(" + propertyId + ")");
+        refreshLocation();
+
         if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
             // when don't know propertyId load first property
             ExecutorService executor = Executors.newFixedThreadPool(1);
@@ -217,8 +221,6 @@ public class PropertyDetailViewModel extends ViewModel {
         else {
             this.propertyId = propertyId;
         }
-
-        refreshLocation();
         configureMediatorLiveData(this.propertyId);
     }
 
@@ -266,6 +268,7 @@ public class PropertyDetailViewModel extends ViewModel {
         // ViewModel emit ViewState
         propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(location,
                 property, photos, category, propertyType, agent, propertyState, entryDate, saleDate));
+
     }
 }
 
