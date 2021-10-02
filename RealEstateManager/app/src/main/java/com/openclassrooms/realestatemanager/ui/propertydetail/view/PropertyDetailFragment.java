@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.propertydetail.view;
 
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -43,6 +45,7 @@ import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.Property
 public class PropertyDetailFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Location location;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private long propertyId;
@@ -199,6 +202,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         propertyDetailViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyDetailViewState>() {
             @Override
             public void onChanged(PropertyDetailViewState propertyDetailViewState) {
+                setLocation(propertyDetailViewState.getUserLocation());
                 setPrice(propertyDetailViewState.getProperty().getPrice());
                 setSurface(propertyDetailViewState.getProperty().getSurface());
                 setDescription(propertyDetailViewState.getProperty().getDescription());
@@ -280,16 +284,29 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     public void onStart() {
         super.onStart();
         Log.d(Tag.TAG, "MapFragment.onStart() called");
-/*        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         assert mapFragment != null;
-        mapFragment.getMapAsync(this);*/
+        mapFragment.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-/*        mMap = googleMap;
-        googleMap.addMarker(new MarkerOptions()
+        mMap = googleMap;
+        if (this.location != null) {
+            this.setLocation(this.location);
+        }
+/*        googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(0, 0))
                 .title("Marker"));*/
+    }
+
+    private void setLocation(Location location){
+        this.location = location;
+        if(mMap!=null) {
+            LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
+            mMap.clear();
+            mMap.addMarker(new MarkerOptions().position(latlng).title("You position"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 10));
+        }
     }
 }

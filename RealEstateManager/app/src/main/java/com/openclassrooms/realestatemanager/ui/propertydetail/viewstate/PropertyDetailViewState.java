@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.propertydetail.viewstate;
 
+import android.location.Location;
+
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
@@ -9,6 +11,7 @@ import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import java.util.List;
 
 public class PropertyDetailViewState {
+    private Location userLocation;
     private Property property;
     private List<Photo> photos;
     private PropertyCategory category;
@@ -18,7 +21,8 @@ public class PropertyDetailViewState {
     private String entryDate;
     private String saleDate;
 
-    public PropertyDetailViewState(Property property, List<Photo> photos, PropertyCategory category, PropertyType propertyType, Agent agent, String propertyState, String entryDate, String saleDate) {
+    public PropertyDetailViewState(Location userLocation, Property property, List<Photo> photos, PropertyCategory category, PropertyType propertyType, Agent agent, String propertyState, String entryDate, String saleDate) {
+        this.userLocation = userLocation;
         this.property = property;
         this.photos = photos;
         this.category = category;
@@ -27,6 +31,10 @@ public class PropertyDetailViewState {
         this.propertyState = propertyState;
         this.entryDate = entryDate;
         this.saleDate = saleDate;
+    }
+
+    public Location getUserLocation() {
+        return userLocation;
     }
 
     public Property getProperty() {

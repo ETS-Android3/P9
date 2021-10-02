@@ -1,7 +1,10 @@
 package com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel;
 
+import android.annotation.SuppressLint;
+import android.location.Location;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -9,6 +12,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import com.openclassrooms.realestatemanager.data.location.LocationRepository;
+import com.openclassrooms.realestatemanager.data.permission_checker.PermissionChecker;
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
@@ -34,7 +39,14 @@ public class PropertyDetailViewModel extends ViewModel {
     private static final int CATEGORY_FOR_RENT_ID = 2;
 
     private long propertyId;
+    /**
+     * repositories
+     */
     private final DatabaseRepository databaseRepository;
+    @NonNull
+    private final PermissionChecker permissionChecker;
+    @NonNull
+    private final LocationRepository locationRepository;
 
     /**
      * Mediator expose PropertyListViewState
@@ -42,12 +54,17 @@ public class PropertyDetailViewModel extends ViewModel {
     private final MediatorLiveData<PropertyDetailViewState> propertyDetailViewStateMediatorLiveData = new MediatorLiveData<>();
     public LiveData<PropertyDetailViewState> getViewState() { return propertyDetailViewStateMediatorLiveData; }
 
-    public PropertyDetailViewModel(DatabaseRepository databaseRepository) {
+    public PropertyDetailViewModel(PermissionChecker permissionChecker,
+                                   LocationRepository locationRepository,
+                                   DatabaseRepository databaseRepository) {
+        this.permissionChecker = permissionChecker;
+        this.locationRepository = locationRepository;
         this.databaseRepository = databaseRepository;
     }
 
     private void configureMediatorLiveData(long propertyId) {
         Log.d(Tag.TAG, "PropertyDetailViewModel.configureMediatorLiveData(propertyId=" + propertyId + ")");
+        LiveData<Location> locationLiveData = locationRepository.getLocationLiveData();
         // property
         LiveData<Property> propertyLiveData = databaseRepository.getPropertyRepository().getPropertyById(propertyId);
         // photos
@@ -80,10 +97,25 @@ public class PropertyDetailViewModel extends ViewModel {
             return databaseRepository.getPropertyTypeRepository().getPropertyTypeById(id);
         });
 
+        propertyDetailViewStateMediatorLiveData.addSource(locationLiveData, new Observer<Location>() {
+            @Override
+            public void onChanged(Location location) {
+                if (location != null) {
+                    combine(location,
+                            propertyLiveData.getValue(),
+                            photosLiveData.getValue(),
+                            categoryLiveData.getValue(),
+                            propertyTypeLiveData.getValue(),
+                            agentLiveData.getValue());
+                }
+            }
+        });
+
         propertyDetailViewStateMediatorLiveData.addSource(propertyLiveData, new Observer<Property>() {
             @Override
             public void onChanged(Property property) {
-                combine(property,
+                combine(locationLiveData.getValue(),
+                        property,
                         photosLiveData.getValue(),
                         categoryLiveData.getValue(),
                         propertyTypeLiveData.getValue(),
@@ -95,7 +127,8 @@ public class PropertyDetailViewModel extends ViewModel {
         propertyDetailViewStateMediatorLiveData.addSource(photosLiveData, new Observer<List<Photo>>() {
             @Override
             public void onChanged(List<Photo> photos) {
-                combine(propertyLiveData.getValue(),
+                combine(locationLiveData.getValue(),
+                        propertyLiveData.getValue(),
                         photos,
                         categoryLiveData.getValue(),
                         propertyTypeLiveData.getValue(),
@@ -112,7 +145,8 @@ public class PropertyDetailViewModel extends ViewModel {
         propertyDetailViewStateMediatorLiveData.addSource(categoryLiveData, new Observer<PropertyCategory>() {
             @Override
             public void onChanged(PropertyCategory propertyCategory) {
-                combine(propertyLiveData.getValue(),
+                combine(locationLiveData.getValue(),
+                        propertyLiveData.getValue(),
                         photosLiveData.getValue(),
                         propertyCategory,
                         propertyTypeLiveData.getValue(),
@@ -129,7 +163,8 @@ public class PropertyDetailViewModel extends ViewModel {
         propertyDetailViewStateMediatorLiveData.addSource(propertyTypeLiveData, new Observer<PropertyType>() {
             @Override
             public void onChanged(PropertyType propertyType) {
-                combine(propertyLiveData.getValue(),
+                combine(locationLiveData.getValue(),
+                        propertyLiveData.getValue(),
                         photosLiveData.getValue(),
                         categoryLiveData.getValue(),
                         propertyType,
@@ -146,7 +181,8 @@ public class PropertyDetailViewModel extends ViewModel {
         propertyDetailViewStateMediatorLiveData.addSource(agentLiveData, new Observer<Agent>() {
             @Override
             public void onChanged(Agent agent) {
-                combine(propertyLiveData.getValue(),
+                combine(locationLiveData.getValue(),
+                        propertyLiveData.getValue(),
                         photosLiveData.getValue(),
                         categoryLiveData.getValue(),
                         propertyTypeLiveData.getValue(),
@@ -182,16 +218,28 @@ public class PropertyDetailViewModel extends ViewModel {
             this.propertyId = propertyId;
         }
 
+        refreshLocation();
         configureMediatorLiveData(this.propertyId);
     }
 
-    private void combine(@Nullable Property property,
+    @SuppressLint("MissingPermission")
+    private void refreshLocation() {
+        // No GPS permission
+        if (!permissionChecker.hasLocationPermission()) {
+            locationRepository.stopLocationRequest();
+        } else {
+            locationRepository.startLocationRequest();
+        }
+    }
+
+    private void combine(@Nullable Location location,
+                         @Nullable Property property,
                          @Nullable List<Photo> photos,
                          @Nullable PropertyCategory category,
                          @Nullable PropertyType propertyType,
                          @Nullable Agent agent){
 
-        if (property == null || photos == null || category == null ||
+        if (location == null || property == null || photos == null || category == null ||
                 propertyType == null || agent == null) {
             return;
         }
@@ -214,8 +262,9 @@ public class PropertyDetailViewModel extends ViewModel {
         String entryDate = Utils.convertDateToString(property.getEntryDate());
         String saleDate = Utils.convertDateToString(property.getSaleDate());
 
+
         // ViewModel emit ViewState
-        propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(
+        propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(location,
                 property, photos, category, propertyType, agent, propertyState, entryDate, saleDate));
     }
 }
