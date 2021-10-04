@@ -205,7 +205,9 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         propertyDetailViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyDetailViewState>() {
             @Override
             public void onChanged(PropertyDetailViewState propertyDetailViewState) {
-                setLocation(propertyDetailViewState.getUserLocation());
+                setUserLocation(propertyDetailViewState.getUserLocation());
+                setPropertyLocation(propertyDetailViewState.getPropertyDetailData().getLatitude(),
+                        propertyDetailViewState.getPropertyDetailData().getLongitude());
                 setPrice(propertyDetailViewState.getPropertyDetailData().getPrice());
                 setSurface(propertyDetailViewState.getPropertyDetailData().getSurface());
                 setRooms(propertyDetailViewState.getPropertyDetailData().getRooms());
@@ -307,12 +309,23 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
                 .title("Marker"));*/
     }
 
+    private void setUserLocation(Location location) {
+        setLocation(location);
+    }
+
+    private void setPropertyLocation(double latitude, double longitude) {
+        Location propertyLocation = new Location("");
+        propertyLocation.setLatitude(latitude);
+        propertyLocation.setLongitude(longitude);
+        setLocation(propertyLocation);
+    }
+
     private void setLocation(Location location){
         this.location = location;
         if(mMap!=null) {
             LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
-            mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(latlng).title("You position"));
+            //mMap.clear();
+            mMap.addMarker(new MarkerOptions().position(latlng).title("Your position"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 10));
         }
     }
