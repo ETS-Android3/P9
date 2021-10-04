@@ -200,21 +200,13 @@ public class PropertyDetailViewModel extends ViewModel {
 
         if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
             // when don't know propertyId load first property
-            ExecutorService executor = Executors.newFixedThreadPool(1);
-            Future<Long> future = executor.submit(new Callable<Long>() {
-                @Override
-                public Long call() throws Exception {
-                    return databaseRepository.getPropertyRepository().getFirstPropertyId();
-                }
-            });
-            executor.shutdown();
             try {
-                executor.awaitTermination(300, TimeUnit.SECONDS);
-                Log.d(Tag.TAG, "PropertyDetailViewModel.load() with future = [" + future + "]");
-                long id = future.get();
-                Log.d(Tag.TAG, "PropertyDetailViewModel.load() id = future.get() = [" + id + "]");
+                long id = databaseRepository.getPropertyRepository().getFirstPropertyId();
+                Log.d(Tag.TAG, "PropertyDetailViewModel.load() getFirstPropertyId=" + id);
                 this.propertyId = id;
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

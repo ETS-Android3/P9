@@ -11,6 +11,9 @@ import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.tag.Tag;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class PropertyRepository {
     private final PropertyDao propertyDao;
@@ -23,8 +26,20 @@ public class PropertyRepository {
     public LiveData<Property> getPropertyById(long id) {return propertyDao.getPropertyById(id);}
 
     // use it with asynchronous mode like ExecutorService
-    public Long getFirstPropertyId() {
-        return propertyDao.getFirstPropertyId();
+    public Long getFirstPropertyId() throws ExecutionException, InterruptedException {
+        Log.d(Tag.TAG, "PropertyRepository.getFirstPropertyId() called");
+        Callable<Long> callable = new Callable<Long>() {
+            @Override
+            public Long call() throws Exception {
+                return propertyDao.getFirstPropertyId();
+            }
+        };
+
+        Future<Long> future = AppDatabase.getExecutor().submit(callable);
+
+        Long id = future.get();
+        AppDatabase.getExecutor().shutdown();
+        return id;
     }
 
     public void insert(Property property) {
