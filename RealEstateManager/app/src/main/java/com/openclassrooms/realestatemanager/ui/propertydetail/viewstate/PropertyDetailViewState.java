@@ -6,28 +6,23 @@ import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyCategory;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 
 import java.util.List;
 
 public class PropertyDetailViewState {
-    private Location userLocation;
-    private Property property;
-    private List<Photo> photos;
-    private PropertyCategory category;
-    private PropertyType propertyType;
-    private Agent agent;
-    private String propertyState;
-    private String entryDate;
-    private String saleDate;
+    private final Location userLocation;
+    private final PropertyDetailData propertyDetailData;
+    private final List<Photo> photos;
+    private final String propertyState;
+    private final String entryDate;
+    private final String saleDate;
 
-    public PropertyDetailViewState(Location userLocation, Property property, List<Photo> photos, PropertyCategory category, PropertyType propertyType, Agent agent, String propertyState, String entryDate, String saleDate) {
+    public PropertyDetailViewState(Location userLocation, PropertyDetailData propertyDetailData, List<Photo> photos, String propertyState, String entryDate, String saleDate) {
         this.userLocation = userLocation;
-        this.property = property;
+        this.propertyDetailData = propertyDetailData;
         this.photos = photos;
-        this.category = category;
-        this.propertyType = propertyType;
-        this.agent = agent;
         this.propertyState = propertyState;
         this.entryDate = entryDate;
         this.saleDate = saleDate;
@@ -37,24 +32,12 @@ public class PropertyDetailViewState {
         return userLocation;
     }
 
-    public Property getProperty() {
-        return property;
+    public PropertyDetailData getPropertyDetailData() {
+        return propertyDetailData;
     }
 
     public List<Photo> getPhotos() {
         return photos;
-    }
-
-    public PropertyCategory getCategory() {
-        return category;
-    }
-
-    public PropertyType getPropertyType() {
-        return propertyType;
-    }
-
-    public Agent getAgent() {
-        return agent;
     }
 
     public String getPropertyState() {

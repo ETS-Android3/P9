@@ -206,20 +206,20 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
             @Override
             public void onChanged(PropertyDetailViewState propertyDetailViewState) {
                 setLocation(propertyDetailViewState.getUserLocation());
-                setPrice(propertyDetailViewState.getProperty().getPrice());
-                setSurface(propertyDetailViewState.getProperty().getSurface());
-                setRooms(propertyDetailViewState.getProperty().getRooms());
-                setDescription(propertyDetailViewState.getProperty().getDescription());
-                setAddressTitle(propertyDetailViewState.getProperty().getAddressTitle());
-                setAddress(propertyDetailViewState.getProperty().getAddress());
-                setPointOfInterest(propertyDetailViewState.getProperty().getPointsOfInterest());
+                setPrice(propertyDetailViewState.getPropertyDetailData().getPrice());
+                setSurface(propertyDetailViewState.getPropertyDetailData().getSurface());
+                setRooms(propertyDetailViewState.getPropertyDetailData().getRooms());
+                setDescription(propertyDetailViewState.getPropertyDetailData().getDescription());
+                setAddressTitle(propertyDetailViewState.getPropertyDetailData().getAddressTitle());
+                setAddress(propertyDetailViewState.getPropertyDetailData().getAddress());
+                setPointOfInterest(propertyDetailViewState.getPropertyDetailData().getPointsOfInterest());
                 setState(propertyDetailViewState.getPropertyState());
                 setEntryDate(propertyDetailViewState.getEntryDate());
                 setSaleDate(propertyDetailViewState.getSaleDate());
-                setAgentName(propertyDetailViewState.getAgent().getName());
-                setAgentEmail(propertyDetailViewState.getAgent().getEmail());
-                setAgentPhone(propertyDetailViewState.getAgent().getPhone());
-                setTypeName(propertyDetailViewState.getPropertyType().getName());
+                setAgentName(propertyDetailViewState.getPropertyDetailData().getAgentName());
+                setAgentEmail(propertyDetailViewState.getPropertyDetailData().getAgentEmail());
+                setAgentPhone(propertyDetailViewState.getPropertyDetailData().getAgentPhone());
+                setTypeName(propertyDetailViewState.getPropertyDetailData().getTypeName());
                 setPhotoLegend("");
                 // list photos
                 photoListAdapter.updateData(propertyDetailViewState.getPhotos());

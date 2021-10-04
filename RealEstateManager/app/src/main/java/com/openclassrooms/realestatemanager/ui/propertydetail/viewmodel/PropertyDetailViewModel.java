@@ -18,6 +18,7 @@ import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyCategory;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.tag.Tag;
@@ -64,65 +65,32 @@ public class PropertyDetailViewModel extends ViewModel {
 
     private void configureMediatorLiveData(long propertyId) {
         Log.d(Tag.TAG, "PropertyDetailViewModel.configureMediatorLiveData(propertyId=" + propertyId + ")");
+        // Property detail with agent information, and category and type
+        LiveData<PropertyDetailData> propertyDetailDataLiveData = databaseRepository.getPropertyRepository().getPropertyDetailById(propertyId);
+        // gps
         LiveData<Location> locationLiveData = locationRepository.getLocationLiveData();
-        // property
-        LiveData<Property> propertyLiveData = databaseRepository.getPropertyRepository().getPropertyById(propertyId);
         // photos
         LiveData<List<Photo>> photosLiveData = databaseRepository.getPhotoRepository().getPhotosByPropertyId(propertyId);
-
-        // get Agent id from property
-        LiveData<Long> agentIdLiveData = Transformations.map(propertyLiveData, property -> {
-            return new Long(property.getAgentId());
-        });
-        // get Agent from agent id
-        LiveData<Agent> agentLiveData = Transformations.switchMap(agentIdLiveData, id ->{
-            return databaseRepository.getAgentRepository().getAgentById(id);
-        });
-
-        // get category id from property and send liveData with category id in categoryIdLiveData
-        LiveData<Long> categoryIdLiveData = Transformations.map(propertyLiveData, property -> {
-            return new Long(property.getPropertyCategoryId());
-        });
-        // get PropertyCategory from category id emit by categoryIdLiveData.
-        LiveData<PropertyCategory> categoryLiveData = Transformations.switchMap(categoryIdLiveData, id -> {
-            return databaseRepository.getPropertyCategoryRepository().getCategoryById(id);
-        });
-
-        // get type id from property
-        LiveData<Long> typeIdLiveData = Transformations.map(propertyLiveData, property -> {
-            return new Long(property.getPropertyTypeId());
-        });
-        // get PropertyType from type id
-        LiveData<PropertyType> propertyTypeLiveData = Transformations.switchMap(typeIdLiveData, id ->{
-            return databaseRepository.getPropertyTypeRepository().getPropertyTypeById(id);
-        });
 
         propertyDetailViewStateMediatorLiveData.addSource(locationLiveData, new Observer<Location>() {
             @Override
             public void onChanged(Location location) {
                 if (location != null) {
                     combine(location,
-                            propertyLiveData.getValue(),
-                            photosLiveData.getValue(),
-                            categoryLiveData.getValue(),
-                            propertyTypeLiveData.getValue(),
-                            agentLiveData.getValue());
+                            propertyDetailDataLiveData.getValue(),
+                            photosLiveData.getValue());
                     // must remove source to avoid bug "This source was already added with the different observer"
                     propertyDetailViewStateMediatorLiveData.removeSource(locationLiveData);
                 }
             }
         });
 
-        propertyDetailViewStateMediatorLiveData.addSource(propertyLiveData, new Observer<Property>() {
+        propertyDetailViewStateMediatorLiveData.addSource(propertyDetailDataLiveData, new Observer<PropertyDetailData>() {
             @Override
-            public void onChanged(Property property) {
+            public void onChanged(PropertyDetailData propertyDetailData) {
                 combine(locationLiveData.getValue(),
-                        property,
-                        photosLiveData.getValue(),
-                        categoryLiveData.getValue(),
-                        propertyTypeLiveData.getValue(),
-                        agentLiveData.getValue()
-                );
+                        propertyDetailData,
+                        photosLiveData.getValue());
             }
         });
 
@@ -130,66 +98,8 @@ public class PropertyDetailViewModel extends ViewModel {
             @Override
             public void onChanged(List<Photo> photos) {
                 combine(locationLiveData.getValue(),
-                        propertyLiveData.getValue(),
-                        photos,
-                        categoryLiveData.getValue(),
-                        propertyTypeLiveData.getValue(),
-                        agentLiveData.getValue()
-                );
-            }
-        });
-
-        propertyDetailViewStateMediatorLiveData.addSource(categoryIdLiveData, new Observer<Long>() {
-            @Override
-            public void onChanged(Long aLong) {
-            }
-        });
-        propertyDetailViewStateMediatorLiveData.addSource(categoryLiveData, new Observer<PropertyCategory>() {
-            @Override
-            public void onChanged(PropertyCategory propertyCategory) {
-                combine(locationLiveData.getValue(),
-                        propertyLiveData.getValue(),
-                        photosLiveData.getValue(),
-                        propertyCategory,
-                        propertyTypeLiveData.getValue(),
-                        agentLiveData.getValue()
-                );
-            }
-        });
-
-        propertyDetailViewStateMediatorLiveData.addSource(typeIdLiveData, new Observer<Long>() {
-            @Override
-            public void onChanged(Long aLong) {
-            }
-        });
-        propertyDetailViewStateMediatorLiveData.addSource(propertyTypeLiveData, new Observer<PropertyType>() {
-            @Override
-            public void onChanged(PropertyType propertyType) {
-                combine(locationLiveData.getValue(),
-                        propertyLiveData.getValue(),
-                        photosLiveData.getValue(),
-                        categoryLiveData.getValue(),
-                        propertyType,
-                        agentLiveData.getValue()
-                );
-            }
-        });
-
-        propertyDetailViewStateMediatorLiveData.addSource(agentIdLiveData, new Observer<Long>() {
-            @Override
-            public void onChanged(Long aLong) {
-            }
-        });
-        propertyDetailViewStateMediatorLiveData.addSource(agentLiveData, new Observer<Agent>() {
-            @Override
-            public void onChanged(Agent agent) {
-                combine(locationLiveData.getValue(),
-                        propertyLiveData.getValue(),
-                        photosLiveData.getValue(),
-                        categoryLiveData.getValue(),
-                        propertyTypeLiveData.getValue(),
-                        agent
-                );
+                        propertyDetailDataLiveData.getValue(),
+                        photos);
             }
         });
     }
@@ -227,39 +137,35 @@ public class PropertyDetailViewModel extends ViewModel {
     }
 
     private void combine(@Nullable Location location,
-                         @Nullable Property property,
-                         @Nullable List<Photo> photos,
-                         @Nullable PropertyCategory category,
-                         @Nullable PropertyType propertyType,
-                         @Nullable Agent agent){
+                         @Nullable PropertyDetailData propertyDetailData,
+                         @Nullable List<Photo> photos){
 
-        if (location == null || property == null || photos == null || category == null ||
-                propertyType == null || agent == null) {
+        if (location == null || propertyDetailData == null || photos == null) {
             return;
         }
         Log.d(Tag.TAG, "PropertyDetailViewModel.combine() called");
 
         String propertyState = "";
 
-        if (property.getPropertyCategoryId() == CATEGORY_FOR_SAL_ID) {
-            if (property.isAvailable()){
+        if (propertyDetailData.getPropertyCategoryId() == CATEGORY_FOR_SAL_ID) {
+            if (propertyDetailData.isAvailable()){
                 propertyState = "For sal";
             } else
                 propertyState = "Sold";
         } else {
-            if (property.isAvailable()){
+            if (propertyDetailData.isAvailable()){
                 propertyState = "For rent";
             } else
                 propertyState = "Rented";
         }
 
-        String entryDate = Utils.convertDateToString(property.getEntryDate());
-        String saleDate = Utils.convertDateToString(property.getSaleDate());
+        String entryDate = Utils.convertDateToString(propertyDetailData.getEntryDate());
+        String saleDate = Utils.convertDateToString(propertyDetailData.getSaleDate());
 
 
         // ViewModel emit ViewState
         propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(location,
-                property, photos, category, propertyType, agent, propertyState, entryDate, saleDate));
+                propertyDetailData, photos, propertyState, entryDate, saleDate));
 
     }
 }
