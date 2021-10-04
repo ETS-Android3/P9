@@ -3,13 +3,13 @@ package com.openclassrooms.realestatemanager.data.room.model;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "agent")
 public class Agent {
     @PrimaryKey(autoGenerate = true)
-    private long id;
-    private String name;
-    private String email;
-    private String phone;
+    private final long id;
+    private final String name;
+    private final String email;
+    private final String phone;
 
     public Agent(long id, String name, String email, String phone) {
         this.id = id;

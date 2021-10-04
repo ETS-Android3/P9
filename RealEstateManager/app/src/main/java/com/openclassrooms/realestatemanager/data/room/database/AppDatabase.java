@@ -39,7 +39,7 @@ import java.util.logging.LogManager;
                     PropertyCategory.class,
                     PropertyType.class,
                     Property.class},
-                    version = 1,
+                    version = 5,
                     exportSchema = true
                     )
 public abstract class AppDatabase extends RoomDatabase {

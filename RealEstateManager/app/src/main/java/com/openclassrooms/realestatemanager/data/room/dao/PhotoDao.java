@@ -13,10 +13,10 @@ import java.util.List;
 
 @Dao
 public interface PhotoDao {
-    @Query("SELECT * FROM photo ORDER BY photo.id")
+    @Query("SELECT * FROM photo ORDER BY id")
     LiveData<List<Photo>> getPhotos();
 
-    @Query("SELECT * FROM photo WHERE photo.propertyId = :propertyId ORDER BY photo.id")
+    @Query("SELECT * FROM photo WHERE property_id = :propertyId ORDER BY id")
     LiveData<List<Photo>> getPhotosByPropertyId(long propertyId);
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
@@ -25,6 +25,6 @@ public interface PhotoDao {
     @Update
     int update(Photo photo);
 
-    @Query("DELETE FROM photo WHERE photo.id = :id")
+    @Query("DELETE FROM photo WHERE id = :id")
     int delete(long id);
 }

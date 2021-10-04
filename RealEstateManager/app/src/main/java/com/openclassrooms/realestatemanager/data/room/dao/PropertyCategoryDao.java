@@ -14,10 +14,10 @@ import java.util.List;
 
 @Dao
 public interface PropertyCategoryDao {
-    @Query("SELECT * FROM propertycategory ORDER BY propertycategory.id")
+    @Query("SELECT * FROM property_category ORDER BY id")
     LiveData<List<PropertyCategory>> getCategories();
 
-    @Query("SELECT * FROM propertycategory WHERE propertycategory.id = :id")
+    @Query("SELECT * FROM property_category WHERE id = :id")
     LiveData<PropertyCategory> getCategoryById(long id);
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
@@ -26,6 +26,6 @@ public interface PropertyCategoryDao {
     @Update
     int update(PropertyCategory ropertyCategory);
 
-    @Query("DELETE FROM propertycategory WHERE propertycategory.id = :id")
+    @Query("DELETE FROM property_category WHERE id = :id")
     int delete(long id);
 }

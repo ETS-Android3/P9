@@ -25,7 +25,9 @@ public class SampleProperty {
                         null,
                         4,
                         1,
-                        1),
+                        1,
+                         20,
+                        40.747559, -74.007069),
                 new Property(2,
                         29900000,
                         4296,
@@ -38,7 +40,9 @@ public class SampleProperty {
                         date2,
                         4,
                         1,
-                        1),
+                        1,
+                        18,
+                        40.766166, -73.980937),
                 new Property(3,
                         23000000,
                         20000,
@@ -51,7 +55,9 @@ public class SampleProperty {
                         null,
                         5,
                         2,
-                        2),
+                        2,
+                        16,
+                        40.769413, -73.964072),
                 new Property(4,
                         135000000,
                         8055,
@@ -64,7 +70,9 @@ public class SampleProperty {
                         date3,
                         1,
                         2,
-                        3)
+                        3,
+                        14,
+                        40.761749, -73.971821)
         };
     }
 }

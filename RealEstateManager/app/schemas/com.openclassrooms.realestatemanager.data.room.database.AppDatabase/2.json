@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "ef520122a87b827d3392b479ebf0a8e1",
+    "version": 2,
+    "identityHash": "359a98806feeb3e414617e0fd104d253",
     "entities": [
       {
         "tableName": "Agent",
@@ -133,8 +133,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "Property",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `price` INTEGER NOT NULL, `surface` INTEGER NOT NULL, `description` TEXT, `addressTitle` TEXT, `address` TEXT, `pointsOfInterest` TEXT, `available` INTEGER NOT NULL, `entryDate` INTEGER, `saleDate` INTEGER, `propertyTypeId` INTEGER NOT NULL, `propertyCategoryId` INTEGER NOT NULL, `agentId` INTEGER NOT NULL, `rooms` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, FOREIGN KEY(`agentId`) REFERENCES `Agent`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`propertyCategoryId`) REFERENCES `PropertyCategory`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`propertyTypeId`) REFERENCES `PropertyType`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "tableName": "property",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `price` INTEGER NOT NULL, `surface` INTEGER NOT NULL, `description` TEXT, `address_title` TEXT, `address` TEXT, `points_of_interest` TEXT, `available` INTEGER NOT NULL, `entry_date` INTEGER, `sale_date` INTEGER, `property_type_id` INTEGER NOT NULL, `property_category_id` INTEGER NOT NULL, `agent_id` INTEGER NOT NULL, `rooms` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, FOREIGN KEY(`agent_id`) REFERENCES `Agent`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`property_category_id`) REFERENCES `PropertyCategory`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`property_type_id`) REFERENCES `PropertyType`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -162,7 +162,7 @@
           },
           {
             "fieldPath": "addressTitle",
-            "columnName": "addressTitle",
+            "columnName": "address_title",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -174,7 +174,7 @@
           },
           {
             "fieldPath": "pointsOfInterest",
-            "columnName": "pointsOfInterest",
+            "columnName": "points_of_interest",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -186,31 +186,31 @@
           },
           {
             "fieldPath": "entryDate",
-            "columnName": "entryDate",
+            "columnName": "entry_date",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
             "fieldPath": "saleDate",
-            "columnName": "saleDate",
+            "columnName": "sale_date",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
             "fieldPath": "propertyTypeId",
-            "columnName": "propertyTypeId",
+            "columnName": "property_type_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "propertyCategoryId",
-            "columnName": "propertyCategoryId",
+            "columnName": "property_category_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "agentId",
-            "columnName": "agentId",
+            "columnName": "agent_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -241,28 +241,28 @@
         },
         "indices": [
           {
-            "name": "index_Property_propertyTypeId",
+            "name": "index_property_property_type_id",
             "unique": false,
             "columnNames": [
-              "propertyTypeId"
+              "property_type_id"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_Property_propertyTypeId` ON `${TABLE_NAME}` (`propertyTypeId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_property_property_type_id` ON `${TABLE_NAME}` (`property_type_id`)"
           },
           {
-            "name": "index_Property_propertyCategoryId",
+            "name": "index_property_property_category_id",
             "unique": false,
             "columnNames": [
-              "propertyCategoryId"
+              "property_category_id"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_Property_propertyCategoryId` ON `${TABLE_NAME}` (`propertyCategoryId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_property_property_category_id` ON `${TABLE_NAME}` (`property_category_id`)"
           },
           {
-            "name": "index_Property_agentId",
+            "name": "index_property_agent_id",
             "unique": false,
             "columnNames": [
-              "agentId"
+              "agent_id"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_Property_agentId` ON `${TABLE_NAME}` (`agentId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_property_agent_id` ON `${TABLE_NAME}` (`agent_id`)"
           }
         ],
         "foreignKeys": [
@@ -271,7 +271,7 @@
             "onDelete": "NO ACTION",
             "onUpdate": "NO ACTION",
             "columns": [
-              "agentId"
+              "agent_id"
             ],
             "referencedColumns": [
               "id"
@@ -282,7 +282,7 @@
             "onDelete": "NO ACTION",
             "onUpdate": "NO ACTION",
             "columns": [
-              "propertyCategoryId"
+              "property_category_id"
             ],
             "referencedColumns": [
               "id"
@@ -293,7 +293,7 @@
             "onDelete": "NO ACTION",
             "onUpdate": "NO ACTION",
             "columns": [
-              "propertyTypeId"
+              "property_type_id"
             ],
             "referencedColumns": [
               "id"
@@ -305,7 +305,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ef520122a87b827d3392b479ebf0a8e1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '359a98806feeb3e414617e0fd104d253')"
     ]
   }
 }

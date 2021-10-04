@@ -1,18 +1,22 @@
 package com.openclassrooms.realestatemanager.data.room.model;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "photo")
 public class Photo {
     @PrimaryKey(autoGenerate = true)
-    private long id;
-    private String url;
-    private String legend;
-    private long propertyId;
+    private final long id;
+    private final int order;
+    private final String url;
+    private final String legend;
+    @ColumnInfo(name = "property_id")
+    private final long propertyId;
 
-    public Photo(long id, String url, String legend, long propertyId) {
+    public Photo(long id, int order, String url, String legend, long propertyId) {
         this.id = id;
+        this.order = order;
         this.url = url;
         this.legend = legend;
         this.propertyId = propertyId;
@@ -20,6 +24,10 @@ public class Photo {
 
     public long getId() {
         return id;
+    }
+
+    public int getOrder() {
+        return order;
     }
 
     public String getUrl() {

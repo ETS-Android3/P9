@@ -7,11 +7,11 @@ import androidx.room.PrimaryKey;
  * 1 = for sale
  * 2 = for rent
  */
-@Entity
+@Entity(tableName = "property_category")
 public class PropertyCategory {
     @PrimaryKey(autoGenerate = true)
-    private long id;
-    private String name;
+    private final long id;
+    private final String name;
 
     public PropertyCategory(long id, String name) {
         this.id = id;

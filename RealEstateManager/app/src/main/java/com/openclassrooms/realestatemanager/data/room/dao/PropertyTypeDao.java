@@ -14,10 +14,10 @@ import java.util.List;
 
 @Dao
 public interface PropertyTypeDao {
-    @Query("SELECT * FROM propertytype ORDER BY propertytype.id")
+    @Query("SELECT * FROM property_type ORDER BY id")
     LiveData<List<PropertyType>> getPropertyTypes();
 
-    @Query("SELECT * FROM propertytype WHERE propertytype.id = :id")
+    @Query("SELECT * FROM property_type WHERE id = :id")
     LiveData<PropertyType> getPropertyTypeById(long id);
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
@@ -26,7 +26,7 @@ public interface PropertyTypeDao {
     @Update
     int update(PropertyType propertyType);
 
-    @Query("DELETE FROM propertytype WHERE propertytype.id = :id")
+    @Query("DELETE FROM property_type WHERE id = :id")
     int delete(long id);
 }
 

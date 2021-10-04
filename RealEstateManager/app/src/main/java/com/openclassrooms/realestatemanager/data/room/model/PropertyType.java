@@ -11,11 +11,11 @@ import androidx.room.PrimaryKey;
  * 5 = Condominium
  * 6 = Townhouse
  */
-@Entity
+@Entity(tableName = "property_type")
 public class PropertyType {
     @PrimaryKey(autoGenerate = true)
-    private long id;
-    private String name;
+    private final long id;
+    private final String name;
 
     public PropertyType(long id, String name) {
         this.id = id;

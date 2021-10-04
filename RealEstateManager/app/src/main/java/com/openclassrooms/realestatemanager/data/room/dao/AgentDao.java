@@ -13,10 +13,10 @@ import java.util.List;
 
 @Dao
 public interface AgentDao {
-    @Query("SELECT * FROM agent ORDER BY agent.id")
+    @Query("SELECT * FROM agent ORDER BY id")
     LiveData<List<Agent>> getAgents();
 
-    @Query("SELECT * FROM agent WHERE agent.id = :id")
+    @Query("SELECT * FROM agent WHERE id = :id")
     LiveData<Agent> getAgentById(long id);
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
@@ -25,6 +25,6 @@ public interface AgentDao {
     @Update
     int update(Agent agent);
 
-    @Query("DELETE FROM agent WHERE agent.id = :id")
+    @Query("DELETE FROM agent WHERE id = :id")
     int delete(long id);
 }
