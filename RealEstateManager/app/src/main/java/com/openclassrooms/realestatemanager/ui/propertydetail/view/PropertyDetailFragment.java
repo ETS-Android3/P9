@@ -52,6 +52,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
 
     TextView textViewPrice;
     TextView textViewSurface;
+    TextView textViewRooms;
     TextView textViewDescription;
     TextView textViewAddressTitle;
     TextView textViewAddress;
@@ -146,6 +147,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     private void configureComponents(View view){
         textViewPrice = view.findViewById(R.id.property_detail_prive_value);
         textViewSurface = view.findViewById(R.id.property_detail_surface_value);
+        textViewRooms = view.findViewById(R.id.property_detail_rooms_value);
         textViewDescription = view.findViewById(R.id.property_detail_description_value);
         textViewAddressTitle = view.findViewById(R.id.property_detail_address_title_value);
         textViewAddress = view.findViewById(R.id.property_detail_address_value);
@@ -206,6 +208,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
                 setLocation(propertyDetailViewState.getUserLocation());
                 setPrice(propertyDetailViewState.getProperty().getPrice());
                 setSurface(propertyDetailViewState.getProperty().getSurface());
+                setRooms(propertyDetailViewState.getProperty().getRooms());
                 setDescription(propertyDetailViewState.getProperty().getDescription());
                 setAddressTitle(propertyDetailViewState.getProperty().getAddressTitle());
                 setAddress(propertyDetailViewState.getProperty().getAddress());
@@ -229,8 +232,11 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     }
 
     private void setSurface(int surface){
-
         textViewSurface.setText(Utils.convertSurfaceToString(surface));
+    }
+
+    private void setRooms(int rooms){
+        textViewRooms.setText(String.format("%d", rooms));
     }
 
     private void setDescription(String description){

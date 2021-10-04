@@ -119,11 +119,12 @@
                     android:text="@string/property_surface"
                     style="@style/TextviewStyle.Label"/>
                 <TextView
+                    android:id="@+id/property_detail_rooms"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="@null"
-                    style="@style/TextviewStyle.Value"/>
+                    android:text="@string/property_rooms"
+                    style="@style/TextviewStyle.Label"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -143,10 +144,11 @@
                     android:text="@string/property_surface_value"
                     style="@style/TextviewStyle.Value"/>
                 <TextView
+                    android:id="@+id/property_detail_rooms_value"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="@null"
+                    android:text="@string/property_rooms_value"
                     style="@style/TextviewStyle.Value"/>
             </LinearLayout>
 

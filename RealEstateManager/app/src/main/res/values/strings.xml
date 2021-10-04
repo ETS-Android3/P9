@@ -19,6 +19,8 @@
     <string name="property_price_value">$79,000,000</string>
     <string name="property_surface">Surface</string>
     <string name="property_surface_value">8,000 SqFt</string>
+    <string name="property_rooms">Rooms</string>
+    <string name="property_rooms_value">Unknow</string>
     <string name="property_description">Description</string>
     <string name="property_description_value">Live your dream lifestyle in this ultimate modern home designed by Foster + Partners. Residence 15 consists of the full private floor featuring 11 ft ceilings throughout the over 8000 sqft residence. The surrounding floor to ceiling windows maximize the light and sweeping 360-degree views</string>
     <string name="property_address_title">Title address</string>
@@ -29,7 +31,7 @@
     <string name="property_point_of_interest">Point of interest</string>
     <string name="property_point_of_interest_value">Central Park, High schools, Public transport</string>
     <string name="property_state">State</string>
-    <string name="property_state_value">For sal</string>
+    <string name="property_state_value">For sale</string>
     <string name="property_available">Available</string>
     <string name="property_available_value">Yes</string>
     <string name="property_entry_date">Entry date</string>
