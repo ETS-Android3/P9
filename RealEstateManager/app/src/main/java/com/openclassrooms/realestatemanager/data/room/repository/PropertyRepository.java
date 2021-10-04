@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import com.openclassrooms.realestatemanager.data.room.dao.PropertyDao;
 import com.openclassrooms.realestatemanager.data.room.database.AppDatabase;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.tag.Tag;
 
 import java.util.List;
@@ -58,5 +59,9 @@ public class PropertyRepository {
         AppDatabase.getExecutor().execute(() -> {
             propertyDao.delete(id);
         });
+    }
+
+    public LiveData<PropertyDetailData> getPropertyDetailById(long id) {
+        return propertyDao.getPropertyDetailById(id);
     }
 }

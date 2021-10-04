@@ -10,6 +10,7 @@ import androidx.room.Update;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.openclassrooms.realestatemanager.data.room.model.Property;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 
 import java.util.List;
 
@@ -36,4 +37,15 @@ public interface PropertyDao {
     //For Search
     @RawQuery(observedEntities = Property.class)
     LiveData<List<Property>> getSearch(SupportSQLiteQuery query);
+
+    @Query("select property.*, " +
+           "agent.email as agent_email, agent.name as agent_name, agent.phone as agent_phone, " +
+           "property_category.name as property_category_name, "+
+           "property_type.name as property_type_name "+
+           "from property " +
+           "left join agent on property.agent_id = agent.id " +
+           "left join property_category on property.property_category_id = property_category.id " +
+           "left join property_type on property.property_type_id = property_type.id " +
+           "where property.id = :id")
+    LiveData<PropertyDetailData> getPropertyDetailById(long id);
 }
