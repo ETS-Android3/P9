@@ -407,7 +407,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         Log.d(Tag.TAG, "drawUserLocation() (mMap==null)=" + (mMap==null) + " (userLocation==null)=" + (userLocation==null));
         if ((mMap!=null) && (this.userLocation != null)) {
             LatLng latlng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
-            //mMap.clear();
+            mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latlng).title("Your position"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
         }

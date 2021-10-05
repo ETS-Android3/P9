@@ -75,6 +75,8 @@ public class PropertyDetailViewModel extends ViewModel {
         // photos
         LiveData<List<Photo>> photosLiveData = databaseRepository.getPhotoRepository().getPhotosByPropertyId(propertyId);
 
+        // must remove source to avoid bug "This source was already added with the different observer"
+        propertyDetailViewStateMediatorLiveData.removeSource(locationLiveData);
         propertyDetailViewStateMediatorLiveData.addSource(locationLiveData, new Observer<Location>() {
             @Override
             public void onChanged(Location location) {
@@ -83,8 +85,6 @@ public class PropertyDetailViewModel extends ViewModel {
                             propertyDetailDataLiveData.getValue(),
                             propertyLocationDataLiveData.getValue(),
                             photosLiveData.getValue());
-                    // must remove source to avoid bug "This source was already added with the different observer"
-                    propertyDetailViewStateMediatorLiveData.removeSource(locationLiveData);
                 }
             }
         });
