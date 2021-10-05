@@ -29,6 +29,7 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.bundle.PropertyBundle;
 import com.openclassrooms.realestatemanager.ui.propertydetail.listener.OnEditPropertyListener;
+import com.openclassrooms.realestatemanager.ui.propertydetail.listener.OnMapListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.view.PropertyEditFragment;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
@@ -43,7 +44,8 @@ import org.jetbrains.annotations.NotNull;
 public class MainActivity extends AppCompatActivity implements OnPropertySelectedListener,
                                                                OnAddPropertyListener,
                                                                OnEditPropertyListener,
-                                                               PropertyEditListener {
+                                                               PropertyEditListener,
+                                                               OnMapListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -200,6 +202,22 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     }
 
     @Override
+    public void OnMapClicked(long propertyId) {
+        Log.d(Tag.TAG, "MainActivity.OnMapClicked() called with: propertyId = [" + propertyId + "]");
+        if (LandscapeHelper.isLandscape()) {
+            Log.d(Tag.TAG, "MainActivity.OnMapClicked() isLandscape = true");
+            navToDetailWithLandscapeOrientation(propertyId);
+        }
+        else {
+            Log.d(Tag.TAG, "MainActivity.OnMapClicked() isLandscape = false");
+
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_nav_propertyDetailFragment_self,
+                    PropertyBundle.createEditBundle(propertyId));
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         Log.d(Tag.TAG, "MainActivity.onResume() called");
@@ -284,6 +302,5 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
         navController.navigate(R.id.propertyEditFragment, PropertyBundle.createEditBundle(propertyId));
     }
-
 
 }

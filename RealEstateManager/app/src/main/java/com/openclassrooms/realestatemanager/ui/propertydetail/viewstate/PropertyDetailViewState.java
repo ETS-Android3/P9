@@ -15,15 +15,17 @@ import java.util.List;
 public class PropertyDetailViewState {
     private final Location userLocation;
     private final PropertyDetailData propertyDetailData;
+    private final PropertyLocationData currentPropertyLocation;
     private final List<PropertyLocationData> propertyLocationData;
     private final List<Photo> photos;
     private final String propertyState;
     private final String entryDate;
     private final String saleDate;
 
-    public PropertyDetailViewState(Location userLocation, PropertyDetailData propertyDetailData, List<PropertyLocationData> propertyLocationData, List<Photo> photos, String propertyState, String entryDate, String saleDate) {
+    public PropertyDetailViewState(Location userLocation, PropertyDetailData propertyDetailData, PropertyLocationData currentPropertyLocation, List<PropertyLocationData> propertyLocationData, List<Photo> photos, String propertyState, String entryDate, String saleDate) {
         this.userLocation = userLocation;
         this.propertyDetailData = propertyDetailData;
+        this.currentPropertyLocation = currentPropertyLocation;
         this.propertyLocationData = propertyLocationData;
         this.photos = photos;
         this.propertyState = propertyState;
@@ -37,6 +39,10 @@ public class PropertyDetailViewState {
 
     public PropertyDetailData getPropertyDetailData() {
         return propertyDetailData;
+    }
+
+    public PropertyLocationData getCurrentPropertyLocation() {
+        return currentPropertyLocation;
     }
 
     public List<PropertyLocationData> getPropertyLocationData() {

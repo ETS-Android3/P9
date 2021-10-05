@@ -154,7 +154,7 @@ public class PropertyDetailViewModel extends ViewModel {
 
     private void combine(@Nullable Location location,
                          @Nullable PropertyDetailData propertyDetailData,
-                         @Nullable List<PropertyLocationData> propertyLocationDataList,
+                         @Nullable List<PropertyLocationData> otherPropertiesLocation,
                          @Nullable List<Photo> photos){
 
         if (location == null || propertyDetailData == null || photos == null) {
@@ -179,10 +179,15 @@ public class PropertyDetailViewModel extends ViewModel {
         String entryDate = Utils.convertDateToString(propertyDetailData.getEntryDate());
         String saleDate = Utils.convertDateToString(propertyDetailData.getSaleDate());
 
+        PropertyLocationData currentPropertyLocation = new PropertyLocationData(propertyDetailData.getId(),
+                propertyDetailData.getPrice(),
+                propertyDetailData.getAddressTitle(),
+                propertyDetailData.getLatitude(),
+                propertyDetailData.getLongitude());
 
         // ViewModel emit ViewState
         propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(location,
-                propertyDetailData, propertyLocationDataList, photos, propertyState, entryDate, saleDate));
+                propertyDetailData, currentPropertyLocation, otherPropertiesLocation, photos, propertyState, entryDate, saleDate));
     }
 }
 
