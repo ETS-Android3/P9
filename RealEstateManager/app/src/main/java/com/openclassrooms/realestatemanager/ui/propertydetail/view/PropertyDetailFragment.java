@@ -359,6 +359,10 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         }
     }
 
+    private String formatTitleMarker(String addressTitle, int price){
+        return String.format("%s %s", addressTitle, Utils.convertPriceToString(price));
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setOtherPropertyLocation(PropertyLocationData propertyLocationData) {
         if (mMap != null) {
@@ -366,8 +370,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
             LatLng latlng = new LatLng(propertyLocationData.getLatitude(), propertyLocationData.getLongitude());
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(latlng)
-                    .title(String.format("%s %s", propertyLocationData.getAddressTitle(),
-                                                  Utils.convertPriceToString(propertyLocationData.getPrice())))
+                    .title(formatTitleMarker(propertyLocationData.getAddressTitle(), propertyLocationData.getPrice()))
                     .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
             String tag = String.format("%s", propertyLocationData.getId());
             marker.setTag(tag);
@@ -382,7 +385,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
             LatLng latlng = new LatLng(latitude, longitude);
             mMap.addMarker(new MarkerOptions()
                     .position(latlng)
-                    .title(String.format("%s %s", addressTitle, price))
+                    .title(formatTitleMarker(addressTitle, price))
                     .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
         }
     }
