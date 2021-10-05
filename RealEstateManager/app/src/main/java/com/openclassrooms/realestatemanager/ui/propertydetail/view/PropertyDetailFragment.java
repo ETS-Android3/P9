@@ -219,7 +219,9 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
             @Override
             public void onChanged(PropertyDetailViewState propertyDetailViewState) {
                 setUserLocation(propertyDetailViewState.getUserLocation());
-                setPropertyLocation(propertyDetailViewState.getPropertyDetailData().getLatitude(),
+                setPropertyLocation(propertyDetailViewState.getPropertyDetailData().getAddressTitle(),
+                        propertyDetailViewState.getPropertyDetailData().getPrice(),
+                        propertyDetailViewState.getPropertyDetailData().getLatitude(),
                         propertyDetailViewState.getPropertyDetailData().getLongitude());
                 setOtherPropertiesLocation(propertyDetailViewState.getPropertyLocationData());
                 setPrice(propertyDetailViewState.getPropertyDetailData().getPrice());
@@ -364,6 +366,8 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
             LatLng latlng = new LatLng(propertyLocationData.getLatitude(), propertyLocationData.getLongitude());
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(latlng)
+                    .title(String.format("%s %s", propertyLocationData.getAddressTitle(),
+                                                  Utils.convertPriceToString(propertyLocationData.getPrice())))
                     .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
             String tag = String.format("%s", propertyLocationData.getId());
             marker.setTag(tag);
@@ -372,12 +376,13 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void setPropertyLocation(double latitude, double longitude) {
+    private void setPropertyLocation(String addressTitle, int price, double latitude, double longitude) {
         if (mMap != null) {
             Bitmap bitmap = drawableToBitmap(getResources().getDrawable(R.drawable.ic_home_secondary_color, getContext().getTheme()));
             LatLng latlng = new LatLng(latitude, longitude);
             mMap.addMarker(new MarkerOptions()
                     .position(latlng)
+                    .title(String.format("%s %s", addressTitle, price))
                     .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
         }
     }
