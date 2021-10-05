@@ -19,6 +19,7 @@ import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyCategory;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.tag.Tag;
@@ -67,7 +68,9 @@ public class PropertyDetailViewModel extends ViewModel {
         Log.d(Tag.TAG, "PropertyDetailViewModel.configureMediatorLiveData(propertyId=" + propertyId + ")");
         // Property detail with agent information, and category and type
         LiveData<PropertyDetailData> propertyDetailDataLiveData = databaseRepository.getPropertyRepository().getPropertyDetailById(propertyId);
-        // gps
+        // other properties location
+        LiveData<List<PropertyLocationData>> propertyLocationDataLiveData = databaseRepository.getPropertyRepository().getOtherPropertiesLocationById(propertyId);
+        // user location
         LiveData<Location> locationLiveData = locationRepository.getLocationLiveData();
         // photos
         LiveData<List<Photo>> photosLiveData = databaseRepository.getPhotoRepository().getPhotosByPropertyId(propertyId);
@@ -78,6 +81,7 @@ public class PropertyDetailViewModel extends ViewModel {
                 if (location != null) {
                     combine(location,
                             propertyDetailDataLiveData.getValue(),
+                            propertyLocationDataLiveData.getValue(),
                             photosLiveData.getValue());
                     // must remove source to avoid bug "This source was already added with the different observer"
                     propertyDetailViewStateMediatorLiveData.removeSource(locationLiveData);
@@ -90,6 +94,17 @@ public class PropertyDetailViewModel extends ViewModel {
             public void onChanged(PropertyDetailData propertyDetailData) {
                 combine(locationLiveData.getValue(),
                         propertyDetailData,
+                        propertyLocationDataLiveData.getValue(),
+                        photosLiveData.getValue());
+            }
+        });
+
+        propertyDetailViewStateMediatorLiveData.addSource(propertyLocationDataLiveData, new Observer<List<PropertyLocationData>>() {
+            @Override
+            public void onChanged(List<PropertyLocationData> propertyLocationData) {
+                combine(locationLiveData.getValue(),
+                        propertyDetailDataLiveData.getValue(),
+                        propertyLocationData,
                         photosLiveData.getValue());
             }
         });
@@ -99,6 +114,7 @@ public class PropertyDetailViewModel extends ViewModel {
             public void onChanged(List<Photo> photos) {
                 combine(locationLiveData.getValue(),
                         propertyDetailDataLiveData.getValue(),
+                        propertyLocationDataLiveData.getValue(),
                         photos);
             }
         });
@@ -138,6 +154,7 @@ public class PropertyDetailViewModel extends ViewModel {
 
     private void combine(@Nullable Location location,
                          @Nullable PropertyDetailData propertyDetailData,
+                         @Nullable List<PropertyLocationData> propertyLocationDataList,
                          @Nullable List<Photo> photos){
 
         if (location == null || propertyDetailData == null || photos == null) {
@@ -165,8 +182,7 @@ public class PropertyDetailViewModel extends ViewModel {
 
         // ViewModel emit ViewState
         propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(location,
-                propertyDetailData, photos, propertyState, entryDate, saleDate));
-
+                propertyDetailData, propertyLocationDataList, photos, propertyState, entryDate, saleDate));
     }
 }
 

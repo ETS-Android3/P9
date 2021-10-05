@@ -11,6 +11,7 @@ import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
 
 import java.util.List;
 
@@ -48,4 +49,9 @@ public interface PropertyDao {
            "left join property_type on property.property_type_id = property_type.id " +
            "where property.id = :id")
     LiveData<PropertyDetailData> getPropertyDetailById(long id);
+
+    @Query("select id, latitude, longitude " +
+           "from property " +
+           "where (not ((latitude = 0) and (longitude = 0))) and (id <> :id)")
+    LiveData<List<PropertyLocationData>> getOtherPropertiesLocationById(long id);
 }

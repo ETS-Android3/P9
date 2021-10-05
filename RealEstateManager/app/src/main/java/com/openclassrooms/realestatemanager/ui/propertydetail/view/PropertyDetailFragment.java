@@ -1,11 +1,17 @@
 package com.openclassrooms.realestatemanager.ui.propertydetail.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,10 +29,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.photoList.OnRowPhotoListener;
 import com.openclassrooms.realestatemanager.ui.photoList.PhotoListAdapter;
@@ -37,12 +47,14 @@ import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.Property
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.PropertyDetailViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
 
+import java.util.List;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PropertyDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PropertyDetailFragment extends Fragment implements OnMapReadyCallback {
+public class PropertyDetailFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private Location location;
@@ -203,11 +215,13 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
                 .get(PropertyDetailViewModel.class);
 
         propertyDetailViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyDetailViewState>() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onChanged(PropertyDetailViewState propertyDetailViewState) {
                 setUserLocation(propertyDetailViewState.getUserLocation());
                 setPropertyLocation(propertyDetailViewState.getPropertyDetailData().getLatitude(),
                         propertyDetailViewState.getPropertyDetailData().getLongitude());
+                setOtherPropertiesLocation(propertyDetailViewState.getPropertyLocationData());
                 setPrice(propertyDetailViewState.getPropertyDetailData().getPrice());
                 setSurface(propertyDetailViewState.getPropertyDetailData().getSurface());
                 setRooms(propertyDetailViewState.getPropertyDetailData().getRooms());
@@ -304,20 +318,72 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         if (this.location != null) {
             this.setLocation(this.location);
         }
-/*        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(0, 0))
-                .title("Marker"));*/
+    }
+
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if(bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        String propertyId = (String) marker.getTag();
+        Log.d(Tag.TAG, "onMarkerClick() propertyId = [" + propertyId + "]");
+        // todo openPropertyDetail(propertyId);
+        return false;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setOtherPropertiesLocation(List<PropertyLocationData> propertyLocationDataList){
+        for (PropertyLocationData propertyLocationData : propertyLocationDataList) {
+            setOtherPropertyLocation(propertyLocationData);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setOtherPropertyLocation(PropertyLocationData propertyLocationData) {
+        if (mMap != null) {
+            Bitmap bitmap = drawableToBitmap(getResources().getDrawable(R.drawable.ic_home_primary_color, getContext().getTheme()));
+            LatLng latlng = new LatLng(propertyLocationData.getLatitude(), propertyLocationData.getLongitude());
+            Marker marker = mMap.addMarker(new MarkerOptions()
+                    .position(latlng)
+                    .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+            String tag = String.format("%s", propertyLocationData.getId());
+            marker.setTag(tag);
+            mMap.setOnMarkerClickListener(this::onMarkerClick);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setPropertyLocation(double latitude, double longitude) {
+        if (mMap != null) {
+            Bitmap bitmap = drawableToBitmap(getResources().getDrawable(R.drawable.ic_home_secondary_color, getContext().getTheme()));
+            LatLng latlng = new LatLng(latitude, longitude);
+            mMap.addMarker(new MarkerOptions()
+                    .position(latlng)
+                    .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+        }
     }
 
     private void setUserLocation(Location location) {
         setLocation(location);
-    }
-
-    private void setPropertyLocation(double latitude, double longitude) {
-        Location propertyLocation = new Location("");
-        propertyLocation.setLatitude(latitude);
-        propertyLocation.setLongitude(longitude);
-        setLocation(propertyLocation);
     }
 
     private void setLocation(Location location){
@@ -326,7 +392,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
             LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
             //mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latlng).title("Your position"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 10));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
         }
     }
 

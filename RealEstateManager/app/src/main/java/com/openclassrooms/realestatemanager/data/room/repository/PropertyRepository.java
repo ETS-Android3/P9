@@ -9,6 +9,7 @@ import com.openclassrooms.realestatemanager.data.room.dao.PropertyDao;
 import com.openclassrooms.realestatemanager.data.room.database.AppDatabase;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
 import com.openclassrooms.realestatemanager.tag.Tag;
 
 import java.util.List;
@@ -63,5 +64,9 @@ public class PropertyRepository {
 
     public LiveData<PropertyDetailData> getPropertyDetailById(long id) {
         return propertyDao.getPropertyDetailById(id);
+    }
+
+    public LiveData<List<PropertyLocationData>> getOtherPropertiesLocationById(long id){
+        return propertyDao.getOtherPropertiesLocationById(id);
     }
 }
