@@ -6,18 +6,33 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
+import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
+import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.PropertyDetailViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEditViewModel;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodelfactory.PropertyEditViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,7 +41,25 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEdi
  */
 public class PropertyEditFragment extends Fragment {
 
-    long propertyId;
+    private long propertyId;
+    private TextInputLayout textInputLayoutAddressTitle;
+    private TextInputLayout textInputLayoutAddress;
+    private TextInputLayout textInputLayoutPrice;
+    private TextInputLayout textInputLayoutSurface;
+    private TextInputLayout textInputLayoutRooms;
+    private TextInputLayout textInputLayoutDescription;
+    private TextInputLayout textInputLayoutPointOfInterest;
+    private TextInputLayout textInputLayoutEntryDate;
+    private TextInputLayout textInputLayoutSaleDate;
+    private SwitchMaterial switchMaterialAvaliable;
+    private SwitchMaterial switchMaterialCategory;
+    private Spinner spinnerAgent;
+    private Spinner spinnerType;
+    private Button buttonPhoto;
+
+    private TextInputEditText textInputEditTextAddress;
+
+    private PropertyEditViewModel propertyEditViewModel;
 
     private PropertyEditListener callbackEditProperty;
 
@@ -75,7 +108,28 @@ public class PropertyEditFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_edit, container, false);
         configureBottomNavigationBar(view);
+        configureComponents(view);
         return view;
+    }
+
+    private void configureComponents(View view) {
+        textInputLayoutAddressTitle = view.findViewById(R.id.property_edit_textinputlayout_addressTitle);
+
+        textInputLayoutAddress = view.findViewById(R.id.property_edit_textinput_layout_address);
+        textInputEditTextAddress = view.findViewById(R.id.property_edit_textinput_edittext_address);
+
+        textInputLayoutPrice = view.findViewById(R.id.property_edit_textinputlayout_price);
+        textInputLayoutSurface = view.findViewById(R.id.property_edit_textinputlayout_surface);
+        textInputLayoutRooms = view.findViewById(R.id.property_edit_textinputlayout_rooms);
+        textInputLayoutDescription = view.findViewById(R.id.property_edit_textinputlayout_description);
+        textInputLayoutPointOfInterest = view.findViewById(R.id.property_edit_textinputlayout_point_of_interest);
+        textInputLayoutEntryDate = view.findViewById(R.id.property_edit_textinputlayout_entry_date);
+        textInputLayoutSaleDate = view.findViewById(R.id.property_edit_textinputlayout_sale_date);
+        switchMaterialAvaliable = view.findViewById(R.id.property_edit_switch_available);
+        switchMaterialCategory = view.findViewById(R.id.property_edit_switch_category);
+        spinnerAgent = view.findViewById(R.id.property_edit_spinner_agent);
+        spinnerType = view.findViewById(R.id.property_edit_spinner_type);
+        buttonPhoto = view.findViewById(R.id.property_edit_button_add_photo);
     }
 
     @Override
@@ -88,7 +142,49 @@ public class PropertyEditFragment extends Fragment {
         }
         Log.d(Tag.TAG, "PropertyEditFragment.onViewCreated() propertyId= [" + propertyId + "]");
 
+        configureDetailViewModel();
 }
+
+    private void configureDetailViewModel() {
+        propertyEditViewModel = new ViewModelProvider(
+                requireActivity(),
+                PropertyEditViewModelFactory.getInstance()).get(PropertyEditViewModel.class);
+
+        propertyEditViewModel.getLocationLiveData().observe(getViewLifecycleOwner(), new Observer<LatLng>() {
+            @Override
+            public void onChanged(LatLng latLng) {
+                Log.d(Tag.TAG, "onChanged() called. with: latLng = [" + latLng + "]");
+            }
+        });
+
+        textInputEditTextAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //propertyEditViewModel.loadLocationByAddress(s.toString());
+            }
+        });
+
+        textInputEditTextAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String text = textInputEditTextAddress.getText().toString();
+                    propertyEditViewModel.loadLocationByAddress(text);
+                }
+            }
+        });
+
+    }
 
     private void configureBottomNavigationBar(View view) {
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.fragment_property_edit_bottom_navigation_view);

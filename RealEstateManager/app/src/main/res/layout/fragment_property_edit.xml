@@ -11,26 +11,42 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/fragment_property_detail_bottom_navigation_view"
+        app:layout_constraintBottom_toTopOf="@id/fragment_property_edit_bottom_navigation_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/property_edit_title"
+            style="@style/TextviewStyle.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/property_edit_title_create" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/property_edit_textinputlayout_address"
+            android:id="@+id/property_edit_textinputlayout_addressTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/TextviewStyle.Value.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/property_address_title"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/property_edit_textinput_layout_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/property_edit_textinput_edittext_address"
+                style="@style/TextviewStyle.Value.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_address"
@@ -43,6 +59,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/TextviewStyle.Value.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_price"
@@ -54,44 +71,68 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/TextviewStyle.Value.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_surface"
                 android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/property_edit_textinputlayout_description"
+            android:id="@+id/property_edit_textinputlayout_rooms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/TextviewStyle.Value.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/property_rooms"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/property_edit_textinputlayout_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            app:counterMaxLength="500">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/TextviewStyle.Value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_description"
                 android:inputType="textMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/property_edit_textinputlayout_point_of_interest"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            app:counterMaxLength="500">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/TextviewStyle.Value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_point_of_interest"
-                android:inputType="textMultiLine"
-                />
+                android:inputType="textMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            style="@style/SwitchMaterialStyle"
             android:id="@+id/property_edit_switch_available"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/property_available" />
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/property_edit_textinputlayout_entry_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/TextviewStyle.Value.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_entry_date"
@@ -103,6 +144,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/TextviewStyle.Value.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_sale_date"
@@ -114,6 +156,7 @@
             android:text="@string/property_agent_name"/>
         <Spinner
             android:id="@+id/property_edit_spinner_agent"
+            style="@style/TextviewStyle.Value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/property_agent_name"/>
@@ -123,15 +166,18 @@
             android:orientation="horizontal">
 
             <TextView
+                style="@style/TextviewStyle.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_category_for_sale"/>
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                style="@style/SwitchMaterialStyle"
                 android:id="@+id/property_edit_switch_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="" />
             <TextView
+                style="@style/TextviewStyle.Value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/property_category_for_rent"/>
@@ -142,11 +188,13 @@
             android:layout_height="wrap_content"
             android:text="@string/property_type"/>
         <Spinner
+            style="@style/TextviewStyle.Value"
             android:id="@+id/property_edit_spinner_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/property_type"/>
         <Button
+            style="@style/TextviewStyle.Value"
             android:id="@+id/property_edit_button_add_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

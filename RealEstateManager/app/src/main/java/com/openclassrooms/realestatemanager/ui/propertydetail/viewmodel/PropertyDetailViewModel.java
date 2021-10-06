@@ -44,6 +44,7 @@ public class PropertyDetailViewModel extends ViewModel {
     /**
      * repositories
      */
+    @NonNull
     private final DatabaseRepository databaseRepository;
     @NonNull
     private final PermissionChecker permissionChecker;
