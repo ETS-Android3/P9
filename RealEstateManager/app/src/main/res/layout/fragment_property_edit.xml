@@ -5,7 +5,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.propertyedit.view.PropertyEditFragment">
+        tools:context=".ui.propertyedit.view.PropertyEditFragment"
+    >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,65 +14,108 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/fragment_property_edit_bottom_navigation_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:padding="@dimen/default_padding">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/property_edit_title"
+            android:id="@+id/fragment_property_edit_text_view_title"
             style="@style/TextviewStyle.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/property_edit_title_create" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/property_edit_textinputlayout_addressTitle"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                style="@style/TextviewStyle.Value.Bold"
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="3">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fragment_property_edit_text_input_layout_address_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/My_TextInputLayoutStyle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/fragment_property_edit_text_input_edit_text_address_title"
+                                                android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/property_address_title"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fragment_property_edit_text_input_layout_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/My_TextInputLayoutStyle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/fragment_property_edit_text_input_edit_text_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/property_address"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/fragment_property_edit_map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/default_margin"
+                android:layout_gravity="center_vertical"
+                tools:context="com.openclassrooms.realestatemanager.ui.MainActivity" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fragment_property_edit_text_input_layout_property_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/My_TextInputLayoutDropdownStyle" >
+
+            <AutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/property_address_title"
-                android:inputType="text" />
+                android:hint="@string/property_type"
+                android:inputType="none"
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/property_edit_textinput_layout_address"
+            android:id="@+id/fragment_property_edit_text_input_layout_price"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            style="@style/My_TextInputLayoutStyle">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/property_edit_textinput_edittext_address"
-                style="@style/TextviewStyle.Value.Bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/property_address"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/property_edit_textinputlayout_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.textfield.TextInputEditText
-                style="@style/TextviewStyle.Value.Bold"
+                android:id="@+id/fragment_property_edit_text_input_edit_text_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_price"
                 android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/property_edit_textinputlayout_surface"
+            android:id="@+id/fragment_property_edit_text_input_layout_surface"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            style="@style/My_TextInputLayoutStyle">
 
             <com.google.android.material.textfield.TextInputEditText
-                style="@style/TextviewStyle.Value.Bold"
+                android:id="@+id/fragment_property_edit_text_input_edit_text_surface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_surface"
@@ -79,12 +123,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/property_edit_textinputlayout_rooms"
+            android:id="@+id/fragment_property_edit_text_input_layout_rooms"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            style="@style/My_TextInputLayoutStyle">
 
             <com.google.android.material.textfield.TextInputEditText
-                style="@style/TextviewStyle.Value.Bold"
+                android:id="@+id/fragment_property_edit_text_input_edit_text_rooms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_rooms"
@@ -92,14 +137,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/property_edit_textinputlayout_description"
+            android:id="@+id/fragment_property_edit_text_input_layout_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:counterEnabled="true"
-            app:counterMaxLength="500">
+            style="@style/My_TextInputLayoutStyle">
 
             <com.google.android.material.textfield.TextInputEditText
-                style="@style/TextviewStyle.Value"
+                android:id="@+id/fragment_property_edit_text_input_edit_text_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_description"
@@ -107,19 +151,19 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/property_edit_textinputlayout_point_of_interest"
+            android:id="@+id/fragment_property_edit_text_input_layout_point_of_interest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:counterEnabled="true"
-            app:counterMaxLength="500">
+            style="@style/My_TextInputLayoutStyle">
 
             <com.google.android.material.textfield.TextInputEditText
-                style="@style/TextviewStyle.Value"
+                android:id="@+id/fragment_property_edit_text_input_edit_text_point_of_interest"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_point_of_interest"
                 android:inputType="textMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.switchmaterial.SwitchMaterial
             style="@style/SwitchMaterialStyle"
             android:id="@+id/property_edit_switch_available"
@@ -127,39 +171,47 @@
             android:layout_height="wrap_content"
             android:text="@string/property_available" />
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/property_edit_textinputlayout_entry_date"
+            android:id="@+id/fragment_property_edit_text_input_layout_entry_date"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            style="@style/My_TextInputLayoutStyle">
 
             <com.google.android.material.textfield.TextInputEditText
-                style="@style/TextviewStyle.Value.Bold"
+                android:id="@+id/fragment_property_edit_text_input_edit_text_entry_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_entry_date"
                 android:inputType="date" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/property_edit_textinputlayout_sale_date"
+            android:id="@+id/fragment_property_edit_text_input_layout_sale_date"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            style="@style/My_TextInputLayoutStyle">
 
             <com.google.android.material.textfield.TextInputEditText
-                style="@style/TextviewStyle.Value.Bold"
+                android:id="@+id/fragment_property_edit_text_input_edit_text_sale_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/property_sale_date"
                 android:inputType="date" />
         </com.google.android.material.textfield.TextInputLayout>
-        <TextView
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fragment_property_edit_text_input_layout_agent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/property_agent_name"/>
-        <Spinner
-            android:id="@+id/property_edit_spinner_agent"
-            style="@style/TextviewStyle.Value"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/property_agent_name"/>
+            style="@style/My_TextInputLayoutDropdownStyle">
+
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/property_agent_name"
+                android:inputType="none"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -183,16 +235,7 @@
                 android:text="@string/property_category_for_rent"/>
 
         </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/property_type"/>
-        <Spinner
-            style="@style/TextviewStyle.Value"
-            android:id="@+id/property_edit_spinner_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/property_type"/>
+
         <Button
             style="@style/TextviewStyle.Value"
             android:id="@+id/property_edit_button_add_photo"

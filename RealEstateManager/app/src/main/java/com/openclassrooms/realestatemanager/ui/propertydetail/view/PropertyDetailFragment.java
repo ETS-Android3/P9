@@ -417,7 +417,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     public void onStart() {
         super.onStart();
         Log.d(Tag.TAG, "MapFragment.onStart() called");
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_property_detail_map);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
     }
@@ -434,6 +434,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
             drawOtherPropertiesLocation();
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();

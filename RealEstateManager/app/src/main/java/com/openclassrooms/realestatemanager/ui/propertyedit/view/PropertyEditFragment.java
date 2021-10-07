@@ -16,52 +16,87 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.data.room.model.Agent;
+import com.openclassrooms.realestatemanager.data.room.model.Property;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
-import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
-import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.PropertyDetailViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEditViewModel;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodelfactory.PropertyEditViewModelFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PropertyEditFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PropertyEditFragment extends Fragment {
+public class PropertyEditFragment extends Fragment implements OnMapReadyCallback {
 
     private long propertyId;
+    private TextView textViewTitle;
+
     private TextInputLayout textInputLayoutAddressTitle;
+    private TextInputEditText textInputEditTextAddressTitle;
+
     private TextInputLayout textInputLayoutAddress;
+    private TextInputEditText textInputEditTextAddress;
+
     private TextInputLayout textInputLayoutPrice;
+    private TextInputEditText textInputEditTextPrice;
+
     private TextInputLayout textInputLayoutSurface;
+    private TextInputEditText textInputEditTextSurface;
+
     private TextInputLayout textInputLayoutRooms;
+    private TextInputEditText textInputEditTextRooms;
+
     private TextInputLayout textInputLayoutDescription;
+    private TextInputEditText textInputEditTextDescription;
+
     private TextInputLayout textInputLayoutPointOfInterest;
+    private TextInputEditText textInputEditTextPointOfInterest;
+
     private TextInputLayout textInputLayoutEntryDate;
+    private TextInputEditText textInputEditTextEntryDate;
+
     private TextInputLayout textInputLayoutSaleDate;
-    private SwitchMaterial switchMaterialAvaliable;
+    private TextInputEditText textInputEditTextSaleDate;
+
+    private SwitchMaterial switchMaterialAvailable;
     private SwitchMaterial switchMaterialCategory;
-    private Spinner spinnerAgent;
+
+    private TextInputLayout textInputLayoutAgent;
+    private TextInputLayout textInputLayoutPropertyType;
+
     private Spinner spinnerType;
     private Button buttonPhoto;
-
-    private TextInputEditText textInputEditTextAddress;
 
     private PropertyEditViewModel propertyEditViewModel;
 
     private PropertyEditListener callbackEditProperty;
+
+    private GoogleMap mMap;
+    private LatLng propertyLatLng;
 
     public PropertyEditFragment() {
         // Required empty public constructor
@@ -113,22 +148,40 @@ public class PropertyEditFragment extends Fragment {
     }
 
     private void configureComponents(View view) {
-        textInputLayoutAddressTitle = view.findViewById(R.id.property_edit_textinputlayout_addressTitle);
+        textViewTitle = view.findViewById(R.id.fragment_property_edit_text_view_title);
 
-        textInputLayoutAddress = view.findViewById(R.id.property_edit_textinput_layout_address);
-        textInputEditTextAddress = view.findViewById(R.id.property_edit_textinput_edittext_address);
+        textInputLayoutAddressTitle = view.findViewById(R.id.fragment_property_edit_text_input_layout_address_title);
+        textInputEditTextAddressTitle = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_address_title);
 
-        textInputLayoutPrice = view.findViewById(R.id.property_edit_textinputlayout_price);
-        textInputLayoutSurface = view.findViewById(R.id.property_edit_textinputlayout_surface);
-        textInputLayoutRooms = view.findViewById(R.id.property_edit_textinputlayout_rooms);
-        textInputLayoutDescription = view.findViewById(R.id.property_edit_textinputlayout_description);
-        textInputLayoutPointOfInterest = view.findViewById(R.id.property_edit_textinputlayout_point_of_interest);
-        textInputLayoutEntryDate = view.findViewById(R.id.property_edit_textinputlayout_entry_date);
-        textInputLayoutSaleDate = view.findViewById(R.id.property_edit_textinputlayout_sale_date);
-        switchMaterialAvaliable = view.findViewById(R.id.property_edit_switch_available);
+        textInputLayoutAddress = view.findViewById(R.id.fragment_property_edit_text_input_layout_address);
+        textInputEditTextAddress = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_address);
+
+        textInputLayoutPrice = view.findViewById(R.id.fragment_property_edit_text_input_layout_price);
+        textInputEditTextPrice = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_price);
+
+        textInputLayoutSurface = view.findViewById(R.id.fragment_property_edit_text_input_layout_surface);
+        textInputEditTextSurface = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_surface);
+
+        textInputLayoutRooms = view.findViewById(R.id.fragment_property_edit_text_input_layout_rooms);
+        textInputEditTextRooms = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_rooms);
+
+        textInputLayoutDescription = view.findViewById(R.id.fragment_property_edit_text_input_layout_description);
+        textInputEditTextDescription = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_description);
+
+        textInputLayoutPointOfInterest = view.findViewById(R.id.fragment_property_edit_text_input_layout_point_of_interest);
+        textInputEditTextPointOfInterest = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_point_of_interest);
+
+        textInputLayoutEntryDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_entry_date);
+        textInputEditTextEntryDate = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_entry_date);
+
+        textInputLayoutSaleDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_sale_date);
+        textInputEditTextSaleDate = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_sale_date);
+
+        textInputLayoutAgent = view.findViewById(R.id.fragment_property_edit_text_input_layout_agent);
+        textInputLayoutPropertyType = view.findViewById(R.id.fragment_property_edit_text_input_layout_property_type);
+
+        switchMaterialAvailable = view.findViewById(R.id.property_edit_switch_available);
         switchMaterialCategory = view.findViewById(R.id.property_edit_switch_category);
-        spinnerAgent = view.findViewById(R.id.property_edit_spinner_agent);
-        spinnerType = view.findViewById(R.id.property_edit_spinner_type);
         buttonPhoto = view.findViewById(R.id.property_edit_button_add_photo);
     }
 
@@ -154,23 +207,7 @@ public class PropertyEditFragment extends Fragment {
             @Override
             public void onChanged(LatLng latLng) {
                 Log.d(Tag.TAG, "onChanged() called. with: latLng = [" + latLng + "]");
-            }
-        });
-
-        textInputEditTextAddress.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                //propertyEditViewModel.loadLocationByAddress(s.toString());
+                setPropertyLatLng(latLng);
             }
         });
 
@@ -178,12 +215,46 @@ public class PropertyEditFragment extends Fragment {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    String text = textInputEditTextAddress.getText().toString();
+                    String text = getAddress();
                     propertyEditViewModel.loadLocationByAddress(text);
                 }
             }
         });
 
+        propertyEditViewModel.getAgentsLiveData().observe(getViewLifecycleOwner(), new Observer<List<Agent>>() {
+            @Override
+            public void onChanged(List<Agent> agents) {
+                if (agents != null) {
+                    List<String> items = new ArrayList<>();
+
+                    for (Agent agent : agents) {
+                        items.add(agent.getName());
+                    }
+
+                    ArrayAdapter adapter = new ArrayAdapter(getContext(), R.layout.list_item, items);
+
+                    AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgent.getEditText();
+                    autoCompleteTextView.setAdapter(adapter);
+                }
+            }
+        });
+
+        propertyEditViewModel.getPropertyTypeLiveData().observe(getViewLifecycleOwner(), new Observer<List<PropertyType>>() {
+            @Override
+            public void onChanged(List<PropertyType> propertyTypes) {
+                if (propertyTypes != null) {
+                    List<String> items = new ArrayList<>();
+                    for (PropertyType propertyType : propertyTypes) {
+                        items.add(propertyType.getName());
+                    }
+
+                    ArrayAdapter adapter = new ArrayAdapter(getContext(), R.layout.list_item, items);
+
+                    AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutPropertyType.getEditText();
+                    autoCompleteTextView.setAdapter(adapter);
+                }
+            }
+        });
     }
 
     private void configureBottomNavigationBar(View view) {
@@ -209,5 +280,157 @@ public class PropertyEditFragment extends Fragment {
                 return true;
         }
         return false;
+    }
+
+    private void setPropertyLatLng(LatLng latLng){
+        this.propertyLatLng = latLng;
+        drawPropertylocation();
+    }
+
+    private void drawPropertylocation(){
+        Log.d(Tag.TAG, "PropertyEditFragment.drawPropertylocation() (mMap==null)=" + (mMap==null) + " (propertyLatLng==null)=" + (propertyLatLng==null));
+        if ((mMap!=null) && (this.propertyLatLng != null)) {
+            mMap.clear();
+            mMap.addMarker(new MarkerOptions().position(propertyLatLng).title("Property position"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(propertyLatLng, 12));
+        }
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        Log.d(Tag.TAG, "PropertyEditFragment.onMapReady()");
+        mMap = googleMap;
+        if (this.propertyLatLng != null) {
+            Log.d(Tag.TAG, "onMapReady() -> setLocation()");
+            drawPropertylocation();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(Tag.TAG, "PropertyDetailFragment.MapFragment.onStart() called");
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_property_edit_map);
+        assert mapFragment != null;
+        mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(Tag.TAG, "PropertyDetailFragment.MapFragment.onResume()");
+        if ((mMap != null) && (this.propertyLatLng != null)) {
+            propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
+            if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
+                propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
+            }
+            Log.d(Tag.TAG, "PropertyDetailFragment.onViewCreated() propertyId=" + propertyId + "");
+            Log.d(Tag.TAG, "MapFragment.onResume() -> propertyDetailViewModel.load()");
+            //propertyDetailViewModel.load(propertyId);
+        }
+    }
+
+    private String getAddressTitle(){
+        return textInputLayoutAddressTitle.getEditText().getText().toString().trim();
+    }
+
+    private void setAddressTitle(String addressTitle){
+        textInputLayoutAddressTitle.getEditText().setText(addressTitle);
+    }
+
+    private String getAddress(){
+        return textInputLayoutAddress.getEditText().getText().toString().trim();
+    }
+
+    private void setAdrress(String address){
+        textInputLayoutAddress.getEditText().setText(address);
+    }
+
+    private String getPrice(){
+        return textInputLayoutPrice.getEditText().getText().toString().trim();
+    };
+
+    private void setPrice(String price){
+        textInputLayoutPrice.getEditText().setText(price);
+    }
+
+    private String getSurface(){
+        return textInputLayoutSurface.getEditText().getText().toString().trim();
+    }
+
+    private void setSurface(String surface){
+        textInputLayoutSurface.getEditText().setText(surface);
+    }
+
+    private String getRooms(){
+        return textInputLayoutRooms.getEditText().getText().toString().trim();
+    }
+
+    private void setRooms(String rooms){
+        textInputLayoutRooms.getEditText().setText(rooms);
+    }
+
+    private String getDescription(){
+        return textInputLayoutDescription.getEditText().getText().toString().trim();
+    }
+
+    private void setDescription(String description){
+        textInputLayoutDescription.getEditText().setText(description);
+    }
+
+    private String getPointOfInterest(){
+        return textInputLayoutPointOfInterest.getEditText().getText().toString().trim();
+    }
+
+    private void setPointOfInterest(String pointOfInterest){
+        textInputLayoutPointOfInterest.getEditText().setText(pointOfInterest);
+    }
+
+    private String getEntryDate() {
+        return textInputLayoutEntryDate.getEditText().getText().toString().trim();
+    }
+
+    private void setEntryDate(String entryDate){
+        textInputLayoutEntryDate.getEditText().setText(entryDate);
+    }
+
+    private String getSaleDate() {
+        return textInputLayoutSaleDate.getEditText().getText().toString().trim();
+    }
+
+    private void setSaleDate(String saleDate){
+        textInputLayoutEntryDate.getEditText().setText(saleDate);
+    }
+
+    private boolean getAvailable(){
+        return switchMaterialAvailable.isChecked();
+    }
+
+    private void setAvailable(boolean available){
+        switchMaterialAvailable.setChecked(available);
+    }
+
+    private boolean getCategory(){
+        return switchMaterialCategory.isChecked();
+    }
+
+    private void setCategory(boolean forSale){
+        switchMaterialCategory.setChecked(forSale);
+    }
+
+    private void addProperty(){
+        propertyEditViewModel.addProperty(getAddressTitle(),
+                getAddress(),
+                getPrice(),
+                getSurface(),
+                getRooms(),
+                getDescription(),
+                getPointOfInterest(),
+                getEntryDate(),
+                getSaleDate(),
+                getAvailable(),
+                getCategory(),
+                propertyLatLng
+        );
     }
 }

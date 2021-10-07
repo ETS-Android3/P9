@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     public void onConfigurationChanged(@NotNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         Log.d(Tag.TAG, "MainActivity.onConfigurationChanged()");
+
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             //Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
