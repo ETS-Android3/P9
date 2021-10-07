@@ -38,9 +38,7 @@ public class PropertyRepository {
         };
 
         Future<Long> future = AppDatabase.getExecutor().submit(callable);
-
         Long id = future.get();
-        AppDatabase.getExecutor().shutdown();
         return id;
     }
 
