@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -273,8 +274,9 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 callbackEditProperty.onCancelEditProperty(this.propertyId);
                 return true;
             case R.id.fragment_property_edit_ok:
-                validateForm();
-                callbackEditProperty.onValidateEditProperty(this.propertyId);
+                if (validateForm()) {;
+                    callbackEditProperty.onValidateEditProperty(this.propertyId);
+                }
                 return true;
             case R.id.fragment_property_edit_sell:
                 callbackEditProperty.onSellProperty(this.propertyId);
@@ -427,11 +429,103 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         switchMaterialCategory.setChecked(forSale);
     }
 
-    private void validateForm(){
-        if (this.propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
-            insertProperty();
+    private boolean validateTextInputLayout(TextInputLayout textInputLayout){
+        String text = textInputLayout.getEditText().getText().toString().trim();
+        boolean check = (!TextUtils.isEmpty(text));
+        if (check) {
+            textInputLayout.setErrorEnabled(false);
+        } else {
+            textInputLayout.setError("value requiered");
+            textInputLayout.setErrorEnabled(true);
+        }
+        return check;
+    }
+
+    private boolean validateAddressTitle(){
+        return validateTextInputLayout(textInputLayoutAddressTitle);
+    }
+
+    private boolean validateAddress(){
+        return validateTextInputLayout(textInputLayoutAddress);
+    }
+
+    private boolean validatePrice(){
+        return validateTextInputLayout(textInputLayoutPrice);
+    }
+
+    private boolean validateSurface(){
+        return validateTextInputLayout(textInputLayoutSurface);
+    }
+
+    private boolean validateRooms(){
+        return validateTextInputLayout(textInputLayoutRooms);
+    }
+
+    private boolean validateDescription(){
+        return validateTextInputLayout(textInputLayoutDescription);
+    }
+
+    private boolean validatePointOfInterest(){
+        return validateTextInputLayout(textInputLayoutPointOfInterest);
+    }
+
+    private boolean validateEntryDate(){
+        return validateTextInputLayout(textInputLayoutEntryDate);
+    }
+
+    private boolean validateSaleDate(){
+        return validateTextInputLayout(textInputLayoutSaleDate);
+    }
+
+    private boolean validateAgent(){
+        boolean strOk = validateTextInputLayout(textInputLayoutAgent);
+        boolean idOk = (getAgentId() > 0);
+        if (!idOk) {
+            textInputLayoutAgent.setError("value requiered");
+            textInputLayoutAgent.setErrorEnabled(true);
+        }
+        return (strOk && idOk);
+    }
+
+    private boolean validatePropertyType(){
+        boolean strOk = validateTextInputLayout(textInputLayoutPropertyType);
+        boolean idOk = (getAgentId() > 0);
+        if (!idOk) {
+            textInputLayoutPropertyType.setError("value requiered");
+            textInputLayoutPropertyType.setErrorEnabled(true);
+        }
+        return (strOk && idOk);
+    }
+
+    /**
+     * check all values
+     * @return
+     */
+    private boolean isValuesOk(){
+        // control user input
+        return (validateAddressTitle() &
+                validateAddress() &
+                validatePrice() &
+                validateSurface() &
+                validateRooms() &
+                validateDescription() &
+                validatePointOfInterest() &
+                validateEntryDate() &
+                validateSaleDate() &
+                validateAgent() &
+                validatePropertyType());
+    }
+
+    private boolean validateForm(){
+        if (isValuesOk()) {
+            if (this.propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
+                insertProperty();
+            } else {
+                updateProperty();
+            }
+            return true;
         } else
-            updateProperty();
+            return false;
     }
 
     private void updateProperty(){
