@@ -15,9 +15,8 @@ import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
-import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.AgentDropdown;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
-import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyTypeDropdown;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -65,36 +64,36 @@ public class PropertyEditViewModel extends ViewModel {
         return dropDownViewstateMediatorLiveData;
     }
 
-    private AgentDropdown agentToAgentDropdown(Agent agent){
-        return new AgentDropdown(agent.getId(), agent.getName());
+    private DropdownItem agentToDropdownItem(Agent agent){
+        return new DropdownItem(agent.getId(), agent.getName());
     }
 
-    private List<AgentDropdown> agentListToAgentDropdownList(List<Agent> agents){
-        List<AgentDropdown> agentDropdownList = new ArrayList<>();
+    private List<DropdownItem> agentsToDropdownItems(List<Agent> agents){
+        List<DropdownItem> items = new ArrayList<>();
         for (Agent agent : agents) {
-            agentDropdownList.add(agentToAgentDropdown(agent));
+            items.add(agentToDropdownItem(agent));
         }
-        return agentDropdownList;
+        return items;
     }
 
-    private PropertyTypeDropdown propertyTypeToPropertyTypeDropdown(PropertyType propertyType){
-        return new PropertyTypeDropdown(propertyType.getId(), propertyType.getName());
+    private DropdownItem propertyTypeToDropdownItem(PropertyType propertyType){
+        return new DropdownItem(propertyType.getId(), propertyType.getName());
     }
 
-    private List<PropertyTypeDropdown> propertyTypeListToPropertyTypeDropdownList(List<PropertyType> propertyTypes){
-        List<PropertyTypeDropdown> propertyTypeDropdownList = new ArrayList<>();
+    private List<DropdownItem> propertyTypesToDropdownItems(List<PropertyType> propertyTypes){
+        List<DropdownItem> items = new ArrayList<>();
         for (PropertyType propertyType : propertyTypes) {
-            propertyTypeDropdownList.add(propertyTypeToPropertyTypeDropdown(propertyType));
+            items.add(propertyTypeToDropdownItem(propertyType));
         }
-        return propertyTypeDropdownList;
+        return items;
     }
 
     private void configureDownViewstateMediatorLiveData(){
         LiveData<List<Agent>> agentLiveData = databaseRepository.getAgentRepository().getAgents();
-        LiveData<List<AgentDropdown>> agentDropdownListLiveData = Transformations.map(agentLiveData, this::agentListToAgentDropdownList);
+        LiveData<List<DropdownItem>> agentItemsLiveData = Transformations.map(agentLiveData, this::agentsToDropdownItems);
 
         LiveData<List<PropertyType>> propertyTypeLiveData = databaseRepository.getPropertyTypeRepository().getPropertyTypes();
-        LiveData<List<PropertyTypeDropdown>> propertyTypeDropdownListLiveData = Transformations.map(propertyTypeLiveData, this::propertyTypeListToPropertyTypeDropdownList);
+        LiveData<List<DropdownItem>> propertyTypeItemsLiveData = Transformations.map(propertyTypeLiveData, this::propertyTypesToDropdownItems);
 
         dropDownViewstateMediatorLiveData.addSource(agentLiveData, new Observer<List<Agent>>() {
             @Override
@@ -102,10 +101,10 @@ public class PropertyEditViewModel extends ViewModel {
             }
         });
 
-        dropDownViewstateMediatorLiveData.addSource(agentDropdownListLiveData, new Observer<List<AgentDropdown>>() {
+        dropDownViewstateMediatorLiveData.addSource(agentItemsLiveData, new Observer<List<DropdownItem>>() {
             @Override
-            public void onChanged(List<AgentDropdown> agentDropdowns) {
-                conbineDropDown(agentDropdowns, propertyTypeDropdownListLiveData.getValue());
+            public void onChanged(List<DropdownItem> items) {
+                conbineDropDown(items, propertyTypeItemsLiveData.getValue());
             }
         });
 
@@ -114,21 +113,21 @@ public class PropertyEditViewModel extends ViewModel {
             public void onChanged(List<PropertyType> propertyTypes) {
             }
         });
-        dropDownViewstateMediatorLiveData.addSource(propertyTypeDropdownListLiveData, new Observer<List<PropertyTypeDropdown>>() {
+        dropDownViewstateMediatorLiveData.addSource(propertyTypeItemsLiveData, new Observer<List<DropdownItem>>() {
             @Override
-            public void onChanged(List<PropertyTypeDropdown> propertyTypeDropdowns) {
-                conbineDropDown(agentDropdownListLiveData.getValue(), propertyTypeDropdowns);
+            public void onChanged(List<DropdownItem> items) {
+                conbineDropDown(agentItemsLiveData.getValue(), items);
             }
         });
     }
 
-    private void conbineDropDown(@Nullable List<AgentDropdown> agentDropdownList,
-                                 @Nullable List<PropertyTypeDropdown> propertyTypeDropdownList){
+    private void conbineDropDown(@Nullable List<DropdownItem> agentItems,
+                                 @Nullable List<DropdownItem> propertyTypeItems){
 
-        if ((agentDropdownList == null) || (propertyTypeDropdownList == null)) {
+        if ((agentItems == null) || (propertyTypeItems == null)) {
             return;
         }
-        dropDownViewstateMediatorLiveData.setValue(new DropdownViewstate(agentDropdownList, propertyTypeDropdownList));
+        dropDownViewstateMediatorLiveData.setValue(new DropdownViewstate(agentItems, propertyTypeItems));
     }
 
     public void loadDropDownLists(){

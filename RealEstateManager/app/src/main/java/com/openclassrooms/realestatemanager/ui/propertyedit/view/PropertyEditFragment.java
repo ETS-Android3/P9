@@ -38,9 +38,8 @@ import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEditViewModel;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodelfactory.PropertyEditViewModelFactory;
-import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.AgentDropdown;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
-import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyTypeDropdown;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -228,28 +227,28 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
             @Override
             public void onChanged(DropdownViewstate dropDownViewstate) {
                 // load dropdown agents list
-                if (dropDownViewstate.getAgentDropdownList() != null){
-                    ArrayAdapter adapterAgents = new ArrayAdapter(getContext(), R.layout.list_item, dropDownViewstate.getAgentDropdownList());
+                if (dropDownViewstate.getAgentItems() != null){
+                    ArrayAdapter adapterAgents = new ArrayAdapter(getContext(), R.layout.list_item, dropDownViewstate.getAgentItems());
                     AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgent.getEditText();
                     autoCompleteTextView.setAdapter(adapterAgents);
                     autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            AgentDropdown agentDropdown = (AgentDropdown) adapterAgents.getItem(position);
-                            agentId = agentDropdown.getId();
+                            DropdownItem item = (DropdownItem) adapterAgents.getItem(position);
+                            agentId = item.getId();
                         }
                     });
                 }
                 // load dropdown property types list
-                if (dropDownViewstate.getPropertyTypeDropdownList() != null){
-                    ArrayAdapter adapterPropertyType = new ArrayAdapter(getContext(), R.layout.list_item, dropDownViewstate.getPropertyTypeDropdownList());
+                if (dropDownViewstate.getPropertyTypeItems() != null){
+                    ArrayAdapter adapterPropertyType = new ArrayAdapter(getContext(), R.layout.list_item, dropDownViewstate.getPropertyTypeItems());
                     AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutPropertyType.getEditText();
                     autoCompleteTextView.setAdapter(adapterPropertyType);
                     autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            PropertyTypeDropdown propertyTypeDropdown = (PropertyTypeDropdown) adapterPropertyType.getItem(position);
-                            propertyTypeId = propertyTypeDropdown.getId();
+                            DropdownItem item = (DropdownItem) adapterPropertyType.getItem(position);
+                            propertyTypeId = item.getId();
                         }
                     });
                 }

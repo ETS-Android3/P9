@@ -2,11 +2,11 @@ package com.openclassrooms.realestatemanager.ui.propertyedit.viewstate;
 
 import androidx.annotation.NonNull;
 
-public class PropertyTypeDropdown {
+public class DropdownItem {
     private final long id;
     private final String name;
 
-    public PropertyTypeDropdown(long id, String name) {
+    public DropdownItem(long id, String name) {
         this.id = id;
         this.name = name;
     }

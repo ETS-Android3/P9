@@ -3,19 +3,19 @@ package com.openclassrooms.realestatemanager.ui.propertyedit.viewstate;
 import java.util.List;
 
 public class DropdownViewstate {
-    private final List<AgentDropdown> agentDropdownList;
-    private final List<PropertyTypeDropdown> propertyTypeDropdownList;
+    private final List<DropdownItem> agentItems;
+    private final List<DropdownItem> propertyTypeItems;
 
-    public DropdownViewstate(List<AgentDropdown> agentDropdownList, List<PropertyTypeDropdown> propertyTypeDropdownList) {
-        this.agentDropdownList = agentDropdownList;
-        this.propertyTypeDropdownList = propertyTypeDropdownList;
+    public DropdownViewstate(List<DropdownItem> agentItems, List<DropdownItem> propertyTypeItems) {
+        this.agentItems = agentItems;
+        this.propertyTypeItems = propertyTypeItems;
     }
 
-    public List<AgentDropdown> getAgentDropdownList() {
-        return agentDropdownList;
+    public List<DropdownItem> getAgentItems() {
+        return agentItems;
     }
 
-    public List<PropertyTypeDropdown> getPropertyTypeDropdownList() {
-        return propertyTypeDropdownList;
+    public List<DropdownItem> getPropertyTypeItems() {
+        return propertyTypeItems;
     }
 }
