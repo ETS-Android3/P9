@@ -1,8 +1,12 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -11,7 +15,11 @@ import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.AgentDropdown;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyTypeDropdown;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +56,91 @@ public class PropertyEditViewModel extends ViewModel {
         googleGeocodeRepository.loadLocationByAddress(address);
     }
 
+    /**
+     * init
+     */
+
+    private final MediatorLiveData<DropdownViewstate> dropDownViewstateMediatorLiveData = new MediatorLiveData<>();
+    public MediatorLiveData<DropdownViewstate> getDropDownViewstateMediatorLiveData() {
+        return dropDownViewstateMediatorLiveData;
+    }
+
+    private AgentDropdown agentToAgentDropdown(Agent agent){
+        return new AgentDropdown(agent.getId(), agent.getName());
+    }
+
+    private List<AgentDropdown> agentListToAgentDropdownList(List<Agent> agents){
+        List<AgentDropdown> agentDropdownList = new ArrayList<>();
+        for (Agent agent : agents) {
+            agentDropdownList.add(agentToAgentDropdown(agent));
+        }
+        return agentDropdownList;
+    }
+
+    private PropertyTypeDropdown propertyTypeToPropertyTypeDropdown(PropertyType propertyType){
+        return new PropertyTypeDropdown(propertyType.getId(), propertyType.getName());
+    }
+
+    private List<PropertyTypeDropdown> propertyTypeListToPropertyTypeDropdownList(List<PropertyType> propertyTypes){
+        List<PropertyTypeDropdown> propertyTypeDropdownList = new ArrayList<>();
+        for (PropertyType propertyType : propertyTypes) {
+            propertyTypeDropdownList.add(propertyTypeToPropertyTypeDropdown(propertyType));
+        }
+        return propertyTypeDropdownList;
+    }
+
+    private void configureDownViewstateMediatorLiveData(){
+        LiveData<List<Agent>> agentLiveData = databaseRepository.getAgentRepository().getAgents();
+        LiveData<List<AgentDropdown>> agentDropdownListLiveData = Transformations.map(agentLiveData, this::agentListToAgentDropdownList);
+
+        LiveData<List<PropertyType>> propertyTypeLiveData = databaseRepository.getPropertyTypeRepository().getPropertyTypes();
+        LiveData<List<PropertyTypeDropdown>> propertyTypeDropdownListLiveData = Transformations.map(propertyTypeLiveData, this::propertyTypeListToPropertyTypeDropdownList);
+
+        dropDownViewstateMediatorLiveData.addSource(agentLiveData, new Observer<List<Agent>>() {
+            @Override
+            public void onChanged(List<Agent> agents) {
+            }
+        });
+
+        dropDownViewstateMediatorLiveData.addSource(agentDropdownListLiveData, new Observer<List<AgentDropdown>>() {
+            @Override
+            public void onChanged(List<AgentDropdown> agentDropdowns) {
+                conbineDropDown(agentDropdowns, propertyTypeDropdownListLiveData.getValue());
+            }
+        });
+
+        dropDownViewstateMediatorLiveData.addSource(propertyTypeLiveData, new Observer<List<PropertyType>>() {
+            @Override
+            public void onChanged(List<PropertyType> propertyTypes) {
+            }
+        });
+        dropDownViewstateMediatorLiveData.addSource(propertyTypeDropdownListLiveData, new Observer<List<PropertyTypeDropdown>>() {
+            @Override
+            public void onChanged(List<PropertyTypeDropdown> propertyTypeDropdowns) {
+                conbineDropDown(agentDropdownListLiveData.getValue(), propertyTypeDropdowns);
+            }
+        });
+    }
+
+    private void conbineDropDown(@Nullable List<AgentDropdown> agentDropdownList,
+                                 @Nullable List<PropertyTypeDropdown> propertyTypeDropdownList){
+
+        if ((agentDropdownList == null) || (propertyTypeDropdownList == null)) {
+            return;
+        }
+        dropDownViewstateMediatorLiveData.setValue(new DropdownViewstate(agentDropdownList, propertyTypeDropdownList));
+    }
+
+    public void loadDropDownLists(){
+        // load agent and load typeRepository
+        configureDownViewstateMediatorLiveData();
+    }
+
+    /**
+     * validation
+     * @param text
+     * @return
+     */
     private static int tryParse(String text){
         try {
             return Integer.parseInt(text);
@@ -56,17 +149,19 @@ public class PropertyEditViewModel extends ViewModel {
         }
     }
 
-    public void addProperty(String addressTitle,
-                            String address,
-                            String price,
+    public void addProperty(String price,
                             String surface,
-                            String rooms,
                             String description,
+                            String addressTitle,
+                            String address,
                             String pointOfInterest,
+                            boolean available,
                             String entryDate,
                             String saleDate,
-                            boolean available,
+                            long propertyTypeId,
                             boolean forSale,
+                            long agentId,
+                            String rooms,
                             LatLng latLng){
 
         if (addressTitle == null) {
@@ -95,9 +190,7 @@ public class PropertyEditViewModel extends ViewModel {
         double latitude = (latLng == null) ? 0 : latLng.latitude;
         double longitude = (latLng == null) ? 0 : latLng.longitude;
 
-        int typeId = 1;
         int categoryId = 1;
-        int agentId = 1;
 
         Date dateEntryDate = Calendar.getInstance().getTime() ;
         Date dateSaleDate = null;
@@ -112,7 +205,7 @@ public class PropertyEditViewModel extends ViewModel {
                 available,
                 dateEntryDate,
                 dateSaleDate,
-                typeId,
+                propertyTypeId,
                 categoryId,
                 agentId,
                 intRooms,
