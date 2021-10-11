@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.view;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -19,6 +20,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -40,6 +43,12 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEd
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodelfactory.PropertyEditViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
+import com.openclassrooms.realestatemanager.utils.Utils;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -80,9 +89,11 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
 
     private TextInputLayout textInputLayoutEntryDate;
     private TextInputEditText textInputEditTextEntryDate;
+    private ImageView imageViewEntryDate;
 
     private TextInputLayout textInputLayoutSaleDate;
     private TextInputEditText textInputEditTextSaleDate;
+    private ImageView imageViewSaleDate;
 
     private SwitchMaterial switchMaterialAvailable;
     private SwitchMaterial switchMaterialCategory;
@@ -175,9 +186,23 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
 
         textInputLayoutEntryDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_entry_date);
         textInputEditTextEntryDate = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_entry_date);
+        imageViewEntryDate = view.findViewById(R.id.fragment_property_imageView_entry_date);
+        imageViewEntryDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectDate(textInputLayoutEntryDate);
+            }
+        });
 
         textInputLayoutSaleDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_sale_date);
         textInputEditTextSaleDate = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_sale_date);
+        imageViewSaleDate = view.findViewById(R.id.fragment_property_imageView_sale_date);
+        imageViewSaleDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectDate(textInputLayoutSaleDate);
+            }
+        });
 
         textInputLayoutAgent = view.findViewById(R.id.fragment_property_edit_text_input_layout_agent);
         textInputLayoutPropertyType = view.findViewById(R.id.fragment_property_edit_text_input_layout_property_type);
@@ -185,6 +210,21 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         switchMaterialAvailable = view.findViewById(R.id.property_edit_switch_available);
         switchMaterialCategory = view.findViewById(R.id.property_edit_switch_category);
         buttonPhoto = view.findViewById(R.id.property_edit_button_add_photo);
+    }
+
+    private void selectDate(TextInputLayout textInputLayoutDate){
+        final Calendar cldr = Calendar.getInstance();
+        int day = cldr.get(Calendar.DAY_OF_MONTH);
+        int month = cldr.get(Calendar.MONTH);
+        int year = cldr.get(Calendar.YEAR);
+        DatePickerDialog picker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                Date date = new GregorianCalendar(year, month, day).getTime();
+                textInputLayoutDate.getEditText().setText(Utils.convertDateToLocalFormat(date));
+            }
+        }, year, month, day);
+        picker.show();
     }
 
     @Override
@@ -428,16 +468,18 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         switchMaterialCategory.setChecked(forSale);
     }
 
+    private void setErrorEnabledLayout(TextInputLayout textInputLayout, boolean isError){
+        if (isError) {
+            textInputLayout.setError(getString(R.string.value_required));
+        }
+        textInputLayout.setErrorEnabled(isError);
+    }
+
     private boolean validateTextInputLayout(TextInputLayout textInputLayout){
         String text = textInputLayout.getEditText().getText().toString().trim();
-        boolean check = (!TextUtils.isEmpty(text));
-        if (check) {
-            textInputLayout.setErrorEnabled(false);
-        } else {
-            textInputLayout.setError("value requiered");
-            textInputLayout.setErrorEnabled(true);
-        }
-        return check;
+        boolean isError = (TextUtils.isEmpty(text));
+        setErrorEnabledLayout(textInputLayout, isError);
+        return isError;
     }
 
     private boolean validateAddressTitle(){
@@ -468,20 +510,31 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         return validateTextInputLayout(textInputLayoutPointOfInterest);
     }
 
+    /**
+     * date text must be entry and date must be valide date
+     * @return
+     */
     private boolean validateEntryDate(){
-        return validateTextInputLayout(textInputLayoutEntryDate);
+        // date must be a valid date
+        boolean isError = (Utils.convertStringInLocalFormatToDate(getEntryDate()) == null);
+        setErrorEnabledLayout(textInputLayoutEntryDate, isError);
+        return isError;
     }
 
     private boolean validateSaleDate(){
-        return validateTextInputLayout(textInputLayoutSaleDate);
+        // date can be null
+        // if there is date, date must be a valid date
+        String strDate = getSaleDate();
+        Boolean isError = (strDate.length() > 0) && ((Utils.convertStringInLocalFormatToDate(strDate) == null));
+        setErrorEnabledLayout(textInputLayoutSaleDate, isError);
+        return isError;
     }
 
     private boolean validateAgent(){
         boolean strOk = validateTextInputLayout(textInputLayoutAgent);
         boolean idOk = (getAgentId() > 0);
         if (!idOk) {
-            textInputLayoutAgent.setError("value requiered");
-            textInputLayoutAgent.setErrorEnabled(true);
+            setErrorEnabledLayout(textInputLayoutAgent, true);
         }
         return (strOk && idOk);
     }
@@ -490,8 +543,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         boolean strOk = validateTextInputLayout(textInputLayoutPropertyType);
         boolean idOk = (getAgentId() > 0);
         if (!idOk) {
-            textInputLayoutPropertyType.setError("value requiered");
-            textInputLayoutPropertyType.setErrorEnabled(true);
+            setErrorEnabledLayout(textInputLayoutPropertyType, true);
         }
         return (strOk && idOk);
     }

@@ -170,33 +170,68 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/property_available" />
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fragment_property_edit_text_input_layout_entry_date"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/My_TextInputLayoutStyle">
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragment_property_edit_text_input_edit_text_entry_date"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_entry_date"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/property_entry_date"
-                android:inputType="date" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_weight="9"
+                style="@style/My_TextInputLayoutStyle">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fragment_property_edit_text_input_layout_sale_date"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_entry_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/property_entry_date"
+                    android:enabled="false"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/fragment_property_imageView_entry_date"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/default_padding"
+                app:srcCompat="@drawable/ic_date"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/My_TextInputLayoutStyle">
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragment_property_edit_text_input_edit_text_sale_date"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_sale_date"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/property_sale_date"
-                android:inputType="date" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_weight="9"
+
+                style="@style/My_TextInputLayoutStyle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_sale_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/property_sale_date"
+                    android:inputType="date"
+                    android:enabled="false"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/fragment_property_imageView_sale_date"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/default_padding"
+                app:srcCompat="@drawable/ic_date"/>
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/fragment_property_edit_text_input_layout_agent"

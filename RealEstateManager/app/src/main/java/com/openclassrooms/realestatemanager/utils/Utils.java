@@ -5,6 +5,7 @@ import android.net.wifi.WifiManager;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -123,6 +124,19 @@ public class Utils {
         }
         else {
             return formatDateToEuropean(date);
+        }
+    }
+
+    public static String convertDateToLocalFormat(Date date){
+        return DateFormat.getDateInstance(DateFormat.LONG).format(date);
+    }
+
+    public static Date convertStringInLocalFormatToDate(String text){
+        try {
+            return DateFormat.getDateInstance(DateFormat.LONG).parse(text);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
