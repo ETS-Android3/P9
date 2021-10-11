@@ -479,7 +479,10 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         String text = textInputLayout.getEditText().getText().toString().trim();
         boolean isError = (TextUtils.isEmpty(text));
         setErrorEnabledLayout(textInputLayout, isError);
-        return isError;
+        Log.d(Tag.TAG, "validateTextInputLayout(). isError=" + isError + " id=" +
+            getContext().getResources().getResourceEntryName(textInputLayout.getId()));
+
+        return (!isError);
     }
 
     private boolean validateAddressTitle(){
@@ -518,7 +521,8 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         // date must be a valid date
         boolean isError = (Utils.convertStringInLocalFormatToDate(getEntryDate()) == null);
         setErrorEnabledLayout(textInputLayoutEntryDate, isError);
-        return isError;
+        Log.d(Tag.TAG, "validateEntryDate() called isError = " + isError);
+        return (!isError);
     }
 
     private boolean validateSaleDate(){
@@ -527,7 +531,8 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         String strDate = getSaleDate();
         Boolean isError = (strDate.length() > 0) && ((Utils.convertStringInLocalFormatToDate(strDate) == null));
         setErrorEnabledLayout(textInputLayoutSaleDate, isError);
-        return isError;
+        Log.d(Tag.TAG, "validateSaleDate() called isError = " + isError);
+        return (!isError);
     }
 
     private boolean validateAgent(){
