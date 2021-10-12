@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +19,7 @@ import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
+import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
@@ -28,6 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
 public class PropertyEditViewModel extends ViewModel {
@@ -212,107 +215,138 @@ public class PropertyEditViewModel extends ViewModel {
         return  (error) ? R.string.value_required : NO_STRING_ID;
     }
 
+    private boolean checkIsInt(String value){
+        try {
+            Integer.parseInt(value);
+            Log.d(Tag.TAG, "checkIsInt() value = [" + value + "] return = [true]");
+            return true;
+        } catch (NumberFormatException e) {
+            Log.d(Tag.TAG, "checkIsInt() value = [" + value + "] return = [false]");
+            return false;
+        }
+    }
+
     private MutableLiveData<FieldState> onCheckAddressTitleValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckAddressTitleValueLiveData() { return onCheckAddressTitleValueMutableLiveData; }
     public boolean checkAddressTitleValue(String value){
-        boolean error = PropertyEditViewModel.emptyString(value);
-        onCheckAddressTitleValueMutableLiveData.setValue(new FieldState(getResIdError(error)));
-        return error;
+        boolean valueOk = !PropertyEditViewModel.emptyString(value);
+        onCheckAddressTitleValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
+        Log.d(Tag.TAG, "checkAddressTitleValue() return = [" + valueOk + "]");
+        return valueOk;
     }
 
     private MutableLiveData<FieldState> onCheckAddressValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckAddressValueLiveData() { return onCheckAddressValueMutableLiveData; }
     public boolean checkAddressValue(String value){
-        boolean error = PropertyEditViewModel.emptyString(value);
-        onCheckAddressValueMutableLiveData.setValue(new FieldState(getResIdError(error)));
-        return error;
+        boolean valueOk = !PropertyEditViewModel.emptyString(value);
+        onCheckAddressValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
+        Log.d(Tag.TAG, "checkAddressValue() return = [" + valueOk + "]");
+        return valueOk;
     }
 
     private MutableLiveData<FieldState> onCheckDescriptionValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckDescriptionValueLiveData() { return onCheckDescriptionValueMutableLiveData; }
     public boolean checkDescriptionValue(String value){
-        boolean error = PropertyEditViewModel.emptyString(value);
-        onCheckDescriptionValueMutableLiveData.setValue(new FieldState(getResIdError(error)));
-        return error;
+        boolean valueOk =!PropertyEditViewModel.emptyString(value);
+        onCheckDescriptionValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
+        Log.d(Tag.TAG, "checkDescriptionValue() return = [" + valueOk + "]");
+        return valueOk;
     }
 
     private MutableLiveData<FieldState> onCheckPointOfInterestValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckPointOfInterestValueLiveData() { return onCheckPointOfInterestValueMutableLiveData; }
     public boolean checkPointOfInterestValue(String value){
-        boolean error = PropertyEditViewModel.emptyString(value);
-        onCheckPointOfInterestValueMutableLiveData.setValue(new FieldState(getResIdError(error)));
-        return error;
+        boolean valueOk = !PropertyEditViewModel.emptyString(value);
+        onCheckPointOfInterestValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
+        Log.d(Tag.TAG, "checkPointOfInterestValue() return = [" + valueOk + "]");
+        return valueOk;
     }
 
     private MutableLiveData<FieldState> onCheckPriceValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckPriceValueLiveData() { return onCheckPriceValueMutableLiveData; }
     public boolean checkPriceValue(String value){
-        boolean error = PropertyEditViewModel.emptyString(value);
-        onCheckPriceValueMutableLiveData.setValue(new FieldState(getResIdError(error)));
-        return error;
+        boolean valueOk = checkIsInt(value);
+        onCheckPriceValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
+        Log.d(Tag.TAG, "checkPriceValue() return = [" + valueOk + "]");
+        return valueOk;
     }
 
     private MutableLiveData<FieldState> onCheckSurfaceValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckSurfaceValueLiveData() { return onCheckSurfaceValueMutableLiveData; }
     public boolean checkSurfaceValue(String value){
-        boolean error = PropertyEditViewModel.emptyString(value);
-        onCheckSurfaceValueMutableLiveData.setValue(new FieldState(getResIdError(error)));
-        return error;
+        boolean valueOk = checkIsInt(value);
+        onCheckSurfaceValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
+        Log.d(Tag.TAG, "checkSurfaceValue() return = [" + valueOk + "]");
+        return valueOk;
     }
 
     private MutableLiveData<FieldState> onCheckRoomsValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckRoomsValueLiveData() { return onCheckRoomsValueMutableLiveData; }
     public boolean checkRoomsValue(String value){
-        boolean error = PropertyEditViewModel.emptyString(value);
-        onCheckRoomsValueMutableLiveData.setValue(new FieldState(getResIdError(error)));
-        return error;
+        boolean valueOk = checkIsInt(value);
+        onCheckRoomsValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
+        Log.d(Tag.TAG, "checkRoomsValue() return = [" + valueOk + "]");
+        return valueOk;
     }
 
     private MutableLiveData<FieldState> onCheckEntryDateValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckEntryDateValueLiveData() { return onCheckEntryDateValueMutableLiveData; }
     public boolean checkEntryDateValue(String value){
-        boolean error = ! PropertyEditViewModel.validDate(value);
-        onCheckEntryDateValueMutableLiveData.setValue(new FieldState(getResIdError(error)));
-        return error;
+        boolean valueOk = PropertyEditViewModel.validDate(value);
+        onCheckEntryDateValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
+        Log.d(Tag.TAG, "checkEntryDateValue() return = [" + valueOk + "]");
+        return valueOk;
     }
 
     private MutableLiveData<FieldState> onCheckSaleDateValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckSaleDateValueLiveData() { return onCheckSaleDateValueMutableLiveData; }
     public boolean checkSaleDateValue(String value){
-        boolean error = ! PropertyEditViewModel.validOrNullDate(value);
-        onCheckSaleDateValueMutableLiveData.setValue(new FieldState(getResIdError(error)));
-        return error;
+        boolean valueOk = PropertyEditViewModel.validOrNullDate(value);
+        onCheckSaleDateValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
+        Log.d(Tag.TAG, "checkSaleDateValue() return = [" + valueOk + "]");
+        return valueOk;
     }
 
     private MutableLiveData<FieldState> onCheckAgentIdValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckAgentIdValueLiveData() { return onCheckAgentIdValueMutableLiveData; }
     public boolean checkAgentIdValue(long id){
-        boolean error = (findAgentById(id) == null);
-        onCheckAgentIdValueMutableLiveData.setValue(new FieldState(getResIdError(error)));
-        return error;
+        boolean valueOk = (findAgentById(id) != null);
+        onCheckAgentIdValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
+        Log.d(Tag.TAG, "checkAgentIdValue() return = [" + valueOk + "]");
+        return valueOk;
     }
 
     private MutableLiveData<FieldState> onCheckPropertyTypeIdValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckPropertyTypeIdValueLiveData() { return onCheckPropertyTypeIdValueMutableLiveData; }
     public boolean checkPropertyTypeIdValue(long id){
-        boolean error = (findPropertyTypeById(id) == null);
-        onCheckPropertyTypeIdValueMutableLiveData.setValue(new FieldState(getResIdError(error)));
-        return error;
+        boolean valueOk = (findPropertyTypeById(id) != null);
+        onCheckPropertyTypeIdValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
+        Log.d(Tag.TAG, "checkPropertyTypeIdValue() return = [" + valueOk + "]");
+        return valueOk;
     }
 
-    /**
-     * validation
-     * @param text
-     * @return
+    public interface AddPropertyInterface{
+        void onPropertyAdded(long propertyId);
+    }
+     /**
+     * check values,
+     * if values are ok send data to database and emit ok to view
+     *
+     * @param price
+     * @param surface
+     * @param description
+     * @param addressTitle
+     * @param address
+     * @param pointOfInterest
+     * @param available
+     * @param entryDate
+     * @param saleDate
+     * @param propertyTypeId
+     * @param forSale
+     * @param agentId
+     * @param rooms
+     * @param latLng
      */
-    private static int tryParse(String text){
-        try {
-            return Integer.parseInt(text);
-        } catch (NumberFormatException e) {
-            return UNINITIALIZED_INTEGER_VALUE;
-        }
-    }
-
     public void addProperty(String price,
                             String surface,
                             String description,
@@ -326,10 +360,11 @@ public class PropertyEditViewModel extends ViewModel {
                             boolean forSale,
                             long agentId,
                             String rooms,
-                            LatLng latLng){
+                            LatLng latLng,
+                            AddPropertyInterface addPropertyInterface){
 
         // check all values
-        boolean ok = checkAddressTitleValue(addressTitle) &
+        boolean valuesOk = checkAddressTitleValue(addressTitle) &
                 checkAddressValue(address) &
                 checkPriceValue(price) &
                 checkSurfaceValue(surface) &
@@ -341,16 +376,20 @@ public class PropertyEditViewModel extends ViewModel {
                 checkAgentIdValue(agentId) &
                 checkPropertyTypeIdValue(propertyTypeId);
 
+        if (valuesOk) {
+            double latitude = (latLng == null) ? 0 : latLng.latitude;
+            double longitude = (latLng == null) ? 0 : latLng.longitude;
 
-        double latitude = (latLng == null) ? 0 : latLng.latitude;
-        double longitude = (latLng == null) ? 0 : latLng.longitude;
+            int categoryId = 1;
 
-        int categoryId = 1;
+            int intPrice = Integer.parseInt(price);
+            int intSurface = Integer.parseInt(surface);
+            int intRooms = Integer.parseInt(rooms);
 
-        //Date dateEntryDate = Calendar.getInstance().getTime() ;
-        //Date dateSaleDate = null;
+            Date dateEntryDate = Utils.convertStringInLocalFormatToDate(entryDate);
+            Date dateSaleDate = Utils.convertStringInLocalFormatToDate(saleDate);
 
-/*        Property property = new Property(0,
+            Property property = new Property(0,
                 intPrice,
                 intSurface,
                 description,
@@ -367,7 +406,48 @@ public class PropertyEditViewModel extends ViewModel {
                 latitude,
                 longitude);
 
-        databaseRepository.getPropertyRepository().insert(property);*/
+            try {
+                long id = databaseRepository.getPropertyRepository().insert(property);
+                addPropertyInterface.onPropertyAdded(id);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
+    private MutableLiveData<Boolean> onCheckAllValuesMutableLiveData = new MutableLiveData<>();
+    public MutableLiveData<Boolean> getOnCheckAllValuesLiveData() {return onCheckAllValuesMutableLiveData;}
+    public void checkAllValues(String price,
+                            String surface,
+                            String description,
+                            String addressTitle,
+                            String address,
+                            String pointOfInterest,
+                            boolean available,
+                            String entryDate,
+                            String saleDate,
+                            long propertyTypeId,
+                            boolean forSale,
+                            long agentId,
+                            String rooms,
+                            LatLng latLng){
+
+        // check all values
+        boolean valuesOk = checkAddressTitleValue(addressTitle) &
+                checkAddressValue(address) &
+                checkPriceValue(price) &
+                checkSurfaceValue(surface) &
+                checkRoomsValue(rooms) &
+                checkDescriptionValue(description) &
+                checkPointOfInterestValue(pointOfInterest) &
+                checkEntryDateValue(entryDate) &
+                checkSaleDateValue(saleDate) &
+                checkAgentIdValue(agentId) &
+                checkPropertyTypeIdValue(propertyTypeId);
+
+        onCheckAllValuesMutableLiveData.setValue(valuesOk);
+    }
+
 
 }

@@ -43,10 +43,19 @@ public class PropertyRepository {
         return id;
     }
 
-    public void insert(Property property) {
-        AppDatabase.getExecutor().execute(() -> {
-            propertyDao.insert(property);
-        });
+    public long insert(Property property) throws ExecutionException, InterruptedException {
+        Log.d(Tag.TAG, "insert() called with: property = [" + property + "]");
+        Callable<Long> callable = new Callable<Long>() {
+            @Override
+            public Long call() throws Exception {
+                return propertyDao.insert(property);
+            }
+        };
+
+        Future<Long> future = AppDatabase.getExecutor().submit(callable);
+        Long id = future.get();
+
+        return  id;
     }
 
     public void update(Property property) {

@@ -2,22 +2,17 @@ package com.openclassrooms.realestatemanager.ui.propertyedit.view;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.arch.core.util.Function;
-import androidx.core.util.Consumer;
-import androidx.core.util.Supplier;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -250,6 +245,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         configureControlValues();
         configureControlAgentId();
         configureControlPropertyTypeId();
+        configureControlAllValues();
 
         propertyEditViewModel.loadDropDownLists();
     }
@@ -295,7 +291,8 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                             DropdownItem item = (DropdownItem) adapterAgents.getItem(position);
                             agentId = item.getId();
                             // to check input
-                            propertyEditViewModel.checkAgentIdValue(agentId);
+                            //propertyEditViewModel.checkAgentIdValue(agentId);
+                            checkAllValues();
                         }
                     });
                 }
@@ -310,7 +307,8 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                             DropdownItem item = (DropdownItem) adapterPropertyType.getItem(position);
                             propertyTypeId = item.getId();
                             // to check input
-                            propertyEditViewModel.checkPropertyTypeIdValue(propertyTypeId);
+                            //propertyEditViewModel.checkPropertyTypeIdValue(propertyTypeId);
+                            checkAllValues();
                         }
                     });
                 }
@@ -366,6 +364,15 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         });
     }
 
+    private void configureControlAllValues(){
+        propertyEditViewModel.getOnCheckAllValuesLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                Log.d(Tag.TAG, "configureControlAllValues.onChanged() called with: aBoolean = [" + aBoolean + "]");
+                menuItemOk.setEnabled(aBoolean);
+            }
+        });
+    }
     /**
      * show or hide error on component
      * @param textInputLayout
@@ -374,14 +381,10 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     private void setErrorEnabledLayout(TextInputLayout textInputLayout, FieldState fieldState){
         if (fieldState.getResId() == PropertyEditViewModel.NO_STRING_ID) {
             textInputLayout.setErrorEnabled(false);
-            menuItemOk.setEnabled(true);
-
-            //menuItemOk.getIcon().setAlpha(255);
         } else {
             textInputLayout.setErrorEnabled(true);
             textInputLayout.setError(getString(fieldState.getResId()));
-            //menuItemOk.setEnabled(false);
-            //menuItemOk.getIcon().setAlpha(130);
+            menuItemOk.setEnabled(false);
         }
     }
 
@@ -409,7 +412,8 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
             @Override
             public void afterTextChanged(Editable s) {
                 String text = s.toString();
-                checkValueProcedure.apply(text);
+                //checkValueProcedure.apply(text);
+                checkAllValues();
             }
         });
 
@@ -437,9 +441,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 callbackEditProperty.onCancelEditProperty(this.propertyId);
                 return true;
             case R.id.fragment_property_edit_ok:
-                if (validateForm()) {;
-                    callbackEditProperty.onValidateEditProperty(this.propertyId);
-                }
+                validateForm();
                 return true;
             case R.id.fragment_property_edit_sell:
                 callbackEditProperty.onSellProperty(this.propertyId);
@@ -620,7 +622,30 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 getCategory(),
                 getAgentId(),
                 getRooms(),
-                propertyLatLng);
+                propertyLatLng,
+                new PropertyEditViewModel.AddPropertyInterface() {
+                    @Override
+                    public void onPropertyAdded(long propertyId) {
+                        callbackEditProperty.onValidateEditProperty(propertyId);
+                    }
+                });
     }
 
+    private void checkAllValues(){
+        propertyEditViewModel.checkAllValues(
+                getPrice(),
+                getSurface(),
+                getDescription(),
+                getAddressTitle(),
+                getAddress(),
+                getPointOfInterest(),
+                getAvailable(),
+                getEntryDate(),
+                getSaleDate(),
+                getPropertyTypeId(),
+                getCategory(),
+                getAgentId(),
+                getRooms(),
+                propertyLatLng);
+    }
 }
