@@ -28,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -75,32 +76,24 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     private TextView textViewTitle;
 
     private TextInputLayout textInputLayoutAddressTitle;
-    private TextInputEditText textInputEditTextAddressTitle;
 
     private TextInputLayout textInputLayoutAddress;
     private TextInputEditText textInputEditTextAddress;
 
     private TextInputLayout textInputLayoutPrice;
-    private TextInputEditText textInputEditTextPrice;
 
     private TextInputLayout textInputLayoutSurface;
-    private TextInputEditText textInputEditTextSurface;
 
     private TextInputLayout textInputLayoutRooms;
-    private TextInputEditText textInputEditTextRooms;
 
     private TextInputLayout textInputLayoutDescription;
-    private TextInputEditText textInputEditTextDescription;
 
     private TextInputLayout textInputLayoutPointOfInterest;
-    private TextInputEditText textInputEditTextPointOfInterest;
 
     private TextInputLayout textInputLayoutEntryDate;
-    private TextInputEditText textInputEditTextEntryDate;
     private ImageView imageViewEntryDate;
 
     private TextInputLayout textInputLayoutSaleDate;
-    private TextInputEditText textInputEditTextSaleDate;
     private ImageView imageViewSaleDate;
 
     private SwitchMaterial switchMaterialAvailable;
@@ -111,6 +104,9 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
 
     private Spinner spinnerType;
     private Button buttonPhoto;
+
+    private BottomNavigationView bottomNavigationView;
+    private MenuItem menuItemOk;
 
     private PropertyEditViewModel propertyEditViewModel;
 
@@ -172,28 +168,15 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         textViewTitle = view.findViewById(R.id.fragment_property_edit_text_view_title);
 
         textInputLayoutAddressTitle = view.findViewById(R.id.fragment_property_edit_text_input_layout_address_title);
-        textInputEditTextAddressTitle = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_address_title);
-
         textInputLayoutAddress = view.findViewById(R.id.fragment_property_edit_text_input_layout_address);
         textInputEditTextAddress = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_address);
-
         textInputLayoutPrice = view.findViewById(R.id.fragment_property_edit_text_input_layout_price);
-        textInputEditTextPrice = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_price);
-
         textInputLayoutSurface = view.findViewById(R.id.fragment_property_edit_text_input_layout_surface);
-        textInputEditTextSurface = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_surface);
-
         textInputLayoutRooms = view.findViewById(R.id.fragment_property_edit_text_input_layout_rooms);
-        textInputEditTextRooms = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_rooms);
-
         textInputLayoutDescription = view.findViewById(R.id.fragment_property_edit_text_input_layout_description);
-        textInputEditTextDescription = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_description);
-
         textInputLayoutPointOfInterest = view.findViewById(R.id.fragment_property_edit_text_input_layout_point_of_interest);
-        textInputEditTextPointOfInterest = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_point_of_interest);
-
         textInputLayoutEntryDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_entry_date);
-        textInputEditTextEntryDate = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_entry_date);
+
         imageViewEntryDate = view.findViewById(R.id.fragment_property_imageView_entry_date);
         imageViewEntryDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,7 +186,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         });
 
         textInputLayoutSaleDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_sale_date);
-        textInputEditTextSaleDate = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_sale_date);
         imageViewSaleDate = view.findViewById(R.id.fragment_property_imageView_sale_date);
         imageViewSaleDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,8 +198,18 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         textInputLayoutPropertyType = view.findViewById(R.id.fragment_property_edit_text_input_layout_property_type);
 
         switchMaterialAvailable = view.findViewById(R.id.property_edit_switch_available);
+        switchMaterialAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                menuItemOk.setEnabled(isChecked);
+            }
+        });
+
         switchMaterialCategory = view.findViewById(R.id.property_edit_switch_category);
         buttonPhoto = view.findViewById(R.id.property_edit_button_add_photo);
+
+        bottomNavigationView = view.findViewById(R.id.fragment_property_edit_bottom_navigation_view);
+        menuItemOk = bottomNavigationView.getMenu().findItem(R.id.fragment_property_edit_ok);
     }
 
     private void selectDate(TextInputLayout textInputLayoutDate){
@@ -382,9 +374,14 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     private void setErrorEnabledLayout(TextInputLayout textInputLayout, FieldState fieldState){
         if (fieldState.getResId() == PropertyEditViewModel.NO_STRING_ID) {
             textInputLayout.setErrorEnabled(false);
+            menuItemOk.setEnabled(true);
+
+            //menuItemOk.getIcon().setAlpha(255);
         } else {
             textInputLayout.setErrorEnabled(true);
             textInputLayout.setError(getString(fieldState.getResId()));
+            //menuItemOk.setEnabled(false);
+            //menuItemOk.getIcon().setAlpha(130);
         }
     }
 
@@ -595,120 +592,13 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         switchMaterialCategory.setChecked(forSale);
     }
 
-    private void setErrorEnabledLayout(TextInputLayout textInputLayout, boolean isError){
-        if (isError) {
-            textInputLayout.setError(getString(R.string.value_required));
-        }
-        textInputLayout.setErrorEnabled(isError);
-    }
-
-    private boolean validateTextInputLayout(TextInputLayout textInputLayout){
-        String text = textInputLayout.getEditText().getText().toString().trim();
-        boolean isError = (TextUtils.isEmpty(text));
-        setErrorEnabledLayout(textInputLayout, isError);
-        Log.d(Tag.TAG, "validateTextInputLayout(). isError=" + isError + " id=" +
-            getContext().getResources().getResourceEntryName(textInputLayout.getId()));
-
-        return (!isError);
-    }
-
-    private boolean validateAddressTitle(){
-        return validateTextInputLayout(textInputLayoutAddressTitle);
-    }
-
-    private boolean validateAddress(){
-        return validateTextInputLayout(textInputLayoutAddress);
-    }
-
-    private boolean validatePrice(){
-        return validateTextInputLayout(textInputLayoutPrice);
-    }
-
-    private boolean validateSurface(){
-        return validateTextInputLayout(textInputLayoutSurface);
-    }
-
-    private boolean validateRooms(){
-        return validateTextInputLayout(textInputLayoutRooms);
-    }
-
-    private boolean validateDescription(){
-        return validateTextInputLayout(textInputLayoutDescription);
-    }
-
-    private boolean validatePointOfInterest(){
-        return validateTextInputLayout(textInputLayoutPointOfInterest);
-    }
-
-    /**
-     * date text must be entry and date must be valide date
-     * @return
-     */
-    private boolean validateEntryDate(){
-        // date must be a valid date
-        boolean isError = (Utils.convertStringInLocalFormatToDate(getEntryDate()) == null);
-        setErrorEnabledLayout(textInputLayoutEntryDate, isError);
-        Log.d(Tag.TAG, "validateEntryDate() called. isError = " + isError);
-        return (!isError);
-    }
-
-    private boolean validateSaleDate(){
-        // date can be null
-        // if there is date, date must be a valid date
-        String strDate = getSaleDate();
-        Boolean isError = (strDate.length() > 0) && ((Utils.convertStringInLocalFormatToDate(strDate) == null));
-        setErrorEnabledLayout(textInputLayoutSaleDate, isError);
-        Log.d(Tag.TAG, "validateSaleDate() called. isError = " + isError);
-        return (!isError);
-    }
-
-    private boolean validateAgent(){
-        boolean strOk = validateTextInputLayout(textInputLayoutAgent);
-        boolean idOk = (getAgentId() > 0);
-        if (!idOk) {
-            setErrorEnabledLayout(textInputLayoutAgent, true);
-        }
-        return (strOk && idOk);
-    }
-
-    private boolean validatePropertyType(){
-        boolean strOk = validateTextInputLayout(textInputLayoutPropertyType);
-        boolean idOk = (getAgentId() > 0);
-        if (!idOk) {
-            setErrorEnabledLayout(textInputLayoutPropertyType, true);
-        }
-        return (strOk && idOk);
-    }
-
-    /**
-     * check all values
-     * @return
-     */
-    private boolean isValuesOk(){
-        // control user input
-        return (validateAddressTitle() &
-                validateAddress() &
-                validatePrice() &
-                validateSurface() &
-                validateRooms() &
-                validateDescription() &
-                validatePointOfInterest() &
-                validateEntryDate() &
-                validateSaleDate() &
-                validateAgent() &
-                validatePropertyType());
-    }
-
     private boolean validateForm(){
-        if (isValuesOk()) {
-            if (this.propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
-                insertProperty();
-            } else {
-                updateProperty();
-            }
-            return true;
-        } else
-            return false;
+        if (this.propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
+            insertProperty();
+        } else {
+            updateProperty();
+        }
+        return false;
     }
 
     private void updateProperty(){

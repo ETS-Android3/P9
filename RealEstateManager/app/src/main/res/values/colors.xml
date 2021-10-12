@@ -17,4 +17,7 @@
     <color name="photo_caption">#757de8</color>
     <color name="dark_red_house">#ba000d</color>
 
+    <color name="enabledMenuIconColor">@color/white</color>
+    <color name="disabledMenuIconColor">#757de8</color>
+
 </resources>

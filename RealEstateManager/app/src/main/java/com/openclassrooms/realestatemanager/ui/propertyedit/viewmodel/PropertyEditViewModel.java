@@ -68,7 +68,7 @@ public class PropertyEditViewModel extends ViewModel {
         this.googleGeocodeRepository = googleGeocodeRepository;
         locationLiveData = this.googleGeocodeRepository.getLocationByAddressLiveData();
 
-        onCheckAddressTitleValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
+/*        onCheckAddressTitleValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckAddressValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckDescriptionValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckPointOfInterestValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
@@ -78,7 +78,7 @@ public class PropertyEditViewModel extends ViewModel {
         onCheckEntryDateValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckSaleDateValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckAgentIdValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
-        onCheckPropertyTypeIdValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
+        onCheckPropertyTypeIdValueMutableLiveData.setValue(new FieldState(getResIdError(true)));*/
     }
 
     public void loadLocationByAddress(String address){
@@ -170,85 +170,6 @@ public class PropertyEditViewModel extends ViewModel {
         configureDownViewstateMediatorLiveData();
     }
 
-    /**
-     * validation
-     * @param text
-     * @return
-     */
-    private static int tryParse(String text){
-        try {
-            return Integer.parseInt(text);
-        } catch (NumberFormatException e) {
-            return UNINITIALIZED_INTEGER_VALUE;
-        }
-    }
-
-    public void addProperty(String price,
-                            String surface,
-                            String description,
-                            String addressTitle,
-                            String address,
-                            String pointOfInterest,
-                            boolean available,
-                            String entryDate,
-                            String saleDate,
-                            long propertyTypeId,
-                            boolean forSale,
-                            long agentId,
-                            String rooms,
-                            LatLng latLng){
-
-        if (addressTitle == null) {
-            errorMutableLiveData.setValue("Title !");
-            return;
-        }
-
-        int intPrice = tryParse(price);
-        if (intPrice < 0) {
-            errorMutableLiveData.setValue("price !");
-            return;
-        }
-
-        int intSurface = tryParse(surface);
-        if (intSurface < 0) {
-            errorMutableLiveData.setValue("surface !");
-            return;
-        }
-
-        int intRooms = tryParse(rooms);
-        if (intRooms < 0) {
-            errorMutableLiveData.setValue("rooms !");
-            return;
-        }
-
-        double latitude = (latLng == null) ? 0 : latLng.latitude;
-        double longitude = (latLng == null) ? 0 : latLng.longitude;
-
-        int categoryId = 1;
-
-        Date dateEntryDate = Calendar.getInstance().getTime() ;
-        Date dateSaleDate = null;
-
-        Property property = new Property(0,
-                intPrice,
-                intSurface,
-                description,
-                addressTitle,
-                address,
-                pointOfInterest,
-                available,
-                dateEntryDate,
-                dateSaleDate,
-                propertyTypeId,
-                categoryId,
-                agentId,
-                intRooms,
-                latitude,
-                longitude);
-
-        databaseRepository.getPropertyRepository().insert(property);
-    }
-
     private PropertyType findPropertyTypeById(long id) {
         if ((cache != null) && (cache.getPropertyTypes() != null)){
             Iterator<PropertyType> iterator = cache.getPropertyTypes().iterator();
@@ -260,9 +181,6 @@ public class PropertyEditViewModel extends ViewModel {
             }
         }
         return null;
-    }
-    public boolean checkPropertyTypeId(long id) {
-        return (findPropertyTypeById(id) != null);
     }
 
     private static boolean emptyString(String value){
@@ -381,4 +299,75 @@ public class PropertyEditViewModel extends ViewModel {
         onCheckPropertyTypeIdValueMutableLiveData.setValue(new FieldState(getResIdError(error)));
         return error;
     }
+
+    /**
+     * validation
+     * @param text
+     * @return
+     */
+    private static int tryParse(String text){
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return UNINITIALIZED_INTEGER_VALUE;
+        }
+    }
+
+    public void addProperty(String price,
+                            String surface,
+                            String description,
+                            String addressTitle,
+                            String address,
+                            String pointOfInterest,
+                            boolean available,
+                            String entryDate,
+                            String saleDate,
+                            long propertyTypeId,
+                            boolean forSale,
+                            long agentId,
+                            String rooms,
+                            LatLng latLng){
+
+        // check all values
+        boolean ok = checkAddressTitleValue(addressTitle) &
+                checkAddressValue(address) &
+                checkPriceValue(price) &
+                checkSurfaceValue(surface) &
+                checkRoomsValue(rooms) &
+                checkDescriptionValue(description) &
+                checkPointOfInterestValue(pointOfInterest) &
+                checkEntryDateValue(entryDate) &
+                checkSaleDateValue(saleDate) &
+                checkAgentIdValue(agentId) &
+                checkPropertyTypeIdValue(propertyTypeId);
+
+
+        double latitude = (latLng == null) ? 0 : latLng.latitude;
+        double longitude = (latLng == null) ? 0 : latLng.longitude;
+
+        int categoryId = 1;
+
+        //Date dateEntryDate = Calendar.getInstance().getTime() ;
+        //Date dateSaleDate = null;
+
+/*        Property property = new Property(0,
+                intPrice,
+                intSurface,
+                description,
+                addressTitle,
+                address,
+                pointOfInterest,
+                available,
+                dateEntryDate,
+                dateSaleDate,
+                propertyTypeId,
+                categoryId,
+                agentId,
+                intRooms,
+                latitude,
+                longitude);
+
+        databaseRepository.getPropertyRepository().insert(property);*/
+    }
+
 }

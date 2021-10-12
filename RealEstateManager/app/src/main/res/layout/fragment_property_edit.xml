@@ -5,8 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.propertyedit.view.PropertyEditFragment"
-    >
+        tools:context=".ui.propertyedit.view.PropertyEditFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -282,6 +281,10 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/fragment_property_edit_bottom_navigation_view"
         style="@style/BottomNavigation"
+
+        app:itemIconTint="@drawable/menu_item_icon_selector"
+        app:itemTextColor="@drawable/menu_item_icon_selector"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
