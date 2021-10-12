@@ -2,15 +2,23 @@ package com.openclassrooms.realestatemanager.ui.propertyedit.view;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.arch.core.util.Function;
+import androidx.core.util.Consumer;
+import androidx.core.util.Supplier;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -43,9 +51,9 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEd
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodelfactory.PropertyEditViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
-import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -220,7 +228,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         DatePickerDialog picker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                Date date = new GregorianCalendar(year, month, day).getTime();
+                Date date = new GregorianCalendar(year, month, dayOfMonth).getTime();
                 textInputLayoutDate.getEditText().setText(Utils.convertDateToLocalFormat(date));
             }
         }, year, month, day);
@@ -237,14 +245,27 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         }
         Log.d(Tag.TAG, "PropertyEditFragment.onViewCreated() propertyId= [" + propertyId + "]");
 
-        configureDetailViewModel();
-}
+        configureViewModel();
+    }
 
-    private void configureDetailViewModel() {
+    private void configureViewModel() {
         propertyEditViewModel = new ViewModelProvider(
                 requireActivity(),
                 PropertyEditViewModelFactory.getInstance()).get(PropertyEditViewModel.class);
 
+        configureGpsListener();
+        configureDropdown();
+        configureControlValues();
+        configureControlAgentId();
+        configureControlPropertyTypeId();
+
+        propertyEditViewModel.loadDropDownLists();
+    }
+
+    private void configureGpsListener(){
+        /**
+         * to load gps location and update map when address change
+         */
         propertyEditViewModel.getLocationLiveData().observe(getViewLifecycleOwner(), new Observer<LatLng>() {
             @Override
             public void onChanged(LatLng latLng) {
@@ -262,7 +283,12 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 }
             }
         });
+    }
 
+    private void configureDropdown(){
+        /**
+         * To load agent list and propertytype list for drop down
+         */
         propertyEditViewModel.getDropDownViewstateMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<DropdownViewstate>() {
             @Override
             public void onChanged(DropdownViewstate dropDownViewstate) {
@@ -276,6 +302,8 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             DropdownItem item = (DropdownItem) adapterAgents.getItem(position);
                             agentId = item.getId();
+                            // to check input
+                            propertyEditViewModel.checkAgentIdValue(agentId);
                         }
                     });
                 }
@@ -289,12 +317,111 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             DropdownItem item = (DropdownItem) adapterPropertyType.getItem(position);
                             propertyTypeId = item.getId();
+                            // to check input
+                            propertyEditViewModel.checkPropertyTypeIdValue(propertyTypeId);
                         }
                     });
                 }
             }
         });
-        propertyEditViewModel.loadDropDownLists();
+    }
+
+    private void configureControlValues(){
+        configureControlValue(textInputLayoutAddressTitle,
+                propertyEditViewModel.getOnCheckAddressTitleValueLiveData(),
+                propertyEditViewModel::checkAddressTitleValue);
+        configureControlValue(textInputLayoutAddress,
+                propertyEditViewModel.getOnCheckAddressValueLiveData(),
+                propertyEditViewModel::checkAddressValue);
+        configureControlValue(textInputLayoutPrice,
+                propertyEditViewModel.getOnCheckPriceValueLiveData(),
+                propertyEditViewModel::checkPriceValue);
+        configureControlValue(textInputLayoutSurface,
+                propertyEditViewModel.getOnCheckSurfaceValueLiveData(),
+                propertyEditViewModel::checkSurfaceValue);
+        configureControlValue(textInputLayoutRooms,
+                propertyEditViewModel.getOnCheckRoomsValueLiveData(),
+                propertyEditViewModel::checkRoomsValue);
+        configureControlValue(textInputLayoutDescription,
+                propertyEditViewModel.getOnCheckDescriptionValueLiveData(),
+                propertyEditViewModel::checkDescriptionValue);
+        configureControlValue(textInputLayoutPointOfInterest,
+                propertyEditViewModel.getOnCheckPointOfInterestValueLiveData(),
+                propertyEditViewModel::checkPointOfInterestValue);
+        configureControlValue(textInputLayoutEntryDate,
+                propertyEditViewModel.getOnCheckEntryDateValueLiveData(),
+                propertyEditViewModel::checkEntryDateValue);
+        configureControlValue(textInputLayoutSaleDate,
+                propertyEditViewModel.getOnCheckSaleDateValueLiveData(),
+                propertyEditViewModel::checkSaleDateValue);
+    }
+
+    private void configureControlAgentId(){
+        propertyEditViewModel.getOnCheckAgentIdValueLiveData().observe(getViewLifecycleOwner(), new Observer<FieldState>() {
+            @Override
+            public void onChanged(FieldState fieldState) {
+                setErrorEnabledLayout(textInputLayoutAgent, fieldState);
+            }
+        });
+    }
+
+    private void configureControlPropertyTypeId(){
+        propertyEditViewModel.getOnCheckPropertyTypeIdValueLiveData().observe(getViewLifecycleOwner(), new Observer<FieldState>() {
+            @Override
+            public void onChanged(FieldState fieldState) {
+                setErrorEnabledLayout(textInputLayoutPropertyType, fieldState);
+            }
+        });
+    }
+
+    /**
+     * show or hide error on component
+     * @param textInputLayout
+     * @param fieldState
+     */
+    private void setErrorEnabledLayout(TextInputLayout textInputLayout, FieldState fieldState){
+        if (fieldState.getResId() == PropertyEditViewModel.NO_STRING_ID) {
+            textInputLayout.setErrorEnabled(false);
+        } else {
+            textInputLayout.setErrorEnabled(true);
+            textInputLayout.setError(getString(fieldState.getResId()));
+        }
+    }
+
+    /**
+     * Configure the listener and live data to check the value coming from the TextInputLayout
+     * @param textInputLayout
+     * @param getLiveData
+     * @param checkValueProcedure
+     */
+    private void configureControlValue(TextInputLayout textInputLayout,
+                                  LiveData<FieldState> getLiveData,
+                                  Function<String, Boolean> checkValueProcedure){
+
+        textInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                checkValueProcedure.apply(text);
+            }
+        });
+
+        getLiveData.observe(getViewLifecycleOwner(), new Observer<FieldState>() {
+            @Override
+            public void onChanged(FieldState fieldState) {
+                setErrorEnabledLayout(textInputLayout, fieldState);
+            }
+        });
     }
 
     private void configureBottomNavigationBar(View view) {
@@ -521,7 +648,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         // date must be a valid date
         boolean isError = (Utils.convertStringInLocalFormatToDate(getEntryDate()) == null);
         setErrorEnabledLayout(textInputLayoutEntryDate, isError);
-        Log.d(Tag.TAG, "validateEntryDate() called isError = " + isError);
+        Log.d(Tag.TAG, "validateEntryDate() called. isError = " + isError);
         return (!isError);
     }
 
@@ -531,7 +658,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         String strDate = getSaleDate();
         Boolean isError = (strDate.length() > 0) && ((Utils.convertStringInLocalFormatToDate(strDate) == null));
         setErrorEnabledLayout(textInputLayoutSaleDate, isError);
-        Log.d(Tag.TAG, "validateSaleDate() called isError = " + isError);
+        Log.d(Tag.TAG, "validateSaleDate() called. isError = " + isError);
         return (!isError);
     }
 
@@ -605,4 +732,5 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 getRooms(),
                 propertyLatLng);
     }
+
 }
