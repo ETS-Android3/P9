@@ -111,7 +111,7 @@ public class PropertyEditViewModel extends ViewModel {
 
         LiveData<List<PropertyType>> propertyTypeLiveData = databaseRepository.getPropertyTypeRepository().getPropertyTypes();
         LiveData<List<DropdownItem>> propertyTypeItemsLiveData = Transformations.map(propertyTypeLiveData,
-                (propertyTypes) -> {
+                propertyTypes -> {
                     List<DropdownItem> items = new ArrayList<>();
                     for (PropertyType propertyType : propertyTypes) {
                         items.add(new DropdownItem(propertyType.getId(), propertyType.getName()));
@@ -354,17 +354,9 @@ public class PropertyEditViewModel extends ViewModel {
                             AddPropertyInterface addPropertyInterface){
 
         // check all values
-        boolean valuesOk = checkAddressTitleValue(addressTitle) &
-                checkAddressValue(address) &
-                checkPriceValue(price) &
-                checkSurfaceValue(surface) &
-                checkRoomsValue(rooms) &
-                checkDescriptionValue(description) &
-                checkPointOfInterestValue(pointOfInterest) &
-                checkEntryDateValue(entryDate) &
-                checkSaleDateValue(saleDate) &
-                checkAgentIdValue(agentId) &
-                checkPropertyTypeIdValue(propertyTypeId);
+        boolean valuesOk = checkAllValues(price, surface, description, addressTitle, address,
+                pointOfInterest, available, entryDate, saleDate,  propertyTypeId, forSale,
+                agentId, rooms, latLng);
 
         if (valuesOk) {
             double latitude = (latLng == null) ? 0 : latLng.latitude;
@@ -398,6 +390,7 @@ public class PropertyEditViewModel extends ViewModel {
 
             try {
                 long id = databaseRepository.getPropertyRepository().insert(property);
+                // Callback to close windows
                 addPropertyInterface.onPropertyAdded(id);
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -406,22 +399,23 @@ public class PropertyEditViewModel extends ViewModel {
             }
         }
     }
+
     private MutableLiveData<Boolean> onCheckAllValuesMutableLiveData = new MutableLiveData<>();
     public MutableLiveData<Boolean> getOnCheckAllValuesLiveData() {return onCheckAllValuesMutableLiveData;}
-    public void checkAllValues(String price,
-                            String surface,
-                            String description,
-                            String addressTitle,
-                            String address,
-                            String pointOfInterest,
-                            boolean available,
-                            String entryDate,
-                            String saleDate,
-                            long propertyTypeId,
-                            boolean forSale,
-                            long agentId,
-                            String rooms,
-                            LatLng latLng){
+    public boolean checkAllValues(String price,
+                                  String surface,
+                                  String description,
+                                  String addressTitle,
+                                  String address,
+                                  String pointOfInterest,
+                                  boolean available,
+                                  String entryDate,
+                                  String saleDate,
+                                  long propertyTypeId,
+                                  boolean forSale,
+                                  long agentId,
+                                  String rooms,
+                                  LatLng latLng){
 
         // check all values
         boolean valuesOk = checkAddressTitleValue(addressTitle) &
@@ -437,6 +431,7 @@ public class PropertyEditViewModel extends ViewModel {
                 checkPropertyTypeIdValue(propertyTypeId);
 
         onCheckAllValuesMutableLiveData.setValue(valuesOk);
+        return valuesOk;
     }
 
 
