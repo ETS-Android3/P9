@@ -49,11 +49,11 @@ public class PropertyEditViewModel extends ViewModel {
     private LiveData<LatLng> locationLiveData = null;
     public LiveData<LatLng> getLocationLiveData() { return locationLiveData; }
 
-    private LiveData<List<Agent>> agentsLiveData = null;
+/*    private LiveData<List<Agent>> agentsLiveData = new MutableLiveData<>();;
     public LiveData<List<Agent>> getAgentsLiveData() { return agentsLiveData; }
 
-    private LiveData<List<PropertyType>> propertyTypeLiveData = null;
-    public LiveData<List<PropertyType>> getPropertyTypeLiveData() { return propertyTypeLiveData; }
+    private LiveData<List<PropertyType>> propertyTypeLiveData = new MutableLiveData<>();;
+    public LiveData<List<PropertyType>> getPropertyTypeLiveData() { return propertyTypeLiveData; }*/
 
     /**
      * cache
@@ -69,9 +69,10 @@ public class PropertyEditViewModel extends ViewModel {
         cache = new CachePropertyEditViewModel();
         this.databaseRepository = databaseRepository;
         this.googleGeocodeRepository = googleGeocodeRepository;
+
         locationLiveData = this.googleGeocodeRepository.getLocationByAddressLiveData();
 
-/*        onCheckAddressTitleValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
+        onCheckAddressTitleValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckAddressValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckDescriptionValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckPointOfInterestValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
@@ -81,7 +82,7 @@ public class PropertyEditViewModel extends ViewModel {
         onCheckEntryDateValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckSaleDateValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckAgentIdValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
-        onCheckPropertyTypeIdValueMutableLiveData.setValue(new FieldState(getResIdError(true)));*/
+        onCheckPropertyTypeIdValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
     }
 
     public void loadLocationByAddress(String address){
@@ -96,38 +97,27 @@ public class PropertyEditViewModel extends ViewModel {
         return dropDownViewstateMediatorLiveData;
     }
 
-    private DropdownItem agentToDropdownItem(Agent agent){
-        return new DropdownItem(agent.getId(), agent.getName());
-    }
-
-    private List<DropdownItem> agentsToDropdownItems(List<Agent> agents){
-        List<DropdownItem> items = new ArrayList<>();
-        for (Agent agent : agents) {
-            items.add(agentToDropdownItem(agent));
-        }
-        return items;
-    }
-
-    private DropdownItem propertyTypeToDropdownItem(PropertyType propertyType){
-        return new DropdownItem(propertyType.getId(), propertyType.getName());
-    }
-
-    private List<DropdownItem> propertyTypesToDropdownItems(List<PropertyType> propertyTypes){
-        List<DropdownItem> items = new ArrayList<>();
-        for (PropertyType propertyType : propertyTypes) {
-            items.add(propertyTypeToDropdownItem(propertyType));
-        }
-        return items;
-    }
-
     private void configureDownViewstateMediatorLiveData(){
 
         LiveData<List<Agent>> agentLiveData = databaseRepository.getAgentRepository().getAgents();
-        LiveData<List<DropdownItem>> agentItemsLiveData = Transformations.map(agentLiveData, this::agentsToDropdownItems);
+        LiveData<List<DropdownItem>> agentItemsLiveData = Transformations.map(agentLiveData,
+                agents -> {
+                    List<DropdownItem> items = new ArrayList<>();
+                    for (Agent agent : agents) {
+                        items.add(new DropdownItem(agent.getId(), agent.getName()));
+                    }
+                    return items;
+                });
 
         LiveData<List<PropertyType>> propertyTypeLiveData = databaseRepository.getPropertyTypeRepository().getPropertyTypes();
-        LiveData<List<DropdownItem>> propertyTypeItemsLiveData = Transformations.map(propertyTypeLiveData, this::propertyTypesToDropdownItems);
-
+        LiveData<List<DropdownItem>> propertyTypeItemsLiveData = Transformations.map(propertyTypeLiveData,
+                (propertyTypes) -> {
+                    List<DropdownItem> items = new ArrayList<>();
+                    for (PropertyType propertyType : propertyTypes) {
+                        items.add(new DropdownItem(propertyType.getId(), propertyType.getName()));
+                    }
+                    return items;
+                });
         dropDownViewstateMediatorLiveData.addSource(agentLiveData, new Observer<List<Agent>>() {
             @Override
             public void onChanged(List<Agent> agents) {
