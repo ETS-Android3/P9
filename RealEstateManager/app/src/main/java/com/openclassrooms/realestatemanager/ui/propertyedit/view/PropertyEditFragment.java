@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -40,6 +41,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
@@ -48,11 +50,14 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodelfactory.Pro
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyEditViewState;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -228,7 +233,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
             this.propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
         } else {
-            this.propertyId = -1;
+            this.propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
         }
         Log.d(Tag.TAG, "PropertyEditFragment.onViewCreated() propertyId= [" + propertyId + "]");
 
@@ -241,39 +246,51 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 PropertyEditViewModelFactory.getInstance()).get(PropertyEditViewModel.class);
 
         configureGpsListener();
-        configureDropdown();
+
         configureControlValues();
         configureControlAgentId();
         configureControlPropertyTypeId();
         configureControlAllValues();
-
-        propertyEditViewModel.loadDropDownLists();
+        configureViewState();
     }
 
     private void configureGpsListener(){
         /**
          * to load gps location and update map when address change
          */
-        propertyEditViewModel.getLocationLiveData().observe(getViewLifecycleOwner(), new Observer<LatLng>() {
-            @Override
-            public void onChanged(LatLng latLng) {
-                Log.d(Tag.TAG, "onChanged() called. with: latLng = [" + latLng + "]");
-                setPropertyLatLng(latLng);
-            }
-        });
-
         textInputEditTextAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     String text = getAddress();
-                    propertyEditViewModel.loadLocationByAddress(text);
+                    propertyEditViewModel.getLocationLiveDataByAddress(text).observe(getViewLifecycleOwner(), new Observer<LatLng>() {
+                        @Override
+                        public void onChanged(LatLng latLng) {
+                            Log.d(Tag.TAG, "onChanged() called. with: latLng = [" + latLng + "]");
+                            setPropertyLatLng(latLng);
+                        }
+                    });
                 }
             }
         });
     }
 
-    private void configureDropdown(){
+    private int findPosition(long id, List<DropdownItem> items){
+        if ((items != null) && (items.size() > 0) && (id >= 0)) {
+            int position = 0;
+            Iterator<DropdownItem> iterator = items.iterator();
+            while (iterator.hasNext()) {
+                DropdownItem item = iterator.next();
+                if (item.getId() == id) {
+                    return position;
+                }
+                position++;
+            }
+        }
+        return -1;
+    }
+
+    private void configureDropdown(long currentAgentId, long currentPropertyTypeId){
         /**
          * To load agent list and propertytype list for drop down
          */
@@ -285,6 +302,14 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                     ArrayAdapter adapterAgents = new ArrayAdapter(getContext(), R.layout.list_item, dropDownViewstate.getAgentItems());
                     AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgent.getEditText();
                     autoCompleteTextView.setAdapter(adapterAgents);
+
+                    int position = findPosition(currentAgentId, dropDownViewstate.getAgentItems());
+                    if (position >= 0) {
+                        Log.d(Tag.TAG, "configureDropdown() currentAgentId=" + currentAgentId + " position=" + position);
+                        autoCompleteTextView.setListSelection (position);
+                        agentId = currentAgentId;
+                    }
+
                     autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -300,6 +325,14 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                     ArrayAdapter adapterPropertyType = new ArrayAdapter(getContext(), R.layout.list_item, dropDownViewstate.getPropertyTypeItems());
                     AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutPropertyType.getEditText();
                     autoCompleteTextView.setAdapter(adapterPropertyType);
+
+                    int position = findPosition(currentPropertyTypeId, dropDownViewstate.getPropertyTypeItems());
+                    if (position >= 0) {
+                        Log.d(Tag.TAG, "configureDropdown() currentAgentId=" + currentAgentId + " position=" + position);
+                        autoCompleteTextView.setListSelection (position);
+                        propertyTypeId = currentPropertyTypeId;
+                    }
+
                     autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -310,6 +343,29 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                         }
                     });
                 }
+            }
+        });
+    }
+
+    private void configureViewState(){
+        propertyEditViewModel.getPropertyEditViewStateLiveData(this.propertyId).observe(getViewLifecycleOwner(), new Observer<PropertyEditViewState>() {
+            @Override
+            public void onChanged(PropertyEditViewState propertyEditViewState) {
+                setAddressTitle(propertyEditViewState.getAddressTitle());
+                setAdrress(propertyEditViewState.getAddress());
+                setDescription(propertyEditViewState.getDescription());
+                setPointOfInterest(propertyEditViewState.getPointOfInterest());
+                setPrice(propertyEditViewState.getPrice());
+                setSurface(propertyEditViewState.getSurface());
+                setRooms(propertyEditViewState.getRooms());
+                setEntryDate(propertyEditViewState.getEntryDate());
+                setSaleDate(propertyEditViewState.getSaleDate());
+                setAvailable(propertyEditViewState.isAvailable());
+                setAgentId(propertyEditViewState.getAgentId(), propertyEditViewState.getAgentName());
+                setPropertyTypeId(propertyEditViewState.getPropertyTypeId(), propertyEditViewState.getPropertyTypeName());
+
+                configureDropdown(propertyEditViewState.getAgentId(), propertyEditViewState.getPropertyTypeId());
+                checkAllValues();
             }
         });
     }
@@ -377,7 +433,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
      * @param fieldState
      */
     private void setErrorEnabledLayout(TextInputLayout textInputLayout, FieldState fieldState){
-        if (fieldState.getResId() == PropertyEditViewModel.NO_STRING_ID) {
+        if (fieldState.getResId() == PropertyConst.NO_STRING_ID) {
             textInputLayout.setErrorEnabled(false);
         } else {
             textInputLayout.setErrorEnabled(true);
@@ -513,11 +569,26 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     }
 
     private long getAgentId(){
+        Log.d(Tag.TAG, "getAgentId() called " + this.agentId);
         return this.agentId;
+    }
+
+    private void setAgentId(long id, String name){
+        Log.d(Tag.TAG, "setAgentId() called with: id = [" + id + "], name = [" + name + "]");
+        this.agentId = id;
+        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgent.getEditText();
+        autoCompleteTextView.setText(name);
     }
 
     private long getPropertyTypeId(){
         return this.propertyTypeId;
+    }
+
+    private void setPropertyTypeId(long id, String name){
+        Log.d(Tag.TAG, "setPropertyTypeId() called with: id = [" + id + "], name = [" + name + "]");
+        this.propertyTypeId = id;
+        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutPropertyType.getEditText();
+        autoCompleteTextView.setText(name);
     }
 
     private String getPrice(){

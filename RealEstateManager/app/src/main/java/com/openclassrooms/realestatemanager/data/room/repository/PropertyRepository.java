@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.openclassrooms.realestatemanager.data.room.dao.PropertyDao;
 import com.openclassrooms.realestatemanager.data.room.database.AppDatabase;
@@ -70,11 +71,38 @@ public class PropertyRepository {
         });
     }
 
-    public LiveData<PropertyDetailData> getPropertyDetailById(long id) {
-        return propertyDao.getPropertyDetailById(id);
-    }
-
     public LiveData<List<PropertyLocationData>> getOtherPropertiesLocationById(long id){
         return propertyDao.getOtherPropertiesLocationById(id);
+    }
+
+    public LiveData<PropertyDetailData> getPropertyDetailByIdLiveData(long id) {
+        MutableLiveData<PropertyDetailData> propertyDetailDataLiveData = new MutableLiveData<>();
+
+        PropertyDetailData propertyDetailData = getPropertyDetailById(id);
+        propertyDetailDataLiveData.setValue(propertyDetailData);
+
+        return propertyDetailDataLiveData;
+    }
+
+    public PropertyDetailData getPropertyDetailById(long id)  {
+        Log.d(Tag.TAG, "PropertyRepository.getFirstPropertyId() called");
+        Callable<PropertyDetailData> callable = new Callable<PropertyDetailData>() {
+            @Override
+            public PropertyDetailData call() throws Exception {
+                return propertyDao.getPropertyDetailById(id);
+            }
+        };
+
+        Future<PropertyDetailData> future = AppDatabase.getExecutor().submit(callable);
+        PropertyDetailData propertyDetailData = null;
+        try {
+            propertyDetailData = future.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return propertyDetailData;
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 @Dao
 public interface PropertyTypeDao {
     @Query("SELECT * FROM property_type ORDER BY id")
-    LiveData<List<PropertyType>> getPropertyTypes();
+    List<PropertyType> getPropertyTypes();
 
     @Query("SELECT * FROM property_type WHERE id = :id")
     LiveData<PropertyType> getPropertyTypeById(long id);

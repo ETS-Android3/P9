@@ -128,7 +128,11 @@ public class Utils {
     }
 
     public static String convertDateToLocalFormat(Date date){
-        return DateFormat.getDateInstance(DateFormat.LONG).format(date);
+        try {
+            return DateFormat.getDateInstance(DateFormat.LONG).format(date);
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
     public static Date convertStringInLocalFormatToDate(String text){

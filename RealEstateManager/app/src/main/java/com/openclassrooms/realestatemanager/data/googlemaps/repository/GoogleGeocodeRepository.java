@@ -32,8 +32,6 @@ public class GoogleGeocodeRepository {
 
     private String getApiKey() { return apiKey; }
 
-    private final MutableLiveData<String> errorMutableLiveData = new MutableLiveData<>();
-    public LiveData<String> getErrorLiveData() { return errorMutableLiveData; }
 
     public Call<Geocode> getGeocode(String address) {
         Log.d(Tag.TAG, "getGeocode() called with: address = [" + address + "]");
@@ -44,6 +42,9 @@ public class GoogleGeocodeRepository {
             return null;
         }
     }
+
+    private final MutableLiveData<String> errorMutableLiveData = new MutableLiveData<>();
+    public LiveData<String> getErrorLiveData() { return errorMutableLiveData; }
 
     private final MutableLiveData<Geocode> geocodeMutableLiveData = new MutableLiveData<>();
     public LiveData<Geocode> getGeocodeLiveData() { return geocodeMutableLiveData; }
@@ -84,11 +85,8 @@ public class GoogleGeocodeRepository {
         return null;
     }
 
-    private final MutableLiveData<LatLng> locationByAddressMutableLiveData = new MutableLiveData<>();
-    public LiveData<LatLng> getLocationByAddressLiveData() { return locationByAddressMutableLiveData; }
-
-    // result with LiveData
-    public void loadLocationByAddress(String address){
+    public LiveData<LatLng> getLocationByAddressLiveData(String address){
+        MutableLiveData<LatLng> latLngMutableLiveData = new MutableLiveData<>();
         Call<Geocode> call = getGeocode(address);
         call.enqueue(new Callback<Geocode>() {
             @Override
@@ -96,7 +94,7 @@ public class GoogleGeocodeRepository {
                 if (response.isSuccessful()) {
                     Geocode geocode = response.body();
                     LatLng latLng = extractLocation(geocode);
-                    locationByAddressMutableLiveData.setValue(latLng);
+                    latLngMutableLiveData.setValue(latLng);
                 }
             }
 
@@ -105,29 +103,7 @@ public class GoogleGeocodeRepository {
                 errorMutableLiveData.postValue(t.getMessage());
             }
         });
+        return latLngMutableLiveData;
     }
 
-    public interface LocationByAddressListener{
-        void onLocationFound(LatLng latLng);
-    }
-
-    // result with listener
-    public void getLocationByAddress(String address, LocationByAddressListener locationByAddressListener){
-        Call<Geocode> call = getGeocode(address);
-        call.enqueue(new Callback<Geocode>() {
-            @Override
-            public void onResponse(Call<Geocode> call, Response<Geocode> response) {
-                if (response.isSuccessful()) {
-                    Geocode geocode = response.body();
-                    LatLng latLng = extractLocation(geocode);
-                    locationByAddressListener.onLocationFound(latLng);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Geocode> call, Throwable t) {
-                errorMutableLiveData.postValue(t.getMessage());
-            }
-        });
-    }
 }

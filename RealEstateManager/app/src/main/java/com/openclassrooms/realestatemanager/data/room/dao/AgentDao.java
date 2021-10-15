@@ -14,7 +14,7 @@ import java.util.List;
 @Dao
 public interface AgentDao {
     @Query("SELECT * FROM agent ORDER BY id")
-    LiveData<List<Agent>> getAgents();
+    List<Agent> getAgents();
 
     @Query("SELECT * FROM agent WHERE id = :id")
     LiveData<Agent> getAgentById(long id);

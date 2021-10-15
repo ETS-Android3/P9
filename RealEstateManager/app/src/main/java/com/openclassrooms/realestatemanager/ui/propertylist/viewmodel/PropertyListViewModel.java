@@ -35,11 +35,11 @@ public class PropertyListViewModel extends ViewModel {
     }
 
     private void configureMediatorLiveData() {
-        LiveData<List<Agent>> agentsLiveData = databaseRepository.getAgentRepository().getAgents();
+        LiveData<List<Agent>> agentsLiveData = databaseRepository.getAgentRepository().getAgentsLiveData();
         LiveData<List<Photo>> photosLiveData = databaseRepository.getPhotoRepository().getPhotos();
         LiveData<List<Property>> propertiesLiveData = databaseRepository.getPropertyRepository().getProperties();
         LiveData<List<PropertyCategory>> categoriesLiveData = databaseRepository.getPropertyCategoryRepository().getCategories();
-        LiveData<List<PropertyType>> typesLiveData = databaseRepository.getPropertyTypeRepository().getPropertyTypes();
+        LiveData<List<PropertyType>> typesLiveData = databaseRepository.getPropertyTypeRepository().getPropertyTypesLiveData();
 
         propertyListViewStateMediatorLiveData.addSource(agentsLiveData, new Observer<List<Agent>>() {
             @Override
