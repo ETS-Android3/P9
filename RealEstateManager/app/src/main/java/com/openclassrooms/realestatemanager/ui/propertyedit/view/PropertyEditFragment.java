@@ -2,11 +2,13 @@ package com.openclassrooms.realestatemanager.ui.propertyedit.view;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.arch.core.util.Function;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -34,6 +36,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -52,6 +55,7 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownVi
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyEditViewState;
 import com.openclassrooms.realestatemanager.utils.Utils;
+import com.openclassrooms.realestatemanager.utils.UtilsDrawable;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -363,7 +367,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 setAvailable(propertyEditViewState.isAvailable());
                 setAgentId(propertyEditViewState.getAgentId(), propertyEditViewState.getAgentName());
                 setPropertyTypeId(propertyEditViewState.getPropertyTypeId(), propertyEditViewState.getPropertyTypeName());
-
+                setPropertyLatLng(new LatLng(propertyEditViewState.getLatitude(), propertyEditViewState.getLongitude()));
                 configureDropdown(propertyEditViewState.getAgentId(), propertyEditViewState.getPropertyTypeId());
                 checkAllValues();
             }
@@ -511,9 +515,13 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
 
     private void drawPropertylocation(){
         Log.d(Tag.TAG, "PropertyEditFragment.drawPropertylocation() (mMap==null)=" + (mMap==null) + " (propertyLatLng==null)=" + (propertyLatLng==null));
-        if ((mMap!=null) && (this.propertyLatLng != null)) {
+        if ((mMap != null) && (propertyLatLng != null)) {
+            Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_dark_red, getContext().getTheme()));
             mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(propertyLatLng).title("Property position"));
+            mMap.addMarker(new MarkerOptions()
+                    .position(propertyLatLng)
+                    .title("Property position")
+                    .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(propertyLatLng, 12));
         }
     }

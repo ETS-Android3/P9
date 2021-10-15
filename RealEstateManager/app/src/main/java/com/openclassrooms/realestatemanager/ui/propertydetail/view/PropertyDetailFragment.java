@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -47,6 +48,7 @@ import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.PropertyDetailViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
+import com.openclassrooms.realestatemanager.utils.UtilsDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -312,28 +314,6 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         textViewPhotoLegend.setText(photoLegend);
     }
 
-    public static Bitmap drawableToBitmap (Drawable drawable) {
-        Bitmap bitmap = null;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
-            }
-        }
-
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
     @Override
     public boolean onMarkerClick(Marker marker) {
         String strPropertyId = (String) marker.getTag();
@@ -361,11 +341,10 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void drawOtherPropertiesLocation() {
         Log.d(Tag.TAG, "drawOtherPropertiesLocation() (mMap==null)=" + (mMap==null) + " (otherPropertiesLocation==null)=" + (otherPropertiesLocation==null));
         if ((mMap != null) && (this.otherPropertiesLocation != null)) {
-            Bitmap bitmap = drawableToBitmap(getResources().getDrawable(R.drawable.ic_home_primary_color, getContext().getTheme()));
+            Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_primary_color, getContext().getTheme()));
             for (PropertyLocationData propertyLocationData : otherPropertiesLocation) {
                 LatLng latlng = new LatLng(propertyLocationData.getLatitude(), propertyLocationData.getLongitude());
                 Marker marker = mMap.addMarker(new MarkerOptions()
@@ -385,11 +364,10 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         drawCurrentPropertylocation();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void drawCurrentPropertylocation(){
         Log.d(Tag.TAG, "drawCurrentPropertylocation() (mMap==null)=" + (mMap==null) + " (currentPropertyLocation==null)=" + (currentPropertyLocation==null));
         if ((mMap != null) && (currentPropertyLocation != null)) {
-            Bitmap bitmap = drawableToBitmap(getResources().getDrawable(R.drawable.ic_home_dark_red, getContext().getTheme()));
+            Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_dark_red, getContext().getTheme()));
             LatLng latlng = new LatLng(currentPropertyLocation.getLatitude(), currentPropertyLocation.getLongitude());
             mMap.addMarker(new MarkerOptions()
                     .position(latlng)

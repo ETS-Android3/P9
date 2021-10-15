@@ -424,6 +424,7 @@ public class PropertyEditViewModel extends ViewModel {
 
     private PropertyEditViewState getPropertyEditViewState(long propertyId){
         if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED){
+            // default values
             return new PropertyEditViewState();
         } else {
             PropertyDetailData p = databaseRepository.getPropertyRepository().getPropertyDetailById(propertyId);
@@ -447,7 +448,9 @@ public class PropertyEditViewModel extends ViewModel {
                     p.getAgentName(),
                     p.getPropertyTypeId(),
                     p.getTypeName(),
-                    p.isAvailable());
+                    p.isAvailable(),
+                    p.getLatitude(),
+                    p.getLongitude());
         }
     }
 
