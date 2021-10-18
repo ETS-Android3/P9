@@ -33,7 +33,7 @@ import java.util.concurrent.Executors;
                     Photo.class,
                     PropertyType.class,
                     Property.class},
-                    version = 5,
+                    version = 7,
                     exportSchema = true
                     )
 public abstract class AppDatabase extends RoomDatabase {
@@ -73,8 +73,8 @@ public abstract class AppDatabase extends RoomDatabase {
         Log.d(Tag.TAG, "create() called with: application");
         Builder<AppDatabase> builder = Room.databaseBuilder(application.getApplicationContext(),
                     AppDatabase.class, DB_NAME)
-                    .createFromAsset("RealEstate.db");
-                    //.addCallback(prepopulateDatabase(application));
+                    //.createFromAsset("RealEstate.db");
+                    .addCallback(prepopulateDatabase(application));
 
         if (BuildConfig.DEBUG) {
             builder.fallbackToDestructiveMigration();

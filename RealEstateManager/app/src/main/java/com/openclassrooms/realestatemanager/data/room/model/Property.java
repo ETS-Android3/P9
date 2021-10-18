@@ -39,8 +39,6 @@ public class Property {
     private final Date saleDate;
     @ColumnInfo(name = "property_type_id", index = true)
     private final long propertyTypeId;
-    @ColumnInfo(name = "property_category_id", index = true)
-    private final long propertyCategoryId;
     @ColumnInfo(name = "agent_id", index = true)
     private final long agentId;
     @ColumnInfo(name = "rooms")
@@ -50,7 +48,7 @@ public class Property {
     @ColumnInfo(name = "longitude")
     private final double longitude;
 
-    public Property(long id, int price, int surface, String description, String addressTitle, String address, String pointsOfInterest, boolean available, Date entryDate, Date saleDate, long propertyTypeId, long propertyCategoryId, long agentId, int rooms, double latitude, double longitude) {
+    public Property(long id, int price, int surface, String description, String addressTitle, String address, String pointsOfInterest, boolean available, Date entryDate, Date saleDate, long propertyTypeId, long agentId, int rooms, double latitude, double longitude) {
         this.id = id;
         this.price = price;
         this.surface = surface;
@@ -62,7 +60,6 @@ public class Property {
         this.entryDate = entryDate;
         this.saleDate = saleDate;
         this.propertyTypeId = propertyTypeId;
-        this.propertyCategoryId = propertyCategoryId;
         this.agentId = agentId;
         this.rooms = rooms;
         this.latitude = latitude;
@@ -111,10 +108,6 @@ public class Property {
 
     public long getPropertyTypeId() {
         return propertyTypeId;
-    }
-
-    public long getPropertyCategoryId() {
-        return propertyCategoryId;
     }
 
     public long getAgentId() {

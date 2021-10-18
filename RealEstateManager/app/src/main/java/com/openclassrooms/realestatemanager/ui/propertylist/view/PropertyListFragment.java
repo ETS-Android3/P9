@@ -82,12 +82,14 @@ public class PropertyListFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(Tag.TAG, "PropertyListFragment.onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(Tag.TAG, "PropertyListFragment.onCreateView() called with: inflater = [" + inflater + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_list, container, false);
         configureRecyclerView(view);
@@ -98,6 +100,7 @@ public class PropertyListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(Tag.TAG, "PropertyListFragment.onViewCreated() called with: view = [" + view + "], savedInstanceState = [" + savedInstanceState + "]");
         configureViewModel();
     }
 

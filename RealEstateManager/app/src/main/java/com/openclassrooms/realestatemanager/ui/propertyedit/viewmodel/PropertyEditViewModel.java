@@ -352,8 +352,6 @@ public class PropertyEditViewModel extends ViewModel {
             double latitude = (latLng == null) ? 0 : latLng.latitude;
             double longitude = (latLng == null) ? 0 : latLng.longitude;
 
-            int categoryId = 1;
-
             int intPrice = Integer.parseInt(price);
             int intSurface = Integer.parseInt(surface);
             int intRooms = Integer.parseInt(rooms);
@@ -372,7 +370,6 @@ public class PropertyEditViewModel extends ViewModel {
                 dateEntryDate,
                 dateSaleDate,
                 propertyTypeId,
-                categoryId,
                 agentId,
                 intRooms,
                 latitude,

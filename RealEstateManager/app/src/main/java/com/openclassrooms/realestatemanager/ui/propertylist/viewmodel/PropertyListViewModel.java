@@ -1,11 +1,14 @@
 package com.openclassrooms.realestatemanager.ui.propertylist.viewmodel;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
@@ -28,12 +31,14 @@ public class PropertyListViewModel extends ViewModel {
     public LiveData<PropertyListViewState> getViewState() { return propertyListViewStateMediatorLiveData; }
 
     public PropertyListViewModel(DatabaseRepository databaseRepository) {
+        Log.d(Tag.TAG, "PropertyListViewModel() called with: databaseRepository = [" + databaseRepository + "]");
         this.databaseRepository = databaseRepository;
 
         configureMediatorLiveData();
     }
 
     private void configureMediatorLiveData() {
+        Log.d(Tag.TAG, "configureMediatorLiveData() called");
         LiveData<List<Agent>> agentsLiveData = databaseRepository.getAgentRepository().getAgentsLiveData();
         LiveData<List<Photo>> photosLiveData = databaseRepository.getPhotoRepository().getPhotos();
         LiveData<List<Property>> propertiesLiveData = databaseRepository.getPropertyRepository().getProperties();
@@ -45,8 +50,7 @@ public class PropertyListViewModel extends ViewModel {
                 combine(agents,
                         photosLiveData.getValue(),
                         propertiesLiveData.getValue(),
-                        typesLiveData.getValue()
-                        );
+                        typesLiveData.getValue());
             }
         });
 
@@ -86,6 +90,7 @@ public class PropertyListViewModel extends ViewModel {
     }
 
     public void load(){
+        Log.d(Tag.TAG, "load() called");
         databaseRepository.getAgentRepository().getAgents();
     }
 
@@ -111,7 +116,10 @@ public class PropertyListViewModel extends ViewModel {
                          @Nullable List<Photo> photos,
                          @Nullable List<Property> properties,
                          @Nullable List<PropertyType> types){
-        //Log.d(Tag.TAG, "combine() called with: agents = [" + agents + "], photos = [" + photos + "], properties = [" + properties + "], categories = [" + categories + "], types = [" + types + "]");
+        Log.d(Tag.TAG, "combine() called with: agents = [" + agents +
+                "], photos = [" + photos +
+                "], properties = [" + properties +
+                "], types = [" + types + "]");
 
         if (agents == null || photos == null || properties == null || types == null) {
             return;
