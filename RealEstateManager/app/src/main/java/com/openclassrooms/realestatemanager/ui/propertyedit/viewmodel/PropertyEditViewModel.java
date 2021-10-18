@@ -333,11 +333,9 @@ public class PropertyEditViewModel extends ViewModel {
                             String addressTitle,
                             String address,
                             String pointOfInterest,
-                            boolean available,
                             String entryDate,
                             String saleDate,
                             long propertyTypeId,
-                            boolean forSale,
                             long agentId,
                             String rooms,
                             LatLng latLng,
@@ -345,8 +343,7 @@ public class PropertyEditViewModel extends ViewModel {
 
         // check all values
         boolean valuesOk = checkAllValues(price, surface, description, addressTitle, address,
-                pointOfInterest, available, entryDate, saleDate,  propertyTypeId, forSale,
-                agentId, rooms, latLng);
+                pointOfInterest, entryDate, saleDate, propertyTypeId, agentId, rooms, latLng);
 
         if (valuesOk) {
             double latitude = (latLng == null) ? 0 : latLng.latitude;
@@ -366,7 +363,6 @@ public class PropertyEditViewModel extends ViewModel {
                 addressTitle,
                 address,
                 pointOfInterest,
-                available,
                 dateEntryDate,
                 dateSaleDate,
                 propertyTypeId,
@@ -398,11 +394,9 @@ public class PropertyEditViewModel extends ViewModel {
                                   String addressTitle,
                                   String address,
                                   String pointOfInterest,
-                                  boolean available,
                                   String entryDate,
                                   String saleDate,
                                   long propertyTypeId,
-                                  boolean forSale,
                                   long agentId,
                                   String rooms,
                                   LatLng latLng){
@@ -450,7 +444,6 @@ public class PropertyEditViewModel extends ViewModel {
                     p.getAgentName(),
                     p.getPropertyTypeId(),
                     p.getTypeName(),
-                    p.isAvailable(),
                     p.getLatitude(),
                     p.getLongitude());
         }

@@ -16,7 +16,6 @@ public class PropertyEditViewState {
     private final String agentName;
     private final long propertyTypeId;
     private final String propertyTypeName;
-    private final boolean available;
     private final double latitude;
     private final double longitude;
 
@@ -34,12 +33,11 @@ public class PropertyEditViewState {
         this.agentName = "";
         this.propertyTypeId = PropertyConst.PROPERTY_TYPE_ID_NOT_INITIALIZED;
         this.propertyTypeName = "";
-        this.available = true;
         this.latitude = 0;
         this.longitude = 0;
     }
 
-    public PropertyEditViewState(String addressTitle, String address, String description, String pointOfInterest, String price, String surface, String rooms, String entryDate, String saleDate, long agentId, String agentName, long propertyTypeId, String propertyTypeName, boolean available, double latitude, double longitude) {
+    public PropertyEditViewState(String addressTitle, String address, String description, String pointOfInterest, String price, String surface, String rooms, String entryDate, String saleDate, long agentId, String agentName, long propertyTypeId, String propertyTypeName, double latitude, double longitude) {
         this.addressTitle = addressTitle;
         this.address = address;
         this.description = description;
@@ -53,7 +51,6 @@ public class PropertyEditViewState {
         this.agentName = agentName;
         this.propertyTypeId = propertyTypeId;
         this.propertyTypeName = propertyTypeName;
-        this.available = available;
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -108,10 +105,6 @@ public class PropertyEditViewState {
 
     public String getPropertyTypeName() {
         return propertyTypeName;
-    }
-
-    public boolean isAvailable() {
-        return available;
     }
 
     public double getLatitude() {

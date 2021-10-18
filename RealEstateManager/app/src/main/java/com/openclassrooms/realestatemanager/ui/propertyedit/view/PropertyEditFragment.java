@@ -100,9 +100,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     private TextInputLayout textInputLayoutSaleDate;
     private ImageView imageViewSaleDate;
 
-    private SwitchMaterial switchMaterialAvailable;
-    private SwitchMaterial switchMaterialCategory;
-
     private TextInputLayout textInputLayoutAgent;
     private TextInputLayout textInputLayoutPropertyType;
 
@@ -201,15 +198,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         textInputLayoutAgent = view.findViewById(R.id.fragment_property_edit_text_input_layout_agent);
         textInputLayoutPropertyType = view.findViewById(R.id.fragment_property_edit_text_input_layout_property_type);
 
-        switchMaterialAvailable = view.findViewById(R.id.property_edit_switch_available);
-        switchMaterialAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                menuItemOk.setEnabled(isChecked);
-            }
-        });
-
-        switchMaterialCategory = view.findViewById(R.id.property_edit_switch_category);
         buttonPhoto = view.findViewById(R.id.property_edit_button_add_photo);
 
         bottomNavigationView = view.findViewById(R.id.fragment_property_edit_bottom_navigation_view);
@@ -364,7 +352,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 setRooms(propertyEditViewState.getRooms());
                 setEntryDate(propertyEditViewState.getEntryDate());
                 setSaleDate(propertyEditViewState.getSaleDate());
-                setAvailable(propertyEditViewState.isAvailable());
                 setAgentId(propertyEditViewState.getAgentId(), propertyEditViewState.getAgentName());
                 setPropertyTypeId(propertyEditViewState.getPropertyTypeId(), propertyEditViewState.getPropertyTypeName());
                 setPropertyLatLng(new LatLng(propertyEditViewState.getLatitude(), propertyEditViewState.getLongitude()));
@@ -655,22 +642,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         textInputLayoutSaleDate.getEditText().setText(saleDate);
     }
 
-    private boolean getAvailable(){
-        return switchMaterialAvailable.isChecked();
-    }
-
-    private void setAvailable(boolean available){
-        switchMaterialAvailable.setChecked(available);
-    }
-
-    private boolean getCategory(){
-        return switchMaterialCategory.isChecked();
-    }
-
-    private void setCategory(boolean forSale){
-        switchMaterialCategory.setChecked(forSale);
-    }
-
     private boolean validateForm(){
         insertOrUpdateProperty();
         return false;
@@ -685,11 +656,9 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 getAddressTitle(),
                 getAddress(),
                 getPointOfInterest(),
-                getAvailable(),
                 getEntryDate(),
                 getSaleDate(),
                 getPropertyTypeId(),
-                getCategory(),
                 getAgentId(),
                 getRooms(),
                 propertyLatLng,
@@ -709,11 +678,9 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 getAddressTitle(),
                 getAddress(),
                 getPointOfInterest(),
-                getAvailable(),
                 getEntryDate(),
                 getSaleDate(),
                 getPropertyTypeId(),
-                getCategory(),
                 getAgentId(),
                 getRooms(),
                 propertyLatLng);

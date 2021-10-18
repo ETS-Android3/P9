@@ -29,8 +29,6 @@ public class Property {
     private final String address;
     @ColumnInfo(name = "points_of_interest")
     private final String pointsOfInterest;
-    @ColumnInfo(name = "available")
-    private final boolean available;
     @ColumnInfo(name = "entry_date")
     @TypeConverters(DateConverter.class)
     private final Date entryDate;
@@ -48,7 +46,7 @@ public class Property {
     @ColumnInfo(name = "longitude")
     private final double longitude;
 
-    public Property(long id, int price, int surface, String description, String addressTitle, String address, String pointsOfInterest, boolean available, Date entryDate, Date saleDate, long propertyTypeId, long agentId, int rooms, double latitude, double longitude) {
+    public Property(long id, int price, int surface, String description, String addressTitle, String address, String pointsOfInterest, Date entryDate, Date saleDate, long propertyTypeId, long agentId, int rooms, double latitude, double longitude) {
         this.id = id;
         this.price = price;
         this.surface = surface;
@@ -56,7 +54,6 @@ public class Property {
         this.addressTitle = addressTitle;
         this.address = address;
         this.pointsOfInterest = pointsOfInterest;
-        this.available = available;
         this.entryDate = entryDate;
         this.saleDate = saleDate;
         this.propertyTypeId = propertyTypeId;
@@ -92,10 +89,6 @@ public class Property {
 
     public String getPointsOfInterest() {
         return pointsOfInterest;
-    }
-
-    public boolean isAvailable() {
-        return available;
     }
 
     public Date getEntryDate() {

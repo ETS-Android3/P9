@@ -175,20 +175,11 @@
                     android:inputType="textMultiLine" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                style="@style/SwitchMaterialStyle"
-                android:id="@+id/property_edit_switch_available"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_point_of_interest"
-                app:layout_constraintStart_toStartOf="parent"
-                android:text="@string/property_available" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/fragment_property_edit_text_input_layout_entry_date"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/property_edit_switch_available"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_point_of_interest"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageView_entry_date"
                 style="@style/My_TextInputLayoutStyle">
@@ -256,40 +247,13 @@
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
-                android:id="@+id/fragment_property_edit_linear_layout_category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_agent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <TextView
-                    style="@style/TextviewStyle.Value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/property_category_for_sale"/>
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    style="@style/SwitchMaterialStyle"
-                    android:id="@+id/property_edit_switch_category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="" />
-                <TextView
-                    style="@style/TextviewStyle.Value"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/property_category_for_rent"/>
-
-            </LinearLayout>
-
             <Button
                 style="@style/TextviewStyle.Value"
                 android:id="@+id/property_edit_button_add_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_photo_add"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_linear_layout_category"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_agent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

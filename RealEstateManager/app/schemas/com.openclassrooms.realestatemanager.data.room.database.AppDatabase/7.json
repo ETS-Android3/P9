@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 7,
-    "identityHash": "3e6ecef8ff3b1857d40795d702eb9edd",
+    "identityHash": "f36ee50f483ab7b4b5cebd5f53f79675",
     "entities": [
       {
         "tableName": "agent",
@@ -114,7 +114,7 @@
       },
       {
         "tableName": "property",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `price` INTEGER NOT NULL, `surface` INTEGER NOT NULL, `description` TEXT, `address_title` TEXT, `address` TEXT, `points_of_interest` TEXT, `available` INTEGER NOT NULL, `entry_date` INTEGER, `sale_date` INTEGER, `property_type_id` INTEGER NOT NULL, `agent_id` INTEGER NOT NULL, `rooms` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, FOREIGN KEY(`agent_id`) REFERENCES `agent`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`property_type_id`) REFERENCES `property_type`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `price` INTEGER NOT NULL, `surface` INTEGER NOT NULL, `description` TEXT, `address_title` TEXT, `address` TEXT, `points_of_interest` TEXT, `entry_date` INTEGER, `sale_date` INTEGER, `property_type_id` INTEGER NOT NULL, `agent_id` INTEGER NOT NULL, `rooms` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, FOREIGN KEY(`agent_id`) REFERENCES `agent`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`property_type_id`) REFERENCES `property_type`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -157,12 +157,6 @@
             "columnName": "points_of_interest",
             "affinity": "TEXT",
             "notNull": false
-          },
-          {
-            "fieldPath": "available",
-            "columnName": "available",
-            "affinity": "INTEGER",
-            "notNull": true
           },
           {
             "fieldPath": "entryDate",
@@ -260,7 +254,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3e6ecef8ff3b1857d40795d702eb9edd')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f36ee50f483ab7b4b5cebd5f53f79675')"
     ]
   }
 }
