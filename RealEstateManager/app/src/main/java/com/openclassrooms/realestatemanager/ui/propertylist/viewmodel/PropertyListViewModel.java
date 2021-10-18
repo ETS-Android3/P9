@@ -10,7 +10,6 @@ import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
-import com.openclassrooms.realestatemanager.data.room.model.PropertyCategory;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewstate.PropertyListViewState;
@@ -38,7 +37,6 @@ public class PropertyListViewModel extends ViewModel {
         LiveData<List<Agent>> agentsLiveData = databaseRepository.getAgentRepository().getAgentsLiveData();
         LiveData<List<Photo>> photosLiveData = databaseRepository.getPhotoRepository().getPhotos();
         LiveData<List<Property>> propertiesLiveData = databaseRepository.getPropertyRepository().getProperties();
-        LiveData<List<PropertyCategory>> categoriesLiveData = databaseRepository.getPropertyCategoryRepository().getCategories();
         LiveData<List<PropertyType>> typesLiveData = databaseRepository.getPropertyTypeRepository().getPropertyTypesLiveData();
 
         propertyListViewStateMediatorLiveData.addSource(agentsLiveData, new Observer<List<Agent>>() {
@@ -47,7 +45,6 @@ public class PropertyListViewModel extends ViewModel {
                 combine(agents,
                         photosLiveData.getValue(),
                         propertiesLiveData.getValue(),
-                        categoriesLiveData.getValue(),
                         typesLiveData.getValue()
                         );
             }
@@ -59,7 +56,6 @@ public class PropertyListViewModel extends ViewModel {
                 combine(agentsLiveData.getValue(),
                         photos,
                         propertiesLiveData.getValue(),
-                        categoriesLiveData.getValue(),
                         typesLiveData.getValue()
                 );
             }
@@ -71,23 +67,11 @@ public class PropertyListViewModel extends ViewModel {
                 combine(agentsLiveData.getValue(),
                         photosLiveData.getValue(),
                         properties,
-                        categoriesLiveData.getValue(),
                         typesLiveData.getValue()
                 );
             }
         });
 
-        propertyListViewStateMediatorLiveData.addSource(categoriesLiveData, new Observer<List<PropertyCategory>>() {
-            @Override
-            public void onChanged(List<PropertyCategory> propertyCategories) {
-                combine(agentsLiveData.getValue(),
-                        photosLiveData.getValue(),
-                        propertiesLiveData.getValue(),
-                        propertyCategories,
-                        typesLiveData.getValue()
-                );
-            }
-        });
 
         propertyListViewStateMediatorLiveData.addSource(typesLiveData, new Observer<List<PropertyType>>() {
             @Override
@@ -95,7 +79,6 @@ public class PropertyListViewModel extends ViewModel {
                 combine(agentsLiveData.getValue(),
                         photosLiveData.getValue(),
                         propertiesLiveData.getValue(),
-                        categoriesLiveData.getValue(),
                         propertyTypes
                 );
             }
@@ -127,12 +110,10 @@ public class PropertyListViewModel extends ViewModel {
     private void combine(@Nullable List<Agent> agents,
                          @Nullable List<Photo> photos,
                          @Nullable List<Property> properties,
-                         @Nullable List<PropertyCategory> categories,
                          @Nullable List<PropertyType> types){
         //Log.d(Tag.TAG, "combine() called with: agents = [" + agents + "], photos = [" + photos + "], properties = [" + properties + "], categories = [" + categories + "], types = [" + types + "]");
 
-        if (agents == null || photos == null || properties == null ||
-                categories == null || types == null) {
+        if (agents == null || photos == null || properties == null || types == null) {
             return;
         }
 

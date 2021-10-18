@@ -14,13 +14,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.data.location.LocationRepository;
 import com.openclassrooms.realestatemanager.data.permission_checker.PermissionChecker;
-import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
-import com.openclassrooms.realestatemanager.data.room.model.Property;
-import com.openclassrooms.realestatemanager.data.room.model.PropertyCategory;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
-import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
@@ -28,17 +24,9 @@ import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.Property
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 public class PropertyDetailViewModel extends ViewModel {
-
-    private static final int CATEGORY_FOR_SAL_ID = 1;
-    private static final int CATEGORY_FOR_RENT_ID = 2;
 
     private long propertyId;
     /**
@@ -67,7 +55,7 @@ public class PropertyDetailViewModel extends ViewModel {
 
     private void configureMediatorLiveData(long propertyId) {
         Log.d(Tag.TAG, "PropertyDetailViewModel.configureMediatorLiveData(propertyId=" + propertyId + ")");
-        // Property detail with agent information, and category and type
+        // Property detail with agent information, and type
         LiveData<PropertyDetailData> propertyDetailDataLiveData = databaseRepository.getPropertyRepository().getPropertyDetailByIdLiveData(propertyId);
         // other properties location
         LiveData<List<PropertyLocationData>> propertyLocationDataLiveData = databaseRepository.getPropertyRepository().getOtherPropertiesLocationById(propertyId);
@@ -165,17 +153,11 @@ public class PropertyDetailViewModel extends ViewModel {
 
         String propertyState = "";
 
-        if (propertyDetailData.getPropertyCategoryId() == CATEGORY_FOR_SAL_ID) {
-            if (propertyDetailData.isAvailable()){
-                propertyState = "For sal";
-            } else
-                propertyState = "Sold";
+        if (propertyDetailData.getSaleDate() == null) {
+            propertyState = "For sal";
         } else {
-            if (propertyDetailData.isAvailable()){
-                propertyState = "For rent";
-            } else
-                propertyState = "Rented";
-        }
+            propertyState = "Sold";
+        };
 
         String entryDate = Utils.convertDateToString(propertyDetailData.getEntryDate());
         String saleDate = Utils.convertDateToString(propertyDetailData.getSaleDate());

@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.openclassrooms.realestatemanager.data.room.model.PropertyCategory;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 
 import java.util.List;

@@ -11,7 +11,6 @@ import java.util.Date;
 @Entity(tableName = "property",
         foreignKeys = {
         @ForeignKey(entity = Agent.class, parentColumns = "id", childColumns = "agent_id"),
-        @ForeignKey(entity = PropertyCategory.class, parentColumns = "id", childColumns = "property_category_id"),
         @ForeignKey(entity = PropertyType.class, parentColumns = "id", childColumns = "property_type_id")
     })
 public class Property {

@@ -2,13 +2,9 @@ package com.openclassrooms.realestatemanager.ui.propertydetail.viewstate;
 
 import android.location.Location;
 
-import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
-import com.openclassrooms.realestatemanager.data.room.model.Property;
-import com.openclassrooms.realestatemanager.data.room.model.PropertyCategory;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
-import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 
 import java.util.List;
 

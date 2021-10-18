@@ -13,30 +13,24 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.openclassrooms.realestatemanager.BuildConfig;
 import com.openclassrooms.realestatemanager.data.room.dao.AgentDao;
 import com.openclassrooms.realestatemanager.data.room.dao.PhotoDao;
-import com.openclassrooms.realestatemanager.data.room.dao.PropertyCategoryDao;
 import com.openclassrooms.realestatemanager.data.room.dao.PropertyDao;
 import com.openclassrooms.realestatemanager.data.room.dao.PropertyTypeDao;
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
-import com.openclassrooms.realestatemanager.data.room.model.PropertyCategory;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.sample.SampleAgent;
 import com.openclassrooms.realestatemanager.data.room.sample.SamplePhoto;
 import com.openclassrooms.realestatemanager.data.room.sample.SampleProperty;
-import com.openclassrooms.realestatemanager.data.room.sample.SamplePropertyCategory;
 import com.openclassrooms.realestatemanager.data.room.sample.SamplePropertyType;
 import com.openclassrooms.realestatemanager.tag.Tag;
 
 import java.text.ParseException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.LogManager;
 
 @Database(entities = {Agent.class,
                     Photo.class,
-                    PropertyCategory.class,
                     PropertyType.class,
                     Property.class},
                     version = 5,
@@ -59,7 +53,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract AgentDao agentDao();
     public abstract PhotoDao photoDao();
     public abstract PropertyDao propertyDao();
-    public abstract PropertyCategoryDao propertyCategoryDao();
     public abstract PropertyTypeDao propertyTypeDao();
 
     // --- INSTANCE ---
@@ -100,7 +93,6 @@ public abstract class AppDatabase extends RoomDatabase {
                 databaseWriteExecutor.execute(() -> {
                     Log.d(Tag.TAG, "prepopulateDatabase() 3");
                     populateAgents(application);
-                    populatePropertyCategory(application);
                     populatePropertyType(application);
                     try {
                         populateProperty(application);
@@ -119,13 +111,6 @@ public abstract class AppDatabase extends RoomDatabase {
         for (Agent agent : sampleAgent.getSample()){
             // use insert Dao instead db with ContentValue
             AppDatabase.getInstance(application).agentDao().insert(agent);
-        }
-    }
-
-    private static void populatePropertyCategory(Application application){
-        SamplePropertyCategory samplePropertyCategory = new SamplePropertyCategory();
-        for (PropertyCategory propertyCategory : samplePropertyCategory.getSample()){
-            AppDatabase.getInstance(application).propertyCategoryDao().insert(propertyCategory);
         }
     }
 

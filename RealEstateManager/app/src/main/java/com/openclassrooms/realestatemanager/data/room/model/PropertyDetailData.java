@@ -28,8 +28,6 @@ public class PropertyDetailData {
     private Date saleDate;
     @ColumnInfo(name = "property_type_id")
     private long propertyTypeId;
-    @ColumnInfo(name = "property_category_id")
-    private long propertyCategoryId;
     @ColumnInfo(name = "agent_id")
     private long agentId;
     private int rooms;
@@ -41,12 +39,10 @@ public class PropertyDetailData {
     private String agentName;
     @ColumnInfo(name = "agent_phone")
     private String agentPhone;
-    @ColumnInfo(name = "property_category_name")
-    private String categoryName;
     @ColumnInfo(name = "property_type_name")
     private String typeName;
 
-    public PropertyDetailData(long id, int price, int surface, String description, String addressTitle, String address, String pointsOfInterest, boolean available, Date entryDate, Date saleDate, long propertyTypeId, long propertyCategoryId, long agentId, int rooms, double latitude, double longitude, String agentEmail, String agentName, String agentPhone, String categoryName, String typeName) {
+    public PropertyDetailData(long id, int price, int surface, String description, String addressTitle, String address, String pointsOfInterest, boolean available, Date entryDate, Date saleDate, long propertyTypeId, long agentId, int rooms, double latitude, double longitude, String agentEmail, String agentName, String agentPhone, String typeName) {
         this.id = id;
         this.price = price;
         this.surface = surface;
@@ -60,7 +56,6 @@ public class PropertyDetailData {
         if (saleDate != null)
             this.available = false;
         this.propertyTypeId = propertyTypeId;
-        this.propertyCategoryId = propertyCategoryId;
         this.agentId = agentId;
         this.rooms = rooms;
         this.latitude = latitude;
@@ -68,7 +63,6 @@ public class PropertyDetailData {
         this.agentEmail = agentEmail;
         this.agentName = agentName;
         this.agentPhone = agentPhone;
-        this.categoryName = categoryName;
         this.typeName = typeName;
     }
 
@@ -160,14 +154,6 @@ public class PropertyDetailData {
         this.propertyTypeId = propertyTypeId;
     }
 
-    public long getPropertyCategoryId() {
-        return propertyCategoryId;
-    }
-
-    public void setPropertyCategoryId(long propertyCategoryId) {
-        this.propertyCategoryId = propertyCategoryId;
-    }
-
     public long getAgentId() {
         return agentId;
     }
@@ -222,14 +208,6 @@ public class PropertyDetailData {
 
     public void setAgentPhone(String agentPhone) {
         this.agentPhone = agentPhone;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
     }
 
     public String getTypeName() {
