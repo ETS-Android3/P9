@@ -672,20 +672,13 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     }
 
     private boolean validateForm(){
-        if (this.propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
-            insertProperty();
-        } else {
-            updateProperty();
-        }
+        insertOrUpdateProperty();
         return false;
     }
 
-    private void updateProperty(){
-
-    }
-
-    private void insertProperty(){
-        propertyEditViewModel.addProperty(
+    private void insertOrUpdateProperty(){
+        propertyEditViewModel.insertOrUpdateProperty(
+                this.propertyId,
                 getPrice(),
                 getSurface(),
                 getDescription(),

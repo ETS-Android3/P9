@@ -325,7 +325,9 @@ public class PropertyEditViewModel extends ViewModel {
      * @param rooms
      * @param latLng
      */
-    public void addProperty(String price,
+    public void insertOrUpdateProperty(
+                            long propertyId,
+                            String price,
                             String surface,
                             String description,
                             String addressTitle,
@@ -359,7 +361,7 @@ public class PropertyEditViewModel extends ViewModel {
             Date dateEntryDate = Utils.convertStringInLocalFormatToDate(entryDate);
             Date dateSaleDate = Utils.convertStringInLocalFormatToDate(saleDate);
 
-            Property property = new Property(0,
+            Property property = new Property(propertyId,
                 intPrice,
                 intSurface,
                 description,
@@ -377,9 +379,12 @@ public class PropertyEditViewModel extends ViewModel {
                 longitude);
 
             try {
-                long id = databaseRepository.getPropertyRepository().insert(property);
+                if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
+                    propertyId = databaseRepository.getPropertyRepository().insert(property);
+                } else
+                    databaseRepository.getPropertyRepository().update(property);
                 // Callback to close windows
-                addPropertyInterface.onPropertyAdded(id);
+                addPropertyInterface.onPropertyAdded(propertyId);
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

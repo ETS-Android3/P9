@@ -44,6 +44,7 @@ public class PropertyRepository {
         return id;
     }
 
+    // return a long. This is the newly generated ID
     public long insert(Property property) throws ExecutionException, InterruptedException {
         Log.d(Tag.TAG, "insert() called with: property = [" + property + "]");
         Callable<Long> callable = new Callable<Long>() {
@@ -59,10 +60,20 @@ public class PropertyRepository {
         return  id;
     }
 
-    public void update(Property property) {
-        AppDatabase.getExecutor().execute(() -> {
-            propertyDao.update(property);
-        });
+    // Return the number of updated rows
+    public int update(Property property) throws ExecutionException, InterruptedException {
+        Log.d(Tag.TAG, "update() called with: property = [" + property + "]");
+        Callable<Integer> callable = new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                return propertyDao.update(property);
+            }
+        };
+
+        Future<Integer> future = AppDatabase.getExecutor().submit(callable);
+        int count = future.get();
+
+        return count;
     }
 
     public void delete(long id) {

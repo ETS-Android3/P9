@@ -57,6 +57,8 @@ public class PropertyDetailData {
         this.available = available;
         this.entryDate = entryDate;
         this.saleDate = saleDate;
+        if (saleDate != null)
+            this.available = false;
         this.propertyTypeId = propertyTypeId;
         this.propertyCategoryId = propertyCategoryId;
         this.agentId = agentId;
