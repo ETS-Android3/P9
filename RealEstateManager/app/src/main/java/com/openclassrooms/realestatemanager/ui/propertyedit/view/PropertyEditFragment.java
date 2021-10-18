@@ -652,7 +652,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     }
 
     private void setSaleDate(String saleDate){
-        textInputLayoutEntryDate.getEditText().setText(saleDate);
+        textInputLayoutSaleDate.getEditText().setText(saleDate);
     }
 
     private boolean getAvailable(){
