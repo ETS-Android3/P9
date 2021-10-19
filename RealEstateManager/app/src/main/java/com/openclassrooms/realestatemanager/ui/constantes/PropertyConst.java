@@ -7,7 +7,7 @@ public class PropertyConst {
     private static final int UNINITIALIZED_INTEGER_VALUE = -1;
     public static final int NO_STRING_ID = -1;
 
-    public static final int PROPERTY_ID_NOT_INITIALIZED = -1;
+    public static final int PROPERTY_ID_NOT_INITIALIZED = 0;
     public static final int AGENT_ID_NOT_INITIALIZED = -1;
     public static final int PROPERTY_TYPE_ID_NOT_INITIALIZED = -1;
 }

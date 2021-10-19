@@ -11,6 +11,7 @@ public class SampleProperty {
         Date date1 = new SimpleDateFormat("dd/MM/yyy").parse("09/09/2021");
         Date date2 = new SimpleDateFormat("dd/MM/yyy").parse("23/09/2021");
         Date date3 = new SimpleDateFormat("dd/MM/yyy").parse("28/09/2021");
+        Date date4 = new SimpleDateFormat("dd/MM/yyy").parse("19/10/2021");
 
         return new Property[]{
                 new Property(1,
@@ -64,7 +65,20 @@ public class SampleProperty {
                         1,
                         3,
                         14,
-                        40.761749, -73.971821)
+                        40.761749, -73.971821),
+                new Property(5,
+                        775000,
+                        150,
+                        "Spacious two bedroom apartment in a beautifully maintained condop located in the most desirable part of Harlem. Besides the generously sized bedrooms, there is a large full bath and an en suite half bath. The kitchen has good counter space and is well designed for cooking. There are new stainless steel appliances - dishwasher, stove and refrigerator. Additionally, there is a washer and dryer in the apartment, tons of closet space including a walk-in, hardwood floors, video/Butterfly intercom system and thru the wall A/Cs in all of the rooms. The apartment gets great light from the west and overlooks gardens and the building's landscaped courtyard. There is a live in super, a great gym and a parking garage with a waiting list. Sublets are allowed for a period of 2 years out of every 4 years once you have occupied the apartment as your primary residence. Come live in this thriving neighborhood which is across Morningside Park from Columbia University and near express transportation to midtown and offers great food, great shopping and great entertainment.",
+                        "CENTRAL HARLEM",
+                        "2235 Frederick Douglass Blvd Apt 3A, Manhattan, NY 10027",
+                        "Columbia University, Nearby schools, Transit 2, 3 A B C D",
+                        date4,
+                        null,
+                        2,
+                        6,
+                        8,
+                        40.807604635958675, -73.95357030181226)
         };
     }
 }
