@@ -50,7 +50,10 @@
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_address_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/fragment_property_edit_map"
-                app:endIconMode="clear_text">
+                app:startIconDrawable="@drawable/ic_location"
+                app:startIconContentDescription="@string/property_address"
+                app:endIconMode="clear_text"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/fragment_property_edit_text_input_edit_text_address"
@@ -78,6 +81,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_address"
                 app:layout_constraintStart_toStartOf="parent"
+                app:startIconDrawable="@drawable/ic_location_city"
+                app:startIconContentDescription="@string/property_type"
                 style="@style/My_TextInputLayoutDropdownStyle" >
 
                 <AutoCompleteTextView
@@ -94,6 +99,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_property_type"
                 app:layout_constraintStart_toStartOf="parent"
+                app:startIconDrawable="@drawable/ic_attach_money"
+                app:startIconContentDescription="@string/property_price"
                 app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
@@ -111,6 +118,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_price"
                 app:layout_constraintStart_toStartOf="parent"
+                app:startIconDrawable="@drawable/ic_settings_overscan"
+                app:startIconContentDescription="@string/property_surface"
                 app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
@@ -128,6 +137,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_surface"
                 app:layout_constraintStart_toStartOf="parent"
+                app:startIconDrawable="@drawable/ic_pin"
+                app:startIconContentDescription="@string/property_rooms"
                 app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
@@ -145,6 +156,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_rooms"
                 app:layout_constraintStart_toStartOf="parent"
+                app:startIconDrawable="@drawable/ic_description"
+                app:startIconContentDescription="@string/property_description"
                 app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
@@ -162,6 +175,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_description"
                 app:layout_constraintStart_toStartOf="parent"
+                app:startIconDrawable="@drawable/ic_interests"
+                app:startIconContentDescription="@string/property_point_of_interest"
                 app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
@@ -180,6 +195,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_point_of_interest"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageView_entry_date"
+                app:startIconDrawable="@drawable/ic_date"
+                app:startIconContentDescription="@string/property_entry_date"
                 app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
@@ -196,7 +213,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:padding="@dimen/default_padding"
-                app:srcCompat="@drawable/ic_date"
+                app:srcCompat="@drawable/ic_edit_calendar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_text_input_layout_entry_date"
                 app:layout_constraintBottom_toBottomOf="@+id/fragment_property_edit_text_input_layout_entry_date"
@@ -209,6 +226,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_entry_date"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageView_remove_sale_date"
+                app:startIconDrawable="@drawable/ic_menu_check"
+                app:startIconContentDescription="@string/property_sale_date"
                 app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
@@ -237,7 +256,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:padding="@dimen/default_padding"
-                app:srcCompat="@drawable/ic_date"
+                app:srcCompat="@drawable/ic_edit_calendar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_text_input_layout_sale_date"
                 app:layout_constraintBottom_toBottomOf="@+id/fragment_property_edit_text_input_layout_sale_date"
@@ -249,6 +268,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_sale_date"
                 app:layout_constraintStart_toStartOf="parent"
+                app:startIconDrawable="@drawable/ic_real_estate_agent_24"
+                app:startIconContentDescription="@string/property_agent_name"
                 style="@style/My_TextInputLayoutDropdownStyle">
 
                 <AutoCompleteTextView
