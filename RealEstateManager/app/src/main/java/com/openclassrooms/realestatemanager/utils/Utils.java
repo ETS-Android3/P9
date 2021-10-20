@@ -69,7 +69,7 @@ public class Utils {
         // convert to local currency
         // € : 135000000 -> "135 000 000 €"
         // $ : 135000000 -> "$135,000,000"
-        if (UnitLocale.getDefault() == UnitLocale.Imperial) {
+        if (UnitLocale.getDefault() == UnitLocale.Metric) {
             price = convertDollarToEuro(price);
         }
 
