@@ -316,11 +316,9 @@ public class PropertyEditViewModel extends ViewModel {
      * @param addressTitle
      * @param address
      * @param pointOfInterest
-     * @param available
      * @param entryDate
      * @param saleDate
      * @param propertyTypeId
-     * @param forSale
      * @param agentId
      * @param rooms
      * @param latLng
@@ -418,41 +416,40 @@ public class PropertyEditViewModel extends ViewModel {
         return valuesOk;
     }
 
-    private PropertyEditViewState getPropertyEditViewState(long propertyId){
-        if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED){
-            // default values
-            return new PropertyEditViewState();
-        } else {
-            PropertyDetailData p = databaseRepository.getPropertyRepository().getPropertyDetailById(propertyId);
-
-            String entryDate = Utils.convertDateToLocalFormat(p.getEntryDate());
-            String saleDate = Utils.convertDateToLocalFormat(p.getSaleDate());
-            String price = Integer.toString(p.getPrice());
-            String surface = Integer.toString(p.getSurface());
-            String rooms = Integer.toString(p.getRooms());
-
-            return new PropertyEditViewState(p.getAddressTitle(),
-                    p.getAddress(),
-                    p.getDescription(),
-                    p.getPointsOfInterest(),
-                    price,
-                    surface,
-                    rooms,
-                    entryDate,
-                    saleDate,
-                    p.getAgentId(),
-                    p.getAgentName(),
-                    p.getPropertyTypeId(),
-                    p.getTypeName(),
-                    p.getLatitude(),
-                    p.getLongitude());
-        }
-    }
-
     public LiveData<PropertyEditViewState> getPropertyEditViewStateLiveData(long propertyId) {
-        MutableLiveData<PropertyEditViewState> propertyEditViewStateMutableLiveData = new MutableLiveData<>();
-        PropertyEditViewState propertyEditViewState = getPropertyEditViewState(propertyId);
-        propertyEditViewStateMutableLiveData.setValue(propertyEditViewState);
-        return propertyEditViewStateMutableLiveData;
+        LiveData<PropertyDetailData> propertyDetailDataLiveData = databaseRepository.getPropertyRepository().getPropertyDetailByIdLiveData(propertyId);
+
+        LiveData<PropertyEditViewState> propertyEditViewStateLiveData = Transformations.map(propertyDetailDataLiveData,
+                (PropertyDetailData p) -> {
+                    Log.d(Tag.TAG, "getPropertyEditViewStateLiveData() propertyId = [" + propertyId + "]" + " p=[" + p + "]");
+                    if ((propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) || (p == null)) {
+                        return new PropertyEditViewState();
+                    } else {
+                        String entryDate = Utils.convertDateToLocalFormat(p.getEntryDate());
+                        String saleDate = Utils.convertDateToLocalFormat(p.getSaleDate());
+                        String price = Integer.toString(p.getPrice());
+                        String surface = Integer.toString(p.getSurface());
+                        String rooms = Integer.toString(p.getRooms());
+
+                        PropertyEditViewState propertyEditViewState = new PropertyEditViewState(p.getAddressTitle(),
+                            p.getAddress(),
+                            p.getDescription(),
+                            p.getPointsOfInterest(),
+                            price,
+                            surface,
+                            rooms,
+                            entryDate,
+                            saleDate,
+                            p.getAgentId(),
+                            p.getAgentName(),
+                            p.getPropertyTypeId(),
+                            p.getTypeName(),
+                            p.getLatitude(),
+                            p.getLongitude());
+
+                        return propertyEditViewState;
+                    }
+                });
+        return propertyEditViewStateLiveData;
     }
 }

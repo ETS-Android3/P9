@@ -46,7 +46,7 @@ public interface PropertyDao {
            "left join agent on property.agent_id = agent.id " +
            "left join property_type on property.property_type_id = property_type.id " +
            "where property.id = :id")
-    PropertyDetailData getPropertyDetailById(long id);
+    LiveData<PropertyDetailData> getPropertyDetailById(long id);
 
     @Query("select id, price, address_title, latitude, longitude " +
            "from property " +

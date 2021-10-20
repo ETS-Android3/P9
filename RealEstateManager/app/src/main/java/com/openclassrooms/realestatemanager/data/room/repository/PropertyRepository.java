@@ -87,33 +87,6 @@ public class PropertyRepository {
     }
 
     public LiveData<PropertyDetailData> getPropertyDetailByIdLiveData(long id) {
-        MutableLiveData<PropertyDetailData> propertyDetailDataLiveData = new MutableLiveData<>();
-
-        PropertyDetailData propertyDetailData = getPropertyDetailById(id);
-        propertyDetailDataLiveData.setValue(propertyDetailData);
-
-        return propertyDetailDataLiveData;
-    }
-
-    public PropertyDetailData getPropertyDetailById(long id)  {
-        Log.d(Tag.TAG, "PropertyRepository.getFirstPropertyId() called");
-        Callable<PropertyDetailData> callable = new Callable<PropertyDetailData>() {
-            @Override
-            public PropertyDetailData call() throws Exception {
-                return propertyDao.getPropertyDetailById(id);
-            }
-        };
-
-        Future<PropertyDetailData> future = AppDatabase.getExecutor().submit(callable);
-        PropertyDetailData propertyDetailData = null;
-        try {
-            propertyDetailData = future.get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return propertyDetailData;
+        return propertyDao.getPropertyDetailById(id);
     }
 }
