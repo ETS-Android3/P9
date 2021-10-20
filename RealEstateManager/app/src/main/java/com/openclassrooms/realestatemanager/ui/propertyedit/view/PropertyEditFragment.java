@@ -77,8 +77,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     private long agentId = UNINITIALIZED_AGENT_ID;
     private long propertyTypeId = UNINITIALIZED_PROPERTY_TYPE_ID;
 
-    private TextView textViewTitle;
-
     private TextInputLayout textInputLayoutAddressTitle;
 
     private TextInputLayout textInputLayoutAddress;
@@ -166,8 +164,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     }
 
     private void configureComponents(View view) {
-        textViewTitle = view.findViewById(R.id.fragment_property_edit_text_view_title);
-
         textInputLayoutAddressTitle = view.findViewById(R.id.fragment_property_edit_text_input_layout_address_title);
         textInputLayoutAddress = view.findViewById(R.id.fragment_property_edit_text_input_layout_address);
         textInputEditTextAddress = view.findViewById(R.id.fragment_property_edit_text_input_edit_text_address);
