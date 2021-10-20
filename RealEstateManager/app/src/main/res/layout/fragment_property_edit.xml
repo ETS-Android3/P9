@@ -31,7 +31,8 @@
                 style="@style/My_TextInputLayoutStyle"
                 app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_constraintLayout_2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/fragment_property_edit_map">
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_edit_map"
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/fragment_property_edit_text_input_edit_text_address_title"
@@ -48,7 +49,8 @@
                 style="@style/My_TextInputLayoutStyle"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_address_title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/fragment_property_edit_map">
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_edit_map"
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/fragment_property_edit_text_input_edit_text_address"
@@ -92,6 +94,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_property_type"
                 app:layout_constraintStart_toStartOf="parent"
+                app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -108,6 +111,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_price"
                 app:layout_constraintStart_toStartOf="parent"
+                app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -124,6 +128,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_surface"
                 app:layout_constraintStart_toStartOf="parent"
+                app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -140,6 +145,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_rooms"
                 app:layout_constraintStart_toStartOf="parent"
+                app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -156,6 +162,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_description"
                 app:layout_constraintStart_toStartOf="parent"
+                app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -173,6 +180,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_point_of_interest"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageView_entry_date"
+                app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -200,7 +208,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_entry_date"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageView_sale_date"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageView_remove_sale_date"
+                app:endIconMode="clear_text"
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -211,6 +220,18 @@
                     android:inputType="date"
                     android:enabled="false"/>
             </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/fragment_property_imageView_remove_sale_date"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:padding="@dimen/default_padding"
+                app:srcCompat="@drawable/ic_menu_cancel"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageView_sale_date"
+                app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_text_input_layout_sale_date"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_property_edit_text_input_layout_sale_date"
+                android:contentDescription="@string/property_sale_date" />
+
             <ImageView
                 android:id="@+id/fragment_property_imageView_sale_date"
                 android:layout_width="60dp"

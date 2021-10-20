@@ -96,6 +96,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     private ImageView imageViewEntryDate;
 
     private TextInputLayout textInputLayoutSaleDate;
+    private ImageView imageViewRemoveSaleDate;
     private ImageView imageViewSaleDate;
 
     private TextInputLayout textInputLayoutAgent;
@@ -183,6 +184,13 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         });
 
         textInputLayoutSaleDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_sale_date);
+        imageViewRemoveSaleDate = view.findViewById(R.id.fragment_property_imageView_remove_sale_date);
+        imageViewRemoveSaleDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSaleDate("");
+            }
+        });
         imageViewSaleDate = view.findViewById(R.id.fragment_property_imageView_sale_date);
         imageViewSaleDate.setOnClickListener(new View.OnClickListener() {
             @Override
