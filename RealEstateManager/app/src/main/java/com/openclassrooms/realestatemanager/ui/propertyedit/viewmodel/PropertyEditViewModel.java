@@ -400,17 +400,17 @@ public class PropertyEditViewModel extends ViewModel {
                                   LatLng latLng){
 
         // check all values
-        boolean valuesOk = checkAddressTitleValue(addressTitle) &
-                checkAddressValue(address) &
-                checkPriceValue(price) &
+        boolean valuesOk = checkPriceValue(price) &
                 checkSurfaceValue(surface) &
-                checkRoomsValue(rooms) &
                 checkDescriptionValue(description) &
+                checkAddressTitleValue(addressTitle) &
+                checkAddressValue(address) &
                 checkPointOfInterestValue(pointOfInterest) &
                 checkEntryDateValue(entryDate) &
                 checkSaleDateValue(saleDate) &
+                checkPropertyTypeIdValue(propertyTypeId) &
                 checkAgentIdValue(agentId) &
-                checkPropertyTypeIdValue(propertyTypeId);
+                checkRoomsValue(rooms);
 
         onCheckAllValuesMutableLiveData.setValue(valuesOk);
         return valuesOk;

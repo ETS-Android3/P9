@@ -1,8 +1,11 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.view;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -49,6 +52,7 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownIt
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyEditViewState;
+import com.openclassrooms.realestatemanager.ui.selectimage.ImageSelectorObserver;
 import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.utils.UtilsDrawable;
 
@@ -71,6 +75,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     private long propertyTypeId = PropertyConst.PROPERTY_TYPE_ID_NOT_INITIALIZED;
     private LatLng propertyLatLng;
     private PropertyEditViewModel propertyEditViewModel;
+    private ImageSelectorObserver imageSelectorObserver;
     // Components
     private TextInputLayout textInputLayoutAddressTitle;
     private TextInputLayout textInputLayoutAddress;
@@ -116,7 +121,16 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        imageSelectorObserver = new ImageSelectorObserver(requireActivity().getActivityResultRegistry(),
+                new ImageSelectorObserver.ImageSelectorObserverListener() {
+                    @Override
+                    public void onActivityResult(Uri uri) {
+                        recordUri(uri);
+                    }
+                });
+        getLifecycle().addObserver(imageSelectorObserver);
     }
 
     @Override
@@ -141,6 +155,20 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         configureBottomNavigationBar(view);
         configureComponents(view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
+            this.propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
+        } else {
+            this.propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
+        }
+        Log.d(Tag.TAG, "PropertyEditFragment.onViewCreated() propertyId= [" + propertyId + "]");
+
+        configureViewModel();
+        configureImageSelector();
     }
 
     private void configureComponents(View view) {
@@ -206,19 +234,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
             }
         }, year, month, day);
         picker.show();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
-            this.propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
-        } else {
-            this.propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
-        }
-        Log.d(Tag.TAG, "PropertyEditFragment.onViewCreated() propertyId= [" + propertyId + "]");
-
-        configureViewModel();
     }
 
     private void configureViewModel() {
@@ -655,11 +670,14 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         textInputLayoutSaleDate.getEditText().setText(saleDate);
     }
 
-    private boolean validateForm(){
+    private void validateForm(){
         insertOrUpdateProperty();
-        return false;
     }
 
+    /**
+     * call View Model to send date to database
+     * if data control is ok call onPropertyAdded
+     */
     private void insertOrUpdateProperty(){
         propertyEditViewModel.insertOrUpdateProperty(
                 this.propertyId,
@@ -678,11 +696,17 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 new PropertyEditViewModel.AddPropertyInterface() {
                     @Override
                     public void onPropertyAdded(long propertyId) {
+                        // when data are ok go back to main activity to close form and navigate
                         callbackEditProperty.onValidateEditProperty(propertyId);
                     }
                 });
     }
 
+    /**
+     * call View Model to control data.
+     * a return is made to activate or not the errors on the components
+     * See observer in configureControlValue
+     */
     private void checkAllValues(){
         propertyEditViewModel.checkAllValues(
                 getPrice(),
@@ -700,6 +724,14 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     }
 
     private void AddPhoto(){
+        imageSelectorObserver.selectImage();
+    }
 
+    private void configureImageSelector(){
+
+    }
+
+    private void recordUri(Uri uri){
+        Log.d(Tag.TAG, "PropertyEditFragment.recordUri() called with: uri = [" + uri + "]");
     }
 }
