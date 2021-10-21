@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
@@ -203,7 +204,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
 
     private void configureBottomNavigationBar(View view) {
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.fragment_property_detail_bottom_navigation_view);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 return navigate(item);

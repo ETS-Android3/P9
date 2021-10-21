@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnAddPropertyListener;
@@ -128,7 +129,7 @@ public class PropertyListFragment extends Fragment {
 
     private void configureBottomNavigationBar(View view) {
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.fragment_property_list_bottom_navigation_view);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 return navigate(item);

@@ -25,13 +25,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -41,11 +36,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
@@ -71,47 +65,34 @@ import java.util.List;
  */
 public class PropertyEditFragment extends Fragment implements OnMapReadyCallback {
 
+    // Fields
     private long propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
     private long agentId = PropertyConst.AGENT_ID_NOT_INITIALIZED;
     private long propertyTypeId = PropertyConst.PROPERTY_TYPE_ID_NOT_INITIALIZED;
-
+    private LatLng propertyLatLng;
+    private PropertyEditViewModel propertyEditViewModel;
+    // Components
     private TextInputLayout textInputLayoutAddressTitle;
-
     private TextInputLayout textInputLayoutAddress;
     private TextInputEditText textInputEditTextAddress;
-
     private TextInputLayout textInputLayoutPrice;
-
     private TextInputLayout textInputLayoutSurface;
-
     private TextInputLayout textInputLayoutRooms;
-
     private TextInputLayout textInputLayoutDescription;
-
     private TextInputLayout textInputLayoutPointOfInterest;
-
     private TextInputLayout textInputLayoutEntryDate;
-    private ImageView imageViewEntryDate;
-    private ImageButton imageButtonEntryDate;
-
     private TextInputLayout textInputLayoutSaleDate;
-    private ImageButton imageButtonRemoveSaleDate;
-    private ImageButton imageButtonSaleDate;
-
     private TextInputLayout textInputLayoutAgent;
     private TextInputLayout textInputLayoutPropertyType;
-
+    private ImageButton imageButtonEntryDate;
+    private ImageButton imageButtonRemoveSaleDate;
+    private ImageButton imageButtonSaleDate;
     private Button buttonPhoto;
-
     private BottomNavigationView bottomNavigationView;
     private MenuItem menuItemOk;
-
-    private PropertyEditViewModel propertyEditViewModel;
-
-    private PropertyEditListener callbackEditProperty;
-
     private GoogleMap mMap;
-    private LatLng propertyLatLng;
+    // call back
+    private PropertyEditListener callbackEditProperty;
 
     public PropertyEditFragment() {
         // Required empty public constructor
@@ -246,7 +227,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 PropertyEditViewModelFactory.getInstance()).get(PropertyEditViewModel.class);
 
         configureGpsListener();
-
         configureControlValues();
         configureControlAgentId();
         configureControlPropertyTypeId();
@@ -275,7 +255,13 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         });
     }
 
-    private int findPosition(long id, List<DropdownItem> items){
+    /**
+     * Find position element in dropdown list by id, for agent ou property type
+     * @param id
+     * @param items
+     * @return
+     */
+    private int findDropdownPositionById(long id, List<DropdownItem> items){
         if ((items != null) && (items.size() > 0) && (id >= 0)) {
             int position = 0;
             Iterator<DropdownItem> iterator = items.iterator();
@@ -290,10 +276,13 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         return -1;
     }
 
+    /**
+     * Load agents list and propertytypes list in drop down components
+     * @param currentAgentId
+     * @param currentPropertyTypeId
+     */
     private void configureDropdown(long currentAgentId, long currentPropertyTypeId){
-        /**
-         * To load agent list and propertytype list for drop down
-         */
+        // There are two lists in DropdownViewstate, one for the agents list and one for the property types list
         propertyEditViewModel.getDropDownViewstateMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<DropdownViewstate>() {
             @Override
             public void onChanged(DropdownViewstate dropDownViewstate) {
@@ -302,8 +291,8 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                     ArrayAdapter adapterAgents = new ArrayAdapter(getContext(), R.layout.list_item, dropDownViewstate.getAgentItems());
                     AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgent.getEditText();
                     autoCompleteTextView.setAdapter(adapterAgents);
-
-                    int position = findPosition(currentAgentId, dropDownViewstate.getAgentItems());
+                    // update list position with current agent
+                    int position = findDropdownPositionById(currentAgentId, dropDownViewstate.getAgentItems());
                     if (position >= 0) {
                         Log.d(Tag.TAG, "configureDropdown() currentAgentId=" + currentAgentId + " position=" + position);
                         autoCompleteTextView.setListSelection (position);
@@ -325,8 +314,8 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                     ArrayAdapter adapterPropertyType = new ArrayAdapter(getContext(), R.layout.list_item, dropDownViewstate.getPropertyTypeItems());
                     AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutPropertyType.getEditText();
                     autoCompleteTextView.setAdapter(adapterPropertyType);
-
-                    int position = findPosition(currentPropertyTypeId, dropDownViewstate.getPropertyTypeItems());
+                    // update list position with current property type
+                    int position = findDropdownPositionById(currentPropertyTypeId, dropDownViewstate.getPropertyTypeItems());
                     if (position >= 0) {
                         Log.d(Tag.TAG, "configureDropdown() currentAgentId=" + currentAgentId + " position=" + position);
                         autoCompleteTextView.setListSelection (position);
@@ -347,6 +336,9 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         });
     }
 
+    /**
+     * load property values to components
+     */
     private void configureViewState(){
         propertyEditViewModel.getPropertyEditViewStateLiveData(this.propertyId).observe(getViewLifecycleOwner(), new Observer<PropertyEditViewState>() {
             @Override
@@ -369,6 +361,9 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         });
     }
 
+    /**
+     * for each components setErrorEnabled true or false when data has been checked
+     */
     private void configureControlValues(){
         configureControlValue(textInputLayoutAddressTitle,
                 propertyEditViewModel.getOnCheckAddressTitleValueLiveData(),
@@ -399,6 +394,9 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 propertyEditViewModel::checkSaleDateValue);
     }
 
+    /**
+     * setErrorEnabled true or false when agent id was checked
+     */
     private void configureControlAgentId(){
         propertyEditViewModel.getOnCheckAgentIdValueLiveData().observe(getViewLifecycleOwner(), new Observer<FieldState>() {
             @Override
@@ -408,6 +406,9 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         });
     }
 
+    /**
+     * setErrorEnabled true or false when property type id was checked
+     */
     private void configureControlPropertyTypeId(){
         propertyEditViewModel.getOnCheckPropertyTypeIdValueLiveData().observe(getViewLifecycleOwner(), new Observer<FieldState>() {
             @Override
@@ -417,6 +418,9 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         });
     }
 
+    /**
+     * button ok : setEnabled true or false, depends on all values
+     */
     private void configureControlAllValues(){
         propertyEditViewModel.getOnCheckAllValuesLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
@@ -426,6 +430,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
             }
         });
     }
+
     /**
      * show or hide error on component
      * @param textInputLayout
@@ -480,7 +485,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
 
     private void configureBottomNavigationBar(View view) {
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.fragment_property_edit_bottom_navigation_view);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 return navigate(item);
