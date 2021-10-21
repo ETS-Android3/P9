@@ -70,12 +70,9 @@ import java.util.List;
  */
 public class PropertyEditFragment extends Fragment implements OnMapReadyCallback {
 
-    private long UNINITIALIZED_AGENT_ID = -1;
-    private long UNINITIALIZED_PROPERTY_TYPE_ID = -1;
-
-    private long propertyId;
-    private long agentId = UNINITIALIZED_AGENT_ID;
-    private long propertyTypeId = UNINITIALIZED_PROPERTY_TYPE_ID;
+    private long propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
+    private long agentId = PropertyConst.AGENT_ID_NOT_INITIALIZED;
+    private long propertyTypeId = PropertyConst.PROPERTY_TYPE_ID_NOT_INITIALIZED;
 
     private TextInputLayout textInputLayoutAddressTitle;
 

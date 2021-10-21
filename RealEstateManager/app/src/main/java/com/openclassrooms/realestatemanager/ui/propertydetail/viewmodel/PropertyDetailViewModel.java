@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
@@ -109,25 +110,20 @@ public class PropertyDetailViewModel extends ViewModel {
         });
     }
 
+    public LiveData<Long> getFirstOrValidId(long initialId){
+        if (initialId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
+            return databaseRepository.getPropertyRepository().getFirstPropertyIdLiveData();
+        } else {
+            MutableLiveData<Long> valideIdMutableLiveData = new MutableLiveData<>();
+            valideIdMutableLiveData.setValue(initialId);
+            return valideIdMutableLiveData;
+        }
+    }
+
     public void load(long propertyId){
         Log.d(Tag.TAG, "PropertyDetailViewModel.load(" + propertyId + ")");
         refreshLocation();
-
-        if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
-            // when don't know propertyId load first property
-            try {
-                long id = databaseRepository.getPropertyRepository().getFirstPropertyId();
-                Log.d(Tag.TAG, "PropertyDetailViewModel.load() getFirstPropertyId=" + id);
-                this.propertyId = id;
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            this.propertyId = propertyId;
-        }
+        this.propertyId = propertyId;
         configureMediatorLiveData(this.propertyId);
     }
 

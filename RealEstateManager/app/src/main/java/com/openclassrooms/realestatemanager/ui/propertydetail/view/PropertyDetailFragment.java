@@ -66,7 +66,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     private List<PropertyLocationData> otherPropertiesLocation = new ArrayList<>();
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private long propertyId;
+    private long propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
 
     TextView textViewPrice;
     TextView textViewSurface;
@@ -147,6 +147,11 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
+        if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
+            propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
+        }
+        Log.d(Tag.TAG, "PropertyDetailFragment.onCreateView() propertyId=" + propertyId + "");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_detail, container, false);
         configureComponents(view);
@@ -159,13 +164,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
-        if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
-            propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
-        }
-        Log.d(Tag.TAG, "PropertyDetailFragment.onViewCreated() propertyId=" + propertyId + "");
-        propertyDetailViewModel.load(propertyId);
+        Log.d(Tag.TAG, "onViewCreated() called with: view = [" + view + "], savedInstanceState = [" + savedInstanceState + "]");
     }
 
     private void configureComponents(View view){
@@ -250,6 +249,14 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
                 setPhotoLegend("");
                 // list photos
                 photoListAdapter.updateData(propertyDetailViewState.getPhotos());
+            }
+        });
+
+        propertyDetailViewModel.getFirstOrValidId(propertyId).observe(getViewLifecycleOwner(), new Observer<Long>() {
+            @Override
+            public void onChanged(Long aLong) {
+                propertyId = aLong;
+                propertyDetailViewModel.load(propertyId);
             }
         });
     }

@@ -28,21 +28,7 @@ public class PropertyRepository {
     public LiveData<List<Property>> getProperties() {return propertyDao.getProperties();}
     public LiveData<Property> getPropertyById(long id) {return propertyDao.getPropertyById(id);}
 
-    // use it with asynchronous mode like ExecutorService
-    public Long getFirstPropertyId() throws ExecutionException, InterruptedException {
-        Log.d(Tag.TAG, "PropertyRepository.getFirstPropertyId() called");
-        Callable<Long> callable = new Callable<Long>() {
-            @Override
-            public Long call() throws Exception {
-                return propertyDao.getFirstPropertyId();
-            }
-        };
-
-        Future<Long> future = AppDatabase.getExecutor().submit(callable);
-        Long id = future.get();
-
-        return id;
-    }
+    public LiveData<Long> getFirstPropertyIdLiveData() {return propertyDao.getFirstPropertyIdLiveData();}
 
     // return a long. This is the newly generated ID
     public long insert(Property property) throws ExecutionException, InterruptedException {
