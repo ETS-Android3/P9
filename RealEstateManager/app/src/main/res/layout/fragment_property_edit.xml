@@ -194,7 +194,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_point_of_interest"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageView_entry_date"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageButton_entry_date"
                 app:startIconDrawable="@drawable/ic_date"
                 app:startIconContentDescription="@string/property_entry_date"
                 app:endIconMode="clear_text"
@@ -208,15 +208,15 @@
                     android:enabled="false"
                     android:inputType="date" />
             </com.google.android.material.textfield.TextInputLayout>
-            <ImageView
-                android:id="@+id/fragment_property_imageView_entry_date"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:padding="@dimen/default_padding"
-                app:srcCompat="@drawable/ic_edit_calendar"
+
+            <ImageButton
+                android:id="@+id/fragment_property_imageButton_entry_date"
+                style="@style/ImageButtonIconOnlyStyle"
+                app:tint="@color/primaryTextColor"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_property_edit_text_input_layout_entry_date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_text_input_layout_entry_date"
-                app:layout_constraintBottom_toBottomOf="@+id/fragment_property_edit_text_input_layout_entry_date"
+                app:srcCompat="@drawable/ic_edit_calendar"
                 android:contentDescription="@string/property_entry_date" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -225,7 +225,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_entry_date"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageView_remove_sale_date"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageButton_remove_sale_date"
                 app:startIconDrawable="@drawable/ic_menu_check"
                 app:startIconContentDescription="@string/property_sale_date"
                 app:endIconMode="clear_text"
@@ -240,26 +240,23 @@
                     android:enabled="false"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <ImageView
-                android:id="@+id/fragment_property_imageView_remove_sale_date"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:padding="@dimen/default_padding"
-                app:srcCompat="@drawable/ic_menu_cancel"
-                app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageView_sale_date"
+            <ImageButton
+                android:id="@+id/fragment_property_imageButton_remove_sale_date"
+                style="@style/ImageButtonIconOnlyStyle"
+                app:tint="@color/primaryTextColor"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageButton_sale_date"
                 app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_text_input_layout_sale_date"
                 app:layout_constraintBottom_toBottomOf="@+id/fragment_property_edit_text_input_layout_sale_date"
+                app:srcCompat="@drawable/ic_menu_cancel"
                 android:contentDescription="@string/property_sale_date" />
-
-            <ImageView
-                android:id="@+id/fragment_property_imageView_sale_date"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:padding="@dimen/default_padding"
-                app:srcCompat="@drawable/ic_edit_calendar"
+            <ImageButton
+                android:id="@+id/fragment_property_imageButton_sale_date"
+                style="@style/ImageButtonIconOnlyStyle"
+                app:tint="@color/primaryTextColor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_text_input_layout_sale_date"
                 app:layout_constraintBottom_toBottomOf="@+id/fragment_property_edit_text_input_layout_sale_date"
+                app:srcCompat="@drawable/ic_edit_calendar"
                 android:contentDescription="@string/property_sale_date" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -281,11 +278,18 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                style="@style/TextviewStyle.Value"
                 android:id="@+id/property_edit_button_add_photo"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="@dimen/default_large_padding"
+                android:layout_marginLeft="@dimen/default_margin"
+                android:layout_marginRight="@dimen/default_margin"
+                android:layout_marginTop="@dimen/default_large_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
+
                 android:text="@string/property_photo_add"
+                app:icon="@drawable/ic_add"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_agent"
                 app:layout_constraintStart_toStartOf="parent"/>
 

@@ -27,6 +27,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.Spinner;
@@ -91,15 +92,15 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
 
     private TextInputLayout textInputLayoutEntryDate;
     private ImageView imageViewEntryDate;
+    private ImageButton imageButtonEntryDate;
 
     private TextInputLayout textInputLayoutSaleDate;
-    private ImageView imageViewRemoveSaleDate;
-    private ImageView imageViewSaleDate;
+    private ImageButton imageButtonRemoveSaleDate;
+    private ImageButton imageButtonSaleDate;
 
     private TextInputLayout textInputLayoutAgent;
     private TextInputLayout textInputLayoutPropertyType;
 
-    private Spinner spinnerType;
     private Button buttonPhoto;
 
     private BottomNavigationView bottomNavigationView;
@@ -172,8 +173,8 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         textInputLayoutPointOfInterest = view.findViewById(R.id.fragment_property_edit_text_input_layout_point_of_interest);
         textInputLayoutEntryDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_entry_date);
 
-        imageViewEntryDate = view.findViewById(R.id.fragment_property_imageView_entry_date);
-        imageViewEntryDate.setOnClickListener(new View.OnClickListener() {
+        imageButtonEntryDate = view.findViewById(R.id.fragment_property_imageButton_entry_date);
+        imageButtonEntryDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectDate(textInputLayoutEntryDate);
@@ -181,15 +182,15 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         });
 
         textInputLayoutSaleDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_sale_date);
-        imageViewRemoveSaleDate = view.findViewById(R.id.fragment_property_imageView_remove_sale_date);
-        imageViewRemoveSaleDate.setOnClickListener(new View.OnClickListener() {
+        imageButtonRemoveSaleDate = view.findViewById(R.id.fragment_property_imageButton_remove_sale_date);
+        imageButtonRemoveSaleDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setSaleDate("");
             }
         });
-        imageViewSaleDate = view.findViewById(R.id.fragment_property_imageView_sale_date);
-        imageViewSaleDate.setOnClickListener(new View.OnClickListener() {
+        imageButtonSaleDate = view.findViewById(R.id.fragment_property_imageButton_sale_date);
+        imageButtonSaleDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectDate(textInputLayoutSaleDate);
@@ -200,6 +201,12 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         textInputLayoutPropertyType = view.findViewById(R.id.fragment_property_edit_text_input_layout_property_type);
 
         buttonPhoto = view.findViewById(R.id.property_edit_button_add_photo);
+        buttonPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddPhoto();
+            }
+        });
 
         bottomNavigationView = view.findViewById(R.id.fragment_property_edit_bottom_navigation_view);
         menuItemOk = bottomNavigationView.getMenu().findItem(R.id.fragment_property_edit_ok);
@@ -685,5 +692,9 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 getAgentId(),
                 getRooms(),
                 propertyLatLng);
+    }
+
+    private void AddPhoto(){
+
     }
 }
