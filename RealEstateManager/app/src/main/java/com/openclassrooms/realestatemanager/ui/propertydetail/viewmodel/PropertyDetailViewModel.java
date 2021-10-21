@@ -111,12 +111,24 @@ public class PropertyDetailViewModel extends ViewModel {
     }
 
     public LiveData<Long> getFirstOrValidId(long initialId){
+        Log.d(Tag.TAG, "getFirstOrValidId() called with: initialId = [" + initialId + "]");
         if (initialId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
             return databaseRepository.getPropertyRepository().getFirstPropertyIdLiveData();
         } else {
-            MutableLiveData<Long> valideIdMutableLiveData = new MutableLiveData<>();
-            valideIdMutableLiveData.setValue(initialId);
-            return valideIdMutableLiveData;
+            LiveData<Long> isIdExistLiveData = databaseRepository.getPropertyRepository().getIsIdExistLiveData(initialId);
+
+            LiveData<Long> valideIdLiveData = Transformations.switchMap(isIdExistLiveData,
+                    (Long id) -> {
+                        Log.d(Tag.TAG, "getFirstOrValidId() called with: id = [" + id + "]");
+                        if (id == null) {
+                            return databaseRepository.getPropertyRepository().getFirstPropertyIdLiveData();
+                        } else {
+                            MutableLiveData<Long> valideIdMutableLiveData = new MutableLiveData<>();
+                            valideIdMutableLiveData.setValue(id);
+                            return valideIdMutableLiveData;
+                        }
+                    });
+            return valideIdLiveData;
         }
     }
 

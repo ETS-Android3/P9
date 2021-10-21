@@ -164,7 +164,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(Tag.TAG, "onViewCreated() called with: view = [" + view + "], savedInstanceState = [" + savedInstanceState + "]");
+        Log.d(Tag.TAG, "PropertyDetailFragment.onViewCreated()");
     }
 
     private void configureComponents(View view){
@@ -255,6 +255,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         propertyDetailViewModel.getFirstOrValidId(propertyId).observe(getViewLifecycleOwner(), new Observer<Long>() {
             @Override
             public void onChanged(Long aLong) {
+                Log.d(Tag.TAG, "PropertyDetailFragment.configureDetailViewModel()->getFirstOrValidId->onChanged called with: aLong = [" + aLong + "]");
                 propertyId = aLong;
                 propertyDetailViewModel.load(propertyId);
             }
@@ -324,12 +325,12 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     @Override
     public boolean onMarkerClick(Marker marker) {
         String strPropertyId = (String) marker.getTag();
-        Log.d(Tag.TAG, "onMarkerClick() propertyId = [" + propertyId + "]");
+        Log.d(Tag.TAG, "PropertyDetailFragment.onMarkerClick() propertyId = [" + propertyId + "]");
         try {
             long propertyId = Long.parseLong(strPropertyId);
             callbackMap.OnMapClicked(propertyId);
         } catch (NumberFormatException nfe) {
-            Log.e(Tag.TAG, "onMarkerClick: " + nfe.getMessage());
+            Log.e(Tag.TAG, "PropertyDetailFragment.onMarkerClick: " + nfe.getMessage());
         }
         return false;
     }
@@ -340,7 +341,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setOtherPropertiesLocation(List<PropertyLocationData> propertyLocationDataList){
-        Log.d(Tag.TAG, "setOtherPropertiesLocation() (propertyLocationDataList==null)=" + (propertyLocationDataList == null));
+        Log.d(Tag.TAG, "PropertyDetailFragment.setOtherPropertiesLocation() (propertyLocationDataList==null)=" + (propertyLocationDataList == null));
         if (propertyLocationDataList != null) {
             this.otherPropertiesLocation.clear();
             this.otherPropertiesLocation.addAll(propertyLocationDataList);
@@ -349,7 +350,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     }
 
     private void drawOtherPropertiesLocation() {
-        Log.d(Tag.TAG, "drawOtherPropertiesLocation() (mMap==null)=" + (mMap==null) + " (otherPropertiesLocation==null)=" + (otherPropertiesLocation==null));
+        Log.d(Tag.TAG, "PropertyDetailFragment.drawOtherPropertiesLocation() (mMap==null)=" + (mMap==null) + " (otherPropertiesLocation==null)=" + (otherPropertiesLocation==null));
         if ((mMap != null) && (this.otherPropertiesLocation != null)) {
             Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_primary_color, getContext().getTheme()));
             for (PropertyLocationData propertyLocationData : otherPropertiesLocation) {
@@ -372,7 +373,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     }
 
     private void drawCurrentPropertylocation(){
-        Log.d(Tag.TAG, "drawCurrentPropertylocation() (mMap==null)=" + (mMap==null) + " (currentPropertyLocation==null)=" + (currentPropertyLocation==null));
+        Log.d(Tag.TAG, "PropertyDetailFragment.drawCurrentPropertylocation() (mMap==null)=" + (mMap==null) + " (currentPropertyLocation==null)=" + (currentPropertyLocation==null));
         if ((mMap != null) && (currentPropertyLocation != null)) {
             Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_dark_red, getContext().getTheme()));
             LatLng latlng = new LatLng(currentPropertyLocation.getLatitude(), currentPropertyLocation.getLongitude());
@@ -389,7 +390,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     }
 
     private void drawUserLocation(){
-        Log.d(Tag.TAG, "drawUserLocation() (mMap==null)=" + (mMap==null) + " (userLocation==null)=" + (userLocation==null));
+        Log.d(Tag.TAG, "PropertyDetailFragment.drawUserLocation() (mMap==null)=" + (mMap==null) + " (userLocation==null)=" + (userLocation==null));
         if ((mMap!=null) && (this.userLocation != null)) {
             LatLng latlng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
             mMap.clear();
@@ -401,7 +402,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(Tag.TAG, "MapFragment.onStart() called");
+        Log.d(Tag.TAG, "PropertyDetailFragment.onStart() called");
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_property_detail_map);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
@@ -410,10 +411,10 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        Log.d(Tag.TAG, "onMapReady()");
+        Log.d(Tag.TAG, "PropertyDetailFragment.onMapReady()");
         mMap = googleMap;
         if (this.userLocation != null) {
-            Log.d(Tag.TAG, "onMapReady() -> setLocation()");
+            Log.d(Tag.TAG, "PropertyDetailFragment.onMapReady() -> setLocation()");
             drawUserLocation();
             drawCurrentPropertylocation();
             drawOtherPropertiesLocation();
@@ -423,15 +424,14 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(Tag.TAG, "MapFragment.onResume()");
+        Log.d(Tag.TAG, "PropertyDetailFragment.onResume()");
         if ((mMap != null) && (this.userLocation != null) && (propertyDetailViewModel != null)) {
 
             propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
             if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
                 propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
             }
-            Log.d(Tag.TAG, "PropertyDetailFragment.onViewCreated() propertyId=" + propertyId + "");
-            Log.d(Tag.TAG, "MapFragment.onResume() -> propertyDetailViewModel.load()");
+            Log.d(Tag.TAG, "PropertyDetailFragment.onResume() -> propertyDetailViewModel.load(" + propertyId + ")");
             propertyDetailViewModel.load(propertyId);
         }
     }
