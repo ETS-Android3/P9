@@ -43,6 +43,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
@@ -123,13 +124,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        imageSelectorObserver = new ImageSelectorObserver(requireActivity().getActivityResultRegistry(),
-                new ImageSelectorObserver.ImageSelectorObserverListener() {
-                    @Override
-                    public void onActivityResult(Uri uri) {
-                        recordUri(uri);
-                    }
-                });
+        imageSelectorObserver = new ImageSelectorObserver(requireActivity().getActivityResultRegistry());
         getLifecycle().addObserver(imageSelectorObserver);
     }
 
@@ -154,6 +149,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         View view = inflater.inflate(R.layout.fragment_property_edit, container, false);
         configureBottomNavigationBar(view);
         configureComponents(view);
+        configureImageSelectorObserver();
         return view;
     }
 
@@ -168,7 +164,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         Log.d(Tag.TAG, "PropertyEditFragment.onViewCreated() propertyId= [" + propertyId + "]");
 
         configureViewModel();
-        configureImageSelector();
     }
 
     private void configureComponents(View view) {
@@ -724,11 +719,32 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     }
 
     private void AddPhoto(){
-        imageSelectorObserver.selectImage();
+        imageSelectorObserver.openMultipleImages();
     }
 
-    private void configureImageSelector(){
+    private void configureImageSelectorObserver(){
+        imageSelectorObserver.getUriLiveData().observe(getViewLifecycleOwner(), new Observer<Uri>() {
+            @Override
+            public void onChanged(Uri uri) {
+                Log.d(Tag.TAG, "PropertyEditFragment.imageSelectorObserver.observe->onChanged() called with: uri = [" + uri + "]");
+                int permissionFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+                //getContext().getContentResolver().takePersistableUriPermission(uri, permissionFlags);
+                Log.d(Tag.TAG, "PropertyEditFragment.imageSelectorObserver.observe->onChanged() 2 : " + uri);
+                propertyEditViewModel.addPhoto(uri, "test ajout", propertyId);
+            }
+        });
 
+        imageSelectorObserver.getUrisLiveData().observe(getViewLifecycleOwner(), new Observer<List<Uri>>() {
+            @Override
+            public void onChanged(List<Uri> uris) {
+                Log.d(Tag.TAG, "PropertyEditFragment.imageSelectorObserver.observe->onChanged() called with: uris = [" + uris + "]");
+                int i = 1;
+                for (Uri uri : uris) {
+                    propertyEditViewModel.addPhoto(uri, "test ajout " + i, propertyId);
+                    i++;
+                }
+            }
+        });
     }
 
     private void recordUri(Uri uri){

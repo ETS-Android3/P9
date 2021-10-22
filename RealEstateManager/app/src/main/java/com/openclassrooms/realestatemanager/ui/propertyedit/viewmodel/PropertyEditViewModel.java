@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel;
 
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.googlemaps.repository.GoogleGeocodeRepository;
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
+import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
@@ -451,5 +453,11 @@ public class PropertyEditViewModel extends ViewModel {
                     }
                 });
         return propertyEditViewStateLiveData;
+    }
+
+    public void addPhoto(Uri uri, String legende, long propertyId){
+        Log.d(Tag.TAG, "addPhoto() called with: legende = [" + legende + "], propertyId = [" + propertyId + "], uri = [\" + uri + \"]");
+        Photo photo = new Photo(0, 0, uri.toString(), "test uri", propertyId);
+        databaseRepository.getPhotoRepository().insert(photo);
     }
 }
