@@ -12,7 +12,7 @@ public class Photo {
     private final String url;
     private final String legend;
     @ColumnInfo(name = "property_id")
-    private final long propertyId;
+    private long propertyId;
 
     public Photo(long id, int order, String url, String legend, long propertyId) {
         this.id = id;
@@ -40,5 +40,9 @@ public class Photo {
 
     public long getPropertyId() {
         return propertyId;
+    }
+
+    public void setPropertyId(long propertyId) {
+        this.propertyId = propertyId;
     }
 }

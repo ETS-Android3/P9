@@ -96,6 +96,10 @@
     <string name="permission_denied_message">Permission Denied. The app can not be used.</string>
     <string name="permission_granted_message">Permission Granted</string>
     <string name="value_required">value required</string>
+    <string name="caption_required">caption required</string>
+    <string name="photo_description">photo</string>
+    <string name="entrer_caption_here">Enter caption here</string>
+    <string name="edit_photo">Edit photo</string>
 
 
 </resources>

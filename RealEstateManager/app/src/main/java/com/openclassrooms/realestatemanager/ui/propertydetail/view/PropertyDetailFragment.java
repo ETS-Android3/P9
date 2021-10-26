@@ -2,9 +2,6 @@ package com.openclassrooms.realestatemanager.ui.propertydetail.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,7 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
+import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.photoList.OnRowPhotoListener;
@@ -191,13 +188,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        photoListAdapter = new PhotoListAdapter(getContext(), new OnRowPhotoListener() {
-            @Override
-            public void onClickRowPhoto(long photoId) {
-                // open photo with call back
-            }
-        });
-
+        photoListAdapter = new PhotoListAdapter(getContext(), null);
         recyclerView.setAdapter(photoListAdapter);
     }
 

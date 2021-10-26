@@ -1,9 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.view;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -46,6 +46,10 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
+import com.openclassrooms.realestatemanager.ui.photoList.OnRowPhotoListener;
+import com.openclassrooms.realestatemanager.ui.photoList.PhotoListAdapter;
+import com.openclassrooms.realestatemanager.ui.photoedit.OnPhotoEditListener;
+import com.openclassrooms.realestatemanager.ui.photoedit.PhotoEditDialogFragment;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEditViewModel;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodelfactory.PropertyEditViewModelFactory;
@@ -63,11 +67,6 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PropertyEditFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PropertyEditFragment extends Fragment implements OnMapReadyCallback {
 
     // Fields
@@ -90,34 +89,14 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     private TextInputLayout textInputLayoutSaleDate;
     private TextInputLayout textInputLayoutAgent;
     private TextInputLayout textInputLayoutPropertyType;
-    private ImageButton imageButtonEntryDate;
-    private ImageButton imageButtonRemoveSaleDate;
-    private ImageButton imageButtonSaleDate;
-    private Button buttonPhoto;
-    private BottomNavigationView bottomNavigationView;
     private MenuItem menuItemOk;
     private GoogleMap mMap;
+    PhotoListAdapter photoListAdapter;
     // call back
     private PropertyEditListener callbackEditProperty;
 
     public PropertyEditFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param propertyId
-     * @return A new instance of fragment PropertyEditFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PropertyEditFragment newInstance(long propertyId) {
-        PropertyEditFragment fragment = new PropertyEditFragment();
-        Bundle args = new Bundle();
-        args.putLong(PropertyConst.ARG_PROPERTY_ID_KEY, propertyId);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -150,6 +129,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         configureBottomNavigationBar(view);
         configureComponents(view);
         configureImageSelectorObserver();
+        configureRecyclerView(view);
         return view;
     }
 
@@ -177,7 +157,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         textInputLayoutPointOfInterest = view.findViewById(R.id.fragment_property_edit_text_input_layout_point_of_interest);
         textInputLayoutEntryDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_entry_date);
 
-        imageButtonEntryDate = view.findViewById(R.id.fragment_property_imageButton_entry_date);
+        ImageButton imageButtonEntryDate = view.findViewById(R.id.fragment_property_imageButton_entry_date);
         imageButtonEntryDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,14 +166,14 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         });
 
         textInputLayoutSaleDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_sale_date);
-        imageButtonRemoveSaleDate = view.findViewById(R.id.fragment_property_imageButton_remove_sale_date);
+        ImageButton imageButtonRemoveSaleDate = view.findViewById(R.id.fragment_property_imageButton_remove_sale_date);
         imageButtonRemoveSaleDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setSaleDate("");
             }
         });
-        imageButtonSaleDate = view.findViewById(R.id.fragment_property_imageButton_sale_date);
+        ImageButton imageButtonSaleDate = view.findViewById(R.id.fragment_property_imageButton_sale_date);
         imageButtonSaleDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,16 +184,52 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         textInputLayoutAgent = view.findViewById(R.id.fragment_property_edit_text_input_layout_agent);
         textInputLayoutPropertyType = view.findViewById(R.id.fragment_property_edit_text_input_layout_property_type);
 
-        buttonPhoto = view.findViewById(R.id.property_edit_button_add_photo);
+        Button buttonPhoto = view.findViewById(R.id.property_edit_button_add_photo);
         buttonPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddPhoto();
+                selectPhoto();
             }
         });
 
-        bottomNavigationView = view.findViewById(R.id.fragment_property_edit_bottom_navigation_view);
+        BottomNavigationView bottomNavigationView = view.findViewById(R.id.fragment_property_edit_bottom_navigation_view);
         menuItemOk = bottomNavigationView.getMenu().findItem(R.id.fragment_property_edit_ok);
+    }
+
+    private void configureRecyclerView(View view) {
+        RecyclerView recyclerView = view.findViewById(R.id.property_edit_recycler_view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+
+        photoListAdapter = new PhotoListAdapter(getContext(), new OnRowPhotoListener() {
+            @Override
+            public void onClickRowPhoto(Photo photo) {
+                // open photo with call back
+                PhotoEditDialogFragment.newInstance(
+                        getContext().getString(R.string.edit_photo),
+                        photo.getId(),
+                        photo.getOrder(),
+                        photo.getUrl(),
+                        photo.getLegend(),
+                        photo.getPropertyId())
+                        .setPhotoEditListener(new OnPhotoEditListener() {
+                            @Override
+                            public void onPhotoEditOk(long id, int order, String url, String caption, long propertyId) {
+                                Log.d(Tag.TAG, "onPhotoEditOk() called with: id = [" + id + "], order = [" + order + "], url = [" + url + "], caption = [" + caption + "], propertyId = [" + propertyId + "]");
+                                Photo photo = new Photo(id, order, url, caption, propertyId);
+                                propertyEditViewModel.updatePhoto(photo);
+                            }
+
+                            @Override
+                            public void onPhotoEditCancel() {
+
+                            }
+                        })
+                        .show(getChildFragmentManager(), null);
+            }
+        });
+
+        recyclerView.setAdapter(photoListAdapter);
     }
 
     private void selectDate(TextInputLayout textInputLayoutDate){
@@ -242,7 +258,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         configureControlPropertyTypeId();
         configureControlAllValues();
         configureViewState();
-    }
+     }
 
     private void configureGpsListener(){
         /**
@@ -350,7 +366,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
      * load property values to components
      */
     private void configureViewState(){
-        propertyEditViewModel.getPropertyEditViewStateLiveData(this.propertyId).observe(getViewLifecycleOwner(), new Observer<PropertyEditViewState>() {
+        propertyEditViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyEditViewState>() {
             @Override
             public void onChanged(PropertyEditViewState propertyEditViewState) {
                 setAddressTitle(propertyEditViewState.getAddressTitle());
@@ -366,9 +382,11 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 setPropertyTypeId(propertyEditViewState.getPropertyTypeId(), propertyEditViewState.getPropertyTypeName());
                 setPropertyLatLng(new LatLng(propertyEditViewState.getLatitude(), propertyEditViewState.getLongitude()));
                 configureDropdown(propertyEditViewState.getAgentId(), propertyEditViewState.getPropertyTypeId());
+                setPhotos(propertyEditViewState.getPhotos());
                 checkAllValues();
             }
         });
+        propertyEditViewModel.loadViewState(this.propertyId);
     }
 
     /**
@@ -541,7 +559,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         Log.d(Tag.TAG, "PropertyEditFragment.onMapReady()");
         mMap = googleMap;
         if (this.propertyLatLng != null) {
-            Log.d(Tag.TAG, "onMapReady() -> setLocation()");
+            Log.d(Tag.TAG, "PropertyEditFragment.onMapReady() -> setLocation()");
             drawPropertylocation();
         }
     }
@@ -665,6 +683,10 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         textInputLayoutSaleDate.getEditText().setText(saleDate);
     }
 
+    private void setPhotos(List<Photo> photos){
+        photoListAdapter.updateData(photos);
+    }
+
     private void validateForm(){
         insertOrUpdateProperty();
     }
@@ -718,36 +740,28 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 propertyLatLng);
     }
 
-    private void AddPhoto(){
+    private void selectPhoto(){
         imageSelectorObserver.openMultipleImages();
     }
 
     private void configureImageSelectorObserver(){
-        imageSelectorObserver.getUriLiveData().observe(getViewLifecycleOwner(), new Observer<Uri>() {
-            @Override
-            public void onChanged(Uri uri) {
-                Log.d(Tag.TAG, "PropertyEditFragment.imageSelectorObserver.observe->onChanged() called with: uri = [" + uri + "]");
-                int permissionFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
-                //getContext().getContentResolver().takePersistableUriPermission(uri, permissionFlags);
-                Log.d(Tag.TAG, "PropertyEditFragment.imageSelectorObserver.observe->onChanged() 2 : " + uri);
-                propertyEditViewModel.addPhoto(uri, "test ajout", propertyId);
-            }
-        });
-
-        imageSelectorObserver.getUrisLiveData().observe(getViewLifecycleOwner(), new Observer<List<Uri>>() {
+        imageSelectorObserver.getMultipleUrisLiveData().observe(getViewLifecycleOwner(), new Observer<List<Uri>>() {
             @Override
             public void onChanged(List<Uri> uris) {
                 Log.d(Tag.TAG, "PropertyEditFragment.imageSelectorObserver.observe->onChanged() called with: uris = [" + uris + "]");
                 int i = 1;
                 for (Uri uri : uris) {
-                    propertyEditViewModel.addPhoto(uri, "test ajout " + i, propertyId);
+                    //getContext().getContentResolver().takePersistableUriPermission(uri, permissionFlags);
+                    addPhoto(uri, "");
                     i++;
                 }
             }
         });
     }
 
-    private void recordUri(Uri uri){
-        Log.d(Tag.TAG, "PropertyEditFragment.recordUri() called with: uri = [" + uri + "]");
+    private void addPhoto(Uri uri, String caption){
+        Log.d(Tag.TAG, "PropertyEditFragment.addPhoto() called with: uri = [" + uri + "], caption = [" + caption + "]");
+        propertyEditViewModel.addPhoto(uri, caption, propertyId);
     }
+
 }

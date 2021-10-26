@@ -24,6 +24,7 @@ import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
+import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
@@ -64,6 +65,7 @@ public class PropertyEditViewModel extends ViewModel {
         cache.getAgents().addAll(databaseRepository.getAgentRepository().getAgents());
         cache.getPropertyTypes().addAll(databaseRepository.getPropertyTypeRepository().getPropertyTypes());
 
+        // default control values
         onCheckAddressTitleValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckAddressValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckDescriptionValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
@@ -86,6 +88,120 @@ public class PropertyEditViewModel extends ViewModel {
     /**
      * init
      */
+    public void loadViewState(long propertyId){
+        Log.d(Tag.TAG, "PropertyEditViewModel.loadViewState() called with: propertyId = [" + propertyId + "]");
+        configureMediatorLiveData(propertyId);
+    }
+
+    /**
+     * Mediator expose PropertyListViewState
+     */
+    private final MediatorLiveData<PropertyEditViewState> propertyEditViewStateMediatorLiveData = new MediatorLiveData<>();
+    public LiveData<PropertyEditViewState> getViewState() { return propertyEditViewStateMediatorLiveData; }
+
+    private void configureMediatorLiveData(long propertyId){
+        Log.d(Tag.TAG, "PropertyEditViewModel.configureMediatorLiveData() called with: propertyId = [" + propertyId + "]");
+        LiveData<List<Photo>> pendingPhotosLiveData = cache.getPendingPhotosLiveData();
+
+        if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
+            propertyEditViewStateMediatorLiveData.removeSource(pendingPhotosLiveData);
+            propertyEditViewStateMediatorLiveData.addSource(pendingPhotosLiveData,
+                    new Observer<List<Photo>>() {
+                        @Override
+                        public void onChanged(List<Photo> photos) {
+                            combine(propertyId,
+                                    null,
+                                    null,
+                                    photos);
+                        }
+                    });
+        } else {
+            LiveData<PropertyDetailData> propertyDetailDataLiveData = databaseRepository.getPropertyRepository().getPropertyDetailByIdLiveData(propertyId);
+            LiveData<List<Photo>> databasePhotosLiveData = databaseRepository.getPhotoRepository().getPhotosByPropertyId(propertyId);
+
+            propertyEditViewStateMediatorLiveData.addSource(propertyDetailDataLiveData,
+                    new Observer<PropertyDetailData>() {
+                        @Override
+                        public void onChanged(PropertyDetailData propertyDetailData) {
+                            combine(propertyId,
+                                    propertyDetailData,
+                                    databasePhotosLiveData.getValue(),
+                                    pendingPhotosLiveData.getValue());
+
+                        }
+                    });
+
+            propertyEditViewStateMediatorLiveData.addSource(databasePhotosLiveData,
+                    new Observer<List<Photo>>() {
+                        @Override
+                        public void onChanged(List<Photo> photos) {
+                            combine(propertyId,
+                                    propertyDetailDataLiveData.getValue(),
+                                    photos,
+                                    pendingPhotosLiveData.getValue());
+                        }
+                    });
+
+            propertyEditViewStateMediatorLiveData.removeSource(pendingPhotosLiveData);
+            propertyEditViewStateMediatorLiveData.addSource(pendingPhotosLiveData,
+                    new Observer<List<Photo>>() {
+                        @Override
+                        public void onChanged(List<Photo> photos) {
+                            combine(propertyId,
+                                    propertyDetailDataLiveData.getValue(),
+                                    databasePhotosLiveData.getValue(),
+                                    photos);
+                        }
+                    });
+        }
+    }
+
+    private void combine(long propertyId, PropertyDetailData propertyDetailData, List<Photo> databasePhotos, List<Photo> pendingPhotos) {
+        Log.d(Tag.TAG, "PropertyEditViewModel.combine() called with: propertyId = [" + propertyId + "], propertyDetailData = [" + propertyDetailData + "], databasePhotos = [" + databasePhotos + "], pendingPhotos = [" + pendingPhotos + "]");
+
+        if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
+            PropertyEditViewState propertyEditViewState = new PropertyEditViewState(pendingPhotos);
+            propertyEditViewStateMediatorLiveData.setValue(propertyEditViewState);
+            return;
+        }
+
+        if (propertyDetailData == null) {
+            return;
+        }
+
+        String entryDate = Utils.convertDateToLocalFormat(propertyDetailData.getEntryDate());
+        String saleDate = Utils.convertDateToLocalFormat(propertyDetailData.getSaleDate());
+        String price = Integer.toString(propertyDetailData.getPrice());
+        String surface = Integer.toString(propertyDetailData.getSurface());
+        String rooms = Integer.toString(propertyDetailData.getRooms());
+
+        List<Photo> photos = new ArrayList<>();
+        if (pendingPhotos != null) {
+            photos.addAll(pendingPhotos);
+        }
+        if(databasePhotos != null) {
+            photos.addAll(databasePhotos);
+        }
+
+        PropertyEditViewState propertyEditViewState = new PropertyEditViewState(propertyDetailData.getAddressTitle(),
+                propertyDetailData.getAddress(),
+                propertyDetailData.getDescription(),
+                propertyDetailData.getPointsOfInterest(),
+                price,
+                surface,
+                rooms,
+                entryDate,
+                saleDate,
+                propertyDetailData.getAgentId(),
+                propertyDetailData.getAgentName(),
+                propertyDetailData.getPropertyTypeId(),
+                propertyDetailData.getTypeName(),
+                propertyDetailData.getLatitude(),
+                propertyDetailData.getLongitude(),
+                photos);
+        propertyEditViewStateMediatorLiveData.setValue(propertyEditViewState);
+    }
+
     private final MediatorLiveData<DropdownViewstate> dropDownViewstateMediatorLiveData = new MediatorLiveData<>();
     public MediatorLiveData<DropdownViewstate> getDropDownViewstateMediatorLiveData() {
         return dropDownViewstateMediatorLiveData;
@@ -175,18 +291,18 @@ public class PropertyEditViewModel extends ViewModel {
     }
 
     private Agent findAgentById(long id) {
-        Log.d(Tag.TAG, "findAgentById() called with: id = [" + id + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.findAgentById() called with: id = [" + id + "]");
         if ((cache != null) && (cache.getAgents() != null)){
             Iterator<Agent> iterator = cache.getAgents().iterator();
             while (iterator.hasNext()) {
                 Agent agent = iterator.next();
                 if (agent.getId() == id) {
-                    Log.d(Tag.TAG, "findAgentById() return agent [" + agent + "]");
+                    Log.d(Tag.TAG, "PropertyEditViewModel.findAgentById() return agent [" + agent + "]");
                     return agent;
                 }
             }
         }
-        Log.d(Tag.TAG, "findAgentById() return null");
+        Log.d(Tag.TAG, "PropertyEditViewModel.findAgentById() return null");
         return null;
     }
 
@@ -197,10 +313,10 @@ public class PropertyEditViewModel extends ViewModel {
     private boolean checkIsInt(String value){
         try {
             Integer.parseInt(value);
-            Log.d(Tag.TAG, "checkIsInt() value = [" + value + "] return = [true]");
+            Log.d(Tag.TAG, "PropertyEditViewModel.checkIsInt() value = [" + value + "] return = [true]");
             return true;
         } catch (NumberFormatException e) {
-            Log.d(Tag.TAG, "checkIsInt() value = [" + value + "] return = [false]");
+            Log.d(Tag.TAG, "PropertyEditViewModel.checkIsInt() value = [" + value + "] return = [false]");
             return false;
         }
     }
@@ -210,7 +326,7 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkAddressTitleValue(String value){
         boolean valueOk = !PropertyEditViewModel.emptyString(value);
         onCheckAddressTitleValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "checkAddressTitleValue() return = [" + valueOk + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.checkAddressTitleValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -219,7 +335,7 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkAddressValue(String value){
         boolean valueOk = !PropertyEditViewModel.emptyString(value);
         onCheckAddressValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "checkAddressValue() return = [" + valueOk + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.checkAddressValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -228,7 +344,7 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkDescriptionValue(String value){
         boolean valueOk =!PropertyEditViewModel.emptyString(value);
         onCheckDescriptionValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "checkDescriptionValue() return = [" + valueOk + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.checkDescriptionValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -237,7 +353,7 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkPointOfInterestValue(String value){
         boolean valueOk = !PropertyEditViewModel.emptyString(value);
         onCheckPointOfInterestValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "checkPointOfInterestValue() return = [" + valueOk + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.checkPointOfInterestValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -246,7 +362,7 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkPriceValue(String value){
         boolean valueOk = checkIsInt(value);
         onCheckPriceValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "checkPriceValue() return = [" + valueOk + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.checkPriceValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -255,7 +371,7 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkSurfaceValue(String value){
         boolean valueOk = checkIsInt(value);
         onCheckSurfaceValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "checkSurfaceValue() return = [" + valueOk + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.checkSurfaceValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -264,7 +380,7 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkRoomsValue(String value){
         boolean valueOk = checkIsInt(value);
         onCheckRoomsValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "checkRoomsValue() return = [" + valueOk + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.checkRoomsValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -273,7 +389,7 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkEntryDateValue(String value){
         boolean valueOk = PropertyEditViewModel.validDate(value);
         onCheckEntryDateValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "checkEntryDateValue() return = [" + valueOk + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.checkEntryDateValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -282,7 +398,7 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkSaleDateValue(String value){
         boolean valueOk = PropertyEditViewModel.validOrNullDate(value);
         onCheckSaleDateValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "checkSaleDateValue() return = [" + valueOk + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.checkSaleDateValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -292,7 +408,7 @@ public class PropertyEditViewModel extends ViewModel {
         boolean valueOk = (findAgentById(id) != null);
         Log.d(Tag.TAG, "checkAgentIdValue() valueOk= [" + valueOk + "]");
         onCheckAgentIdValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "checkAgentIdValue(" + id + ") return = [" + valueOk + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.checkAgentIdValue(" + id + ") return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -301,8 +417,12 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkPropertyTypeIdValue(long id){
         boolean valueOk = (findPropertyTypeById(id) != null);
         onCheckPropertyTypeIdValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "checkPropertyTypeIdValue() return = [" + valueOk + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.checkPropertyTypeIdValue() return = [" + valueOk + "]");
         return valueOk;
+    }
+
+    private boolean checkPendingPhoto(){
+        return cache.isAllPhotoOk();
     }
 
     public interface AddPropertyInterface{
@@ -374,6 +494,15 @@ public class PropertyEditViewModel extends ViewModel {
             try {
                 if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
                     propertyId = databaseRepository.getPropertyRepository().insert(property);
+                    // now we have new property id and we can send pending photos to database
+                    List<Photo> photos = new ArrayList<>();
+                    photos.addAll(cache.getPendingPhotos());
+                    for (Photo photo : photos) {
+                        // change property id with new property id
+                        photo.setPropertyId(propertyId);
+                        // clear cache and send to database
+                        updatePhoto(photo);
+                    }
                 } else
                     databaseRepository.getPropertyRepository().update(property);
                 // Callback to close windows
@@ -412,52 +541,36 @@ public class PropertyEditViewModel extends ViewModel {
                 checkSaleDateValue(saleDate) &
                 checkPropertyTypeIdValue(propertyTypeId) &
                 checkAgentIdValue(agentId) &
-                checkRoomsValue(rooms);
+                checkRoomsValue(rooms) &
+                checkPendingPhoto();
 
         onCheckAllValuesMutableLiveData.setValue(valuesOk);
         return valuesOk;
     }
 
-    public LiveData<PropertyEditViewState> getPropertyEditViewStateLiveData(long propertyId) {
-        LiveData<PropertyDetailData> propertyDetailDataLiveData = databaseRepository.getPropertyRepository().getPropertyDetailByIdLiveData(propertyId);
 
-        LiveData<PropertyEditViewState> propertyEditViewStateLiveData = Transformations.map(propertyDetailDataLiveData,
-                (PropertyDetailData p) -> {
-                    Log.d(Tag.TAG, "getPropertyEditViewStateLiveData() propertyId = [" + propertyId + "]" + " p=[" + p + "]");
-                    if ((propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) || (p == null)) {
-                        return new PropertyEditViewState();
-                    } else {
-                        String entryDate = Utils.convertDateToLocalFormat(p.getEntryDate());
-                        String saleDate = Utils.convertDateToLocalFormat(p.getSaleDate());
-                        String price = Integer.toString(p.getPrice());
-                        String surface = Integer.toString(p.getSurface());
-                        String rooms = Integer.toString(p.getRooms());
-
-                        PropertyEditViewState propertyEditViewState = new PropertyEditViewState(p.getAddressTitle(),
-                            p.getAddress(),
-                            p.getDescription(),
-                            p.getPointsOfInterest(),
-                            price,
-                            surface,
-                            rooms,
-                            entryDate,
-                            saleDate,
-                            p.getAgentId(),
-                            p.getAgentName(),
-                            p.getPropertyTypeId(),
-                            p.getTypeName(),
-                            p.getLatitude(),
-                            p.getLongitude());
-
-                        return propertyEditViewState;
-                    }
-                });
-        return propertyEditViewStateLiveData;
+    public void addPhoto(Uri uri, String caption, long propertyId){
+        Log.d(Tag.TAG, "PropertyEditViewModel.addPhoto() called with: caption = [" + caption + "], propertyId = [" + propertyId + "], uri = [\" + uri + \"]");
+        Photo photo = new Photo(0, 0, uri.toString(), caption, propertyId);
+        updatePhoto(photo);
     }
 
-    public void addPhoto(Uri uri, String legende, long propertyId){
-        Log.d(Tag.TAG, "addPhoto() called with: legende = [" + legende + "], propertyId = [" + propertyId + "], uri = [\" + uri + \"]");
-        Photo photo = new Photo(0, 0, uri.toString(), "test uri", propertyId);
-        databaseRepository.getPhotoRepository().insert(photo);
+    /**
+     * send photo to cache or to database
+     * @param photo
+     */
+    public void updatePhoto(Photo photo){
+        if ((photo.getPropertyId() == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) || (!cache.isValidePhoto(photo))) {
+            cache.update(photo);
+        }
+        else {
+            cache.removePhoto(photo);
+            if (photo.getId() == PropertyConst.PHOTO_ID_NOT_INITIALIZED) {
+                databaseRepository.getPhotoRepository().insert(photo);
+            }
+            else {
+                databaseRepository.getPhotoRepository().update(photo);
+            }
+        }
     }
 }

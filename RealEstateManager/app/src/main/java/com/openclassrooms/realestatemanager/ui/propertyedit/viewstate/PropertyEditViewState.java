@@ -1,6 +1,10 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.viewstate;
 
+import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PropertyEditViewState {
     private final String addressTitle;
@@ -18,6 +22,7 @@ public class PropertyEditViewState {
     private final String propertyTypeName;
     private final double latitude;
     private final double longitude;
+    private final List<Photo> photos;
 
     public PropertyEditViewState() {
         this.addressTitle = "";
@@ -35,9 +40,33 @@ public class PropertyEditViewState {
         this.propertyTypeName = "";
         this.latitude = 0;
         this.longitude = 0;
+        this.photos = new ArrayList<>();
     }
 
-    public PropertyEditViewState(String addressTitle, String address, String description, String pointOfInterest, String price, String surface, String rooms, String entryDate, String saleDate, long agentId, String agentName, long propertyTypeId, String propertyTypeName, double latitude, double longitude) {
+    public PropertyEditViewState(List<Photo> photos) {
+        this.addressTitle = "";
+        this.address = "";
+        this.description = "";
+        this.pointOfInterest = "";
+        this.price = "";
+        this.surface = "";
+        this.rooms = "";
+        this.entryDate = "";
+        this.saleDate = "";
+        this.agentId = PropertyConst.AGENT_ID_NOT_INITIALIZED;
+        this.agentName = "";
+        this.propertyTypeId = PropertyConst.PROPERTY_TYPE_ID_NOT_INITIALIZED;
+        this.propertyTypeName = "";
+        this.latitude = 0;
+        this.longitude = 0;
+        if (photos == null) {
+            this.photos = new ArrayList<>();
+        } else {
+            this.photos = photos;
+        }
+    }
+
+    public PropertyEditViewState(String addressTitle, String address, String description, String pointOfInterest, String price, String surface, String rooms, String entryDate, String saleDate, long agentId, String agentName, long propertyTypeId, String propertyTypeName, double latitude, double longitude, List<Photo> photos) {
         this.addressTitle = addressTitle;
         this.address = address;
         this.description = description;
@@ -53,6 +82,7 @@ public class PropertyEditViewState {
         this.propertyTypeName = propertyTypeName;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.photos = photos;
     }
 
     public String getAddressTitle() {
@@ -113,5 +143,9 @@ public class PropertyEditViewState {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    public List<Photo> getPhotos() {
+        return photos;
     }
 }

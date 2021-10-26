@@ -20,15 +20,15 @@ import java.util.List;
 public class ImageSelectorObserver implements DefaultLifecycleObserver {
     private final ActivityResultRegistry mRegistry;
     private ActivityResultLauncher<String> mGetContent;
-    private ActivityResultLauncher<String[]> mGetOneFile;
-    private ActivityResultLauncher<String[]> mGetFiles;
+    private ActivityResultLauncher<String[]> mGetDocument;
+    private ActivityResultLauncher<String[]> mGetMultipleDocuments;
 
 
     private final MutableLiveData<Uri> uriMutableLiveData = new MutableLiveData<>();
     public LiveData<Uri> getUriLiveData() { return uriMutableLiveData; }
 
-    private final MutableLiveData<List<Uri>> urisMutableLiveData = new MutableLiveData<>();
-    public LiveData<List<Uri>> getUrisLiveData() { return urisMutableLiveData; }
+    private final MutableLiveData<List<Uri>> multipleUrisMutableLiveData = new MutableLiveData<>();
+    public LiveData<List<Uri>> getMultipleUrisLiveData() { return multipleUrisMutableLiveData; }
 
     public ImageSelectorObserver(@NonNull ActivityResultRegistry registry) {
         mRegistry = registry;
@@ -47,20 +47,20 @@ public class ImageSelectorObserver implements DefaultLifecycleObserver {
                     }
                 });
 
-        mGetOneFile = mRegistry.register("key2", owner, new ActivityResultContracts.OpenDocument(),
+        mGetDocument = mRegistry.register("key2", owner, new ActivityResultContracts.OpenDocument(),
                 new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri result) {
-                        Log.d(Tag.TAG, "OpenDocument() onActivityResult() called with: result = [" + result + "]");
+                        Log.d(Tag.TAG, "ImageSelectorObserver.OpenDocument() onActivityResult() called with: result = [" + result + "]");
                         uriMutableLiveData.setValue(result);
                     }
                 });
 
-        mGetFiles = mRegistry.register("key3", owner, new ActivityResultContracts.OpenMultipleDocuments(),
+        mGetMultipleDocuments = mRegistry.register("key3", owner, new ActivityResultContracts.OpenMultipleDocuments(),
                 new ActivityResultCallback<List<Uri>>() {
                     @Override
                     public void onActivityResult(List<Uri> result) {
-                        urisMutableLiveData.setValue(result);
+                        multipleUrisMutableLiveData.setValue(result);
                     }
                 });
     }
@@ -74,12 +74,13 @@ public class ImageSelectorObserver implements DefaultLifecycleObserver {
     public void openImage() {
         // Open the activity to select an image
         Log.d(Tag.TAG, "ImageSelectorObserver.selectImage() called");
-        mGetOneFile.launch(new String[] {"image/*"});
+        mGetDocument.launch(new String[] {"image/*"});
     }
 
     public void openMultipleImages() {
-        Log.d(Tag.TAG, "openMultipleImages() called");
-        mGetFiles.launch(new String[] {"image/*"});
+        Log.d(Tag.TAG, "ImageSelectorObserver.openMultipleImages() called");
+        //mGetFiles.launch(new String[] {"image/*"});
+        mGetMultipleDocuments.launch(new String[] {"image/*"});
     }
 
 }
