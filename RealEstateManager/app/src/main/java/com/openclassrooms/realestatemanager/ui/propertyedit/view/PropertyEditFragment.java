@@ -308,6 +308,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
      * @param currentPropertyTypeId
      */
     private void configureDropdown(long currentAgentId, long currentPropertyTypeId){
+        Log.d(Tag.TAG, "PropertyEditFragment.configureDropdown() called with: currentAgentId = [" + currentAgentId + "], currentPropertyTypeId = [" + currentPropertyTypeId + "]");
         // There are two lists in DropdownViewstate, one for the agents list and one for the property types list
         propertyEditViewModel.getDropDownViewstateMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<DropdownViewstate>() {
             @Override
@@ -320,7 +321,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                     // update list position with current agent
                     int position = findDropdownPositionById(currentAgentId, dropDownViewstate.getAgentItems());
                     if (position >= 0) {
-                        Log.d(Tag.TAG, "configureDropdown() currentAgentId=" + currentAgentId + " position=" + position);
+                        Log.d(Tag.TAG, "PropertyEditFragment.configureDropdown() currentAgentId=" + currentAgentId + " position=" + position);
                         autoCompleteTextView.setListSelection (position);
                         agentId = currentAgentId;
                     }
@@ -366,6 +367,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
      * load property values to components
      */
     private void configureViewState(){
+        Log.d(Tag.TAG, "PropertyEditFragment.configureViewState() called");
         propertyEditViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyEditViewState>() {
             @Override
             public void onChanged(PropertyEditViewState propertyEditViewState) {
