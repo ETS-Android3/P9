@@ -102,58 +102,44 @@ public class PropertyEditViewModel extends ViewModel {
     private void configureMediatorLiveData(long propertyId){
         Log.d(Tag.TAG, "PropertyEditViewModel.configureMediatorLiveData() called with: propertyId = [" + propertyId + "]");
         LiveData<List<Photo>> pendingPhotosLiveData = cache.getPendingPhotosLiveData();
+        LiveData<PropertyDetailData> propertyDetailDataLiveData = databaseRepository.getPropertyRepository().getPropertyDetailByIdLiveData(propertyId);
+        LiveData<List<Photo>> databasePhotosLiveData = databaseRepository.getPhotoRepository().getPhotosByPropertyId(propertyId);
 
-        if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
-            propertyEditViewStateMediatorLiveData.removeSource(pendingPhotosLiveData);
-            propertyEditViewStateMediatorLiveData.addSource(pendingPhotosLiveData,
-                    new Observer<List<Photo>>() {
-                        @Override
-                        public void onChanged(List<Photo> photos) {
-                            combine(propertyId,
-                                    null,
-                                    null,
-                                    photos);
-                        }
-                    });
-        } else {
-            LiveData<PropertyDetailData> propertyDetailDataLiveData = databaseRepository.getPropertyRepository().getPropertyDetailByIdLiveData(propertyId);
-            LiveData<List<Photo>> databasePhotosLiveData = databaseRepository.getPhotoRepository().getPhotosByPropertyId(propertyId);
+        propertyEditViewStateMediatorLiveData.addSource(propertyDetailDataLiveData,
+                new Observer<PropertyDetailData>() {
+                    @Override
+                    public void onChanged(PropertyDetailData propertyDetailData) {
+                        combine(propertyId,
+                                propertyDetailData,
+                                databasePhotosLiveData.getValue(),
+                                pendingPhotosLiveData.getValue());
 
-            propertyEditViewStateMediatorLiveData.addSource(propertyDetailDataLiveData,
-                    new Observer<PropertyDetailData>() {
-                        @Override
-                        public void onChanged(PropertyDetailData propertyDetailData) {
-                            combine(propertyId,
-                                    propertyDetailData,
-                                    databasePhotosLiveData.getValue(),
-                                    pendingPhotosLiveData.getValue());
+                    }
+                });
 
-                        }
-                    });
+        propertyEditViewStateMediatorLiveData.addSource(databasePhotosLiveData,
+                new Observer<List<Photo>>() {
+                    @Override
+                    public void onChanged(List<Photo> photos) {
+                        combine(propertyId,
+                                propertyDetailDataLiveData.getValue(),
+                                photos,
+                                pendingPhotosLiveData.getValue());
+                    }
+                });
 
-            propertyEditViewStateMediatorLiveData.addSource(databasePhotosLiveData,
-                    new Observer<List<Photo>>() {
-                        @Override
-                        public void onChanged(List<Photo> photos) {
-                            combine(propertyId,
-                                    propertyDetailDataLiveData.getValue(),
-                                    photos,
-                                    pendingPhotosLiveData.getValue());
-                        }
-                    });
+        propertyEditViewStateMediatorLiveData.removeSource(pendingPhotosLiveData);
+        propertyEditViewStateMediatorLiveData.addSource(pendingPhotosLiveData,
+                new Observer<List<Photo>>() {
+                    @Override
+                    public void onChanged(List<Photo> photos) {
+                        combine(propertyId,
+                                propertyDetailDataLiveData.getValue(),
+                                databasePhotosLiveData.getValue(),
+                                photos);
+                    }
+                });
 
-            propertyEditViewStateMediatorLiveData.removeSource(pendingPhotosLiveData);
-            propertyEditViewStateMediatorLiveData.addSource(pendingPhotosLiveData,
-                    new Observer<List<Photo>>() {
-                        @Override
-                        public void onChanged(List<Photo> photos) {
-                            combine(propertyId,
-                                    propertyDetailDataLiveData.getValue(),
-                                    databasePhotosLiveData.getValue(),
-                                    photos);
-                        }
-                    });
-        }
     }
 
     private void combine(long propertyId, PropertyDetailData propertyDetailData, List<Photo> databasePhotos, List<Photo> pendingPhotos) {
