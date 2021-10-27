@@ -152,6 +152,29 @@ public class PropertyEditViewModel extends ViewModel {
         return  result;
     }
 
+    private long getLastValue(RememberFieldKey cacheKey, long databaseValue){
+        String cacheValue = cache.getRememberFieldList().getValue(cacheKey);
+        if (cacheValue != null) {
+
+        }
+        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() cacheKey = [" + cacheKey + "] cacheValue + [" + cacheValue + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() databaseValue = [" + databaseValue + "]");
+        long result = 0;
+        if (cacheValue == null) {
+            result = databaseValue;
+        } else {
+            cacheValue = cacheValue.trim();
+            if (cacheValue.isEmpty()) {
+                result = databaseValue;
+            } else {
+                result = Long.parseLong(cacheValue);
+            }
+        }
+        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() return = [" + result + "]");
+        return result;
+    }
+
+
     private void combine(long propertyId, PropertyDetailData propertyDetailData, List<Photo> databasePhotos, List<Photo> pendingPhotos) {
         Log.d(Tag.TAG, "PropertyEditViewModel.combine() called with: propertyId = [" + propertyId + "], propertyDetailData = [" + propertyDetailData + "], databasePhotos = [" + databasePhotos + "], pendingPhotos = [" + pendingPhotos + "]");
 
@@ -190,6 +213,11 @@ public class PropertyEditViewModel extends ViewModel {
         String entryDate = getLastValue(RememberFieldKey.ENTRY_DATE, databaseEntryDate);
         String saleDate = getLastValue(RememberFieldKey.SALE_DATE, databaseSaleDate);
 
+        long agentId = getLastValue(RememberFieldKey.AGENT_ID, propertyDetailData.getAgentId());
+        String agentName = getLastValue(RememberFieldKey.AGENT_NAME, propertyDetailData.getAgentName());
+        long propertyTypeId = getLastValue(RememberFieldKey.AGENT_ID, propertyDetailData.getAgentId());
+        String propertyTypeName = getLastValue(RememberFieldKey.PROPERTY_TYPE_NAME, propertyDetailData.getTypeName());
+
         PropertyEditViewState propertyEditViewState = new PropertyEditViewState(
                 addressTitle,
                 address,
@@ -200,10 +228,10 @@ public class PropertyEditViewModel extends ViewModel {
                 rooms,
                 entryDate,
                 saleDate,
-                propertyDetailData.getAgentId(),
-                propertyDetailData.getAgentName(),
-                propertyDetailData.getPropertyTypeId(),
-                propertyDetailData.getTypeName(),
+                agentId,
+                agentName,
+                propertyTypeId,
+                propertyTypeName,
                 propertyDetailData.getLatitude(),
                 propertyDetailData.getLongitude(),
                 photos);

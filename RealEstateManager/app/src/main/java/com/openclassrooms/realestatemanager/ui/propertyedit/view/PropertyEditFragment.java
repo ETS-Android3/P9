@@ -330,6 +330,8 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             DropdownItem item = (DropdownItem) adapterAgents.getItem(position);
                             agentId = item.getId();
+                            propertyEditViewModel.rememberValue(RememberFieldKey.AGENT_ID, Long.toString(agentId));
+                            propertyEditViewModel.rememberValue(RememberFieldKey.AGENT_NAME, item.getName());
                             // to check input
                             checkAllValues();
                         }
@@ -352,6 +354,8 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             DropdownItem item = (DropdownItem) adapterPropertyType.getItem(position);
                             propertyTypeId = item.getId();
+                            propertyEditViewModel.rememberValue(RememberFieldKey.PROPERTY_TYPE_ID, Long.toString(propertyId));
+                            propertyEditViewModel.rememberValue(RememberFieldKey.PROPERTY_TYPE_NAME, item.getName());
                             // to check input
                             checkAllValues();
                         }

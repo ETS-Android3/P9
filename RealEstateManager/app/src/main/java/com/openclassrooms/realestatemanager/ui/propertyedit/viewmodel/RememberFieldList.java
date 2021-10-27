@@ -19,7 +19,9 @@ public class RememberFieldList {
             new RememberField(RememberFieldKey.POINT_OF_INTEREST),
             new RememberField(RememberFieldKey.ENTRY_DATE),
             new RememberField(RememberFieldKey.SALE_DATE),
+            new RememberField(RememberFieldKey.AGENT_ID),
             new RememberField(RememberFieldKey.AGENT_NAME),
+            new RememberField(RememberFieldKey.PROPERTY_TYPE_ID),
             new RememberField(RememberFieldKey.PROPERTY_TYPE_NAME)
     );
 
