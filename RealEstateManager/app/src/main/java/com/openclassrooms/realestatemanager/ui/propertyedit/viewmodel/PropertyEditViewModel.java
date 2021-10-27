@@ -90,6 +90,7 @@ public class PropertyEditViewModel extends ViewModel {
      */
     public void loadViewState(long propertyId){
         Log.d(Tag.TAG, "PropertyEditViewModel.loadViewState() called with: propertyId = [" + propertyId + "]");
+        cache.getRememberFieldList().clearAll();
         configureMediatorLiveData(propertyId);
     }
 
@@ -142,6 +143,15 @@ public class PropertyEditViewModel extends ViewModel {
 
     }
 
+    private String getLastValue(RememberFieldKey cacheKey, String databaseValue){
+        String cacheValue = cache.getRememberFieldList().getValue(cacheKey);
+        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() cacheKey = [" + cacheKey + "] cacheValue + [" + cacheValue + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() databaseValue = [" + databaseValue + "]");
+        String result = (cacheValue == null) ? databaseValue : cacheValue;
+        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() return = [" + result + "]");
+        return  result;
+    }
+
     private void combine(long propertyId, PropertyDetailData propertyDetailData, List<Photo> databasePhotos, List<Photo> pendingPhotos) {
         Log.d(Tag.TAG, "PropertyEditViewModel.combine() called with: propertyId = [" + propertyId + "], propertyDetailData = [" + propertyDetailData + "], databasePhotos = [" + databasePhotos + "], pendingPhotos = [" + pendingPhotos + "]");
 
@@ -155,11 +165,11 @@ public class PropertyEditViewModel extends ViewModel {
             return;
         }
 
-        String entryDate = Utils.convertDateToLocalFormat(propertyDetailData.getEntryDate());
-        String saleDate = Utils.convertDateToLocalFormat(propertyDetailData.getSaleDate());
-        String price = Integer.toString(propertyDetailData.getPrice());
-        String surface = Integer.toString(propertyDetailData.getSurface());
-        String rooms = Integer.toString(propertyDetailData.getRooms());
+        String databaseEntryDate = Utils.convertDateToLocalFormat(propertyDetailData.getEntryDate());
+        String databaseSaleDate = Utils.convertDateToLocalFormat(propertyDetailData.getSaleDate());
+        String databasePrice = Integer.toString(propertyDetailData.getPrice());
+        String databaseSurface = Integer.toString(propertyDetailData.getSurface());
+        String databaseRooms = Integer.toString(propertyDetailData.getRooms());
 
         List<Photo> photos = new ArrayList<>();
         if (pendingPhotos != null) {
@@ -169,10 +179,22 @@ public class PropertyEditViewModel extends ViewModel {
             photos.addAll(databasePhotos);
         }
 
-        PropertyEditViewState propertyEditViewState = new PropertyEditViewState(propertyDetailData.getAddressTitle(),
-                propertyDetailData.getAddress(),
-                propertyDetailData.getDescription(),
-                propertyDetailData.getPointsOfInterest(),
+        // get values from cache or from database
+        String addressTitle = getLastValue(RememberFieldKey.ADDRESS_TITLE, propertyDetailData.getAddressTitle());
+        String address = getLastValue(RememberFieldKey.ADDRESS, propertyDetailData.getAddress());
+        String description = getLastValue(RememberFieldKey.DESCRIPTION, propertyDetailData.getDescription());
+        String pointOfInterest = getLastValue(RememberFieldKey.POINT_OF_INTEREST, propertyDetailData.getPointsOfInterest());
+        String price = getLastValue(RememberFieldKey.PRICE, databasePrice);
+        String surface = getLastValue(RememberFieldKey.SURFACE, databaseSurface);
+        String rooms = getLastValue(RememberFieldKey.ROOMS, databaseRooms);
+        String entryDate = getLastValue(RememberFieldKey.ENTRY_DATE, databaseEntryDate);
+        String saleDate = getLastValue(RememberFieldKey.SALE_DATE, databaseSaleDate);
+
+        PropertyEditViewState propertyEditViewState = new PropertyEditViewState(
+                addressTitle,
+                address,
+                description,
+                pointOfInterest,
                 price,
                 surface,
                 rooms,
@@ -277,18 +299,15 @@ public class PropertyEditViewModel extends ViewModel {
     }
 
     private Agent findAgentById(long id) {
-        Log.d(Tag.TAG, "PropertyEditViewModel.findAgentById() called with: id = [" + id + "]");
         if ((cache != null) && (cache.getAgents() != null)){
             Iterator<Agent> iterator = cache.getAgents().iterator();
             while (iterator.hasNext()) {
                 Agent agent = iterator.next();
                 if (agent.getId() == id) {
-                    Log.d(Tag.TAG, "PropertyEditViewModel.findAgentById() return agent [" + agent + "]");
                     return agent;
                 }
             }
         }
-        Log.d(Tag.TAG, "PropertyEditViewModel.findAgentById() return null");
         return null;
     }
 
@@ -299,10 +318,8 @@ public class PropertyEditViewModel extends ViewModel {
     private boolean checkIsInt(String value){
         try {
             Integer.parseInt(value);
-            Log.d(Tag.TAG, "PropertyEditViewModel.checkIsInt() value = [" + value + "] return = [true]");
             return true;
         } catch (NumberFormatException e) {
-            Log.d(Tag.TAG, "PropertyEditViewModel.checkIsInt() value = [" + value + "] return = [false]");
             return false;
         }
     }
@@ -312,7 +329,6 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkAddressTitleValue(String value){
         boolean valueOk = !PropertyEditViewModel.emptyString(value);
         onCheckAddressTitleValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "PropertyEditViewModel.checkAddressTitleValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -321,7 +337,6 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkAddressValue(String value){
         boolean valueOk = !PropertyEditViewModel.emptyString(value);
         onCheckAddressValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "PropertyEditViewModel.checkAddressValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -330,7 +345,6 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkDescriptionValue(String value){
         boolean valueOk =!PropertyEditViewModel.emptyString(value);
         onCheckDescriptionValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "PropertyEditViewModel.checkDescriptionValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -339,7 +353,6 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkPointOfInterestValue(String value){
         boolean valueOk = !PropertyEditViewModel.emptyString(value);
         onCheckPointOfInterestValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "PropertyEditViewModel.checkPointOfInterestValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -348,7 +361,6 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkPriceValue(String value){
         boolean valueOk = checkIsInt(value);
         onCheckPriceValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "PropertyEditViewModel.checkPriceValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -357,7 +369,6 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkSurfaceValue(String value){
         boolean valueOk = checkIsInt(value);
         onCheckSurfaceValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "PropertyEditViewModel.checkSurfaceValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -366,7 +377,6 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkRoomsValue(String value){
         boolean valueOk = checkIsInt(value);
         onCheckRoomsValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "PropertyEditViewModel.checkRoomsValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -375,7 +385,6 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkEntryDateValue(String value){
         boolean valueOk = PropertyEditViewModel.validDate(value);
         onCheckEntryDateValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "PropertyEditViewModel.checkEntryDateValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -384,7 +393,6 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkSaleDateValue(String value){
         boolean valueOk = PropertyEditViewModel.validOrNullDate(value);
         onCheckSaleDateValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "PropertyEditViewModel.checkSaleDateValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -392,9 +400,7 @@ public class PropertyEditViewModel extends ViewModel {
     public LiveData<FieldState> getOnCheckAgentIdValueLiveData() { return onCheckAgentIdValueMutableLiveData; }
     public boolean checkAgentIdValue(long id){
         boolean valueOk = (findAgentById(id) != null);
-        Log.d(Tag.TAG, "checkAgentIdValue() valueOk= [" + valueOk + "]");
         onCheckAgentIdValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "PropertyEditViewModel.checkAgentIdValue(" + id + ") return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -403,7 +409,6 @@ public class PropertyEditViewModel extends ViewModel {
     public boolean checkPropertyTypeIdValue(long id){
         boolean valueOk = (findPropertyTypeById(id) != null);
         onCheckPropertyTypeIdValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
-        Log.d(Tag.TAG, "PropertyEditViewModel.checkPropertyTypeIdValue() return = [" + valueOk + "]");
         return valueOk;
     }
 
@@ -559,4 +564,14 @@ public class PropertyEditViewModel extends ViewModel {
             }
         }
     }
+
+    public void clearFieldsCache(){
+        cache.getRememberFieldList().clearAll();
+    }
+
+    public boolean rememberValue(RememberFieldKey key, String value){
+        cache.getRememberFieldList().setValue(key, value);
+        return false;
+    }
+
 }

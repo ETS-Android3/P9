@@ -52,6 +52,7 @@ import com.openclassrooms.realestatemanager.ui.photoedit.OnPhotoEditListener;
 import com.openclassrooms.realestatemanager.ui.photoedit.PhotoEditDialogFragment;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEditViewModel;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.RememberFieldKey;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodelfactory.PropertyEditViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
@@ -215,7 +216,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                         .setPhotoEditListener(new OnPhotoEditListener() {
                             @Override
                             public void onPhotoEditOk(long id, int order, String url, String caption, long propertyId) {
-                                Log.d(Tag.TAG, "onPhotoEditOk() called with: id = [" + id + "], order = [" + order + "], url = [" + url + "], caption = [" + caption + "], propertyId = [" + propertyId + "]");
+                                Log.d(Tag.TAG, "PropertyEditFragment.onPhotoEditOk() called with: id = [" + id + "], order = [" + order + "], url = [" + url + "], caption = [" + caption + "], propertyId = [" + propertyId + "]");
                                 Photo photo = new Photo(id, order, url, caption, propertyId);
                                 propertyEditViewModel.updatePhoto(photo);
                             }
@@ -308,7 +309,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
      * @param currentPropertyTypeId
      */
     private void configureDropdown(long currentAgentId, long currentPropertyTypeId){
-        Log.d(Tag.TAG, "PropertyEditFragment.configureDropdown() called with: currentAgentId = [" + currentAgentId + "], currentPropertyTypeId = [" + currentPropertyTypeId + "]");
         // There are two lists in DropdownViewstate, one for the agents list and one for the property types list
         propertyEditViewModel.getDropDownViewstateMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<DropdownViewstate>() {
             @Override
@@ -321,7 +321,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                     // update list position with current agent
                     int position = findDropdownPositionById(currentAgentId, dropDownViewstate.getAgentItems());
                     if (position >= 0) {
-                        Log.d(Tag.TAG, "PropertyEditFragment.configureDropdown() currentAgentId=" + currentAgentId + " position=" + position);
                         autoCompleteTextView.setListSelection (position);
                         agentId = currentAgentId;
                     }
@@ -344,7 +343,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                     // update list position with current property type
                     int position = findDropdownPositionById(currentPropertyTypeId, dropDownViewstate.getPropertyTypeItems());
                     if (position >= 0) {
-                        Log.d(Tag.TAG, "configureDropdown() currentAgentId=" + currentAgentId + " position=" + position);
                         autoCompleteTextView.setListSelection (position);
                         propertyTypeId = currentPropertyTypeId;
                     }
@@ -368,6 +366,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
      */
     private void configureViewState(){
         Log.d(Tag.TAG, "PropertyEditFragment.configureViewState() called");
+        propertyEditViewModel.clearFieldsCache();
         propertyEditViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyEditViewState>() {
             @Override
             public void onChanged(PropertyEditViewState propertyEditViewState) {
@@ -396,32 +395,23 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
      */
     private void configureControlValues(){
         configureControlValue(textInputLayoutAddressTitle,
-                propertyEditViewModel.getOnCheckAddressTitleValueLiveData(),
-                propertyEditViewModel::checkAddressTitleValue);
+                propertyEditViewModel.getOnCheckAddressTitleValueLiveData());
         configureControlValue(textInputLayoutAddress,
-                propertyEditViewModel.getOnCheckAddressValueLiveData(),
-                propertyEditViewModel::checkAddressValue);
+                propertyEditViewModel.getOnCheckAddressValueLiveData());
         configureControlValue(textInputLayoutPrice,
-                propertyEditViewModel.getOnCheckPriceValueLiveData(),
-                propertyEditViewModel::checkPriceValue);
+                propertyEditViewModel.getOnCheckPriceValueLiveData());
         configureControlValue(textInputLayoutSurface,
-                propertyEditViewModel.getOnCheckSurfaceValueLiveData(),
-                propertyEditViewModel::checkSurfaceValue);
+                propertyEditViewModel.getOnCheckSurfaceValueLiveData());
         configureControlValue(textInputLayoutRooms,
-                propertyEditViewModel.getOnCheckRoomsValueLiveData(),
-                propertyEditViewModel::checkRoomsValue);
+                propertyEditViewModel.getOnCheckRoomsValueLiveData());
         configureControlValue(textInputLayoutDescription,
-                propertyEditViewModel.getOnCheckDescriptionValueLiveData(),
-                propertyEditViewModel::checkDescriptionValue);
+                propertyEditViewModel.getOnCheckDescriptionValueLiveData());
         configureControlValue(textInputLayoutPointOfInterest,
-                propertyEditViewModel.getOnCheckPointOfInterestValueLiveData(),
-                propertyEditViewModel::checkPointOfInterestValue);
+                propertyEditViewModel.getOnCheckPointOfInterestValueLiveData());
         configureControlValue(textInputLayoutEntryDate,
-                propertyEditViewModel.getOnCheckEntryDateValueLiveData(),
-                propertyEditViewModel::checkEntryDateValue);
+                propertyEditViewModel.getOnCheckEntryDateValueLiveData());
         configureControlValue(textInputLayoutSaleDate,
-                propertyEditViewModel.getOnCheckSaleDateValueLiveData(),
-                propertyEditViewModel::checkSaleDateValue);
+                propertyEditViewModel.getOnCheckSaleDateValueLiveData());
     }
 
     /**
@@ -455,7 +445,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         propertyEditViewModel.getOnCheckAllValuesLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                Log.d(Tag.TAG, "configureControlAllValues.onChanged() called with: aBoolean = [" + aBoolean + "]");
                 menuItemOk.setEnabled(aBoolean);
             }
         });
@@ -480,11 +469,9 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
      * Configure the listener and live data to check the value coming from the TextInputLayout
      * @param textInputLayout
      * @param getLiveData
-     * @param checkValueProcedure
      */
     private void configureControlValue(TextInputLayout textInputLayout,
-                                  LiveData<FieldState> getLiveData,
-                                  Function<String, Boolean> checkValueProcedure){
+                                  LiveData<FieldState> getLiveData){
 
         textInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -499,9 +486,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
 
             @Override
             public void afterTextChanged(Editable s) {
-                String text = s.toString();
-                //checkValueProcedure.apply(text);
-                checkAllValues();
+                 checkAllValues();
             }
         });
 
@@ -544,7 +529,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     }
 
     private void drawPropertylocation(){
-        Log.d(Tag.TAG, "PropertyEditFragment.drawPropertylocation() (mMap==null)=" + (mMap==null) + " (propertyLatLng==null)=" + (propertyLatLng==null));
         if ((mMap != null) && (propertyLatLng != null)) {
             Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_dark_red, getContext().getTheme()));
             mMap.clear();
@@ -569,7 +553,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(Tag.TAG, "PropertyDetailFragment.MapFragment.onStart() called");
+        Log.d(Tag.TAG, "PropertyEditFragment.MapFragment.onStart() called");
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_property_edit_map);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
@@ -578,41 +562,88 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(Tag.TAG, "PropertyDetailFragment.MapFragment.onResume()");
+        Log.d(Tag.TAG, "PropertyEditFragment.MapFragment.onResume()");
         if ((mMap != null) && (this.propertyLatLng != null)) {
             propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
             if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
                 propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
             }
-            Log.d(Tag.TAG, "PropertyDetailFragment.onViewCreated() propertyId=" + propertyId + "");
-            Log.d(Tag.TAG, "MapFragment.onResume() -> propertyDetailViewModel.load()");
-            //propertyDetailViewModel.load(propertyId);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(Tag.TAG, "PropertyEditFragment.onPause() called");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(Tag.TAG, "PropertyEditFragment.onStop() called");
     }
 
     private String getAddressTitle(){
         return textInputLayoutAddressTitle.getEditText().getText().toString().trim();
     }
 
+    private TextWatcher createTextWatcher(RememberFieldKey key){
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                // for two way binding
+                propertyEditViewModel.rememberValue(key, text);
+            }
+        };
+    }
+
+    private void addCacheListener(TextInputLayout textInputLayout, TextWatcher textWatcher){
+        textInputLayout.getEditText().addTextChangedListener(textWatcher);
+    }
+
+    private void removeCacheListener(TextInputLayout textInputLayout, TextWatcher textWatcher){
+        textInputLayout.getEditText().removeTextChangedListener(textWatcher);
+    }
+
+    private void setValueToComponent(String value, TextInputLayout textInputLayout, TextWatcher cacheListener){
+        // Don't want to remember initial value in cache
+        removeCacheListener(textInputLayout, cacheListener);
+        textInputLayout.getEditText().setText(value);
+        // We can activate the cache after saving the value in the component
+        addCacheListener(textInputLayout, cacheListener);
+    }
+
+    private TextWatcher addressTitleCacheListener = createTextWatcher(RememberFieldKey.ADDRESS_TITLE);
     private void setAddressTitle(String addressTitle){
-        textInputLayoutAddressTitle.getEditText().setText(addressTitle);
+        Log.d(Tag.TAG, "PropertyEditFragment.setAddressTitle() called with: addressTitle = [" + addressTitle + "]");
+        setValueToComponent(addressTitle, textInputLayoutAddressTitle, addressTitleCacheListener);
     }
 
     private String getAddress(){
         return textInputLayoutAddress.getEditText().getText().toString().trim();
     }
 
+    private TextWatcher addressCacheListener = createTextWatcher(RememberFieldKey.ADDRESS);
     private void setAdrress(String address){
-        textInputLayoutAddress.getEditText().setText(address);
+        setValueToComponent(address, textInputLayoutAddress, addressCacheListener);
     }
 
     private long getAgentId(){
-        Log.d(Tag.TAG, "getAgentId() called " + this.agentId);
         return this.agentId;
     }
 
     private void setAgentId(long id, String name){
-        Log.d(Tag.TAG, "setAgentId() called with: id = [" + id + "], name = [" + name + "]");
         this.agentId = id;
         AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgent.getEditText();
         autoCompleteTextView.setText(name);
@@ -623,7 +654,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     }
 
     private void setPropertyTypeId(long id, String name){
-        Log.d(Tag.TAG, "setPropertyTypeId() called with: id = [" + id + "], name = [" + name + "]");
         this.propertyTypeId = id;
         AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutPropertyType.getEditText();
         autoCompleteTextView.setText(name);
@@ -633,56 +663,63 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         return textInputLayoutPrice.getEditText().getText().toString().trim();
     };
 
+    private TextWatcher priceCacheListener = createTextWatcher(RememberFieldKey.PRICE);
     private void setPrice(String price){
-        textInputLayoutPrice.getEditText().setText(price);
+        setValueToComponent(price, textInputLayoutPrice, priceCacheListener);
     }
 
     private String getSurface(){
         return textInputLayoutSurface.getEditText().getText().toString().trim();
     }
 
+    private TextWatcher surfaceCacheListener = createTextWatcher(RememberFieldKey.SURFACE);
     private void setSurface(String surface){
-        textInputLayoutSurface.getEditText().setText(surface);
+        setValueToComponent(surface, textInputLayoutSurface, surfaceCacheListener);
     }
 
     private String getRooms(){
         return textInputLayoutRooms.getEditText().getText().toString().trim();
     }
 
+    private TextWatcher roomsCacheListener = createTextWatcher(RememberFieldKey.ROOMS);
     private void setRooms(String rooms){
-        textInputLayoutRooms.getEditText().setText(rooms);
+        setValueToComponent(rooms, textInputLayoutRooms, roomsCacheListener);
     }
 
     private String getDescription(){
         return textInputLayoutDescription.getEditText().getText().toString().trim();
     }
 
+    private TextWatcher descriptionCacheListener = createTextWatcher(RememberFieldKey.DESCRIPTION);
     private void setDescription(String description){
-        textInputLayoutDescription.getEditText().setText(description);
+        setValueToComponent(description, textInputLayoutDescription, descriptionCacheListener);
     }
 
     private String getPointOfInterest(){
         return textInputLayoutPointOfInterest.getEditText().getText().toString().trim();
     }
 
+    private TextWatcher pointOfInterestCacheListener = createTextWatcher(RememberFieldKey.POINT_OF_INTEREST);
     private void setPointOfInterest(String pointOfInterest){
-        textInputLayoutPointOfInterest.getEditText().setText(pointOfInterest);
+        setValueToComponent(pointOfInterest, textInputLayoutPointOfInterest, pointOfInterestCacheListener);
     }
 
     private String getEntryDate() {
         return textInputLayoutEntryDate.getEditText().getText().toString().trim();
     }
 
+    private TextWatcher entryDateCacheListener = createTextWatcher(RememberFieldKey.ENTRY_DATE);
     private void setEntryDate(String entryDate){
-        textInputLayoutEntryDate.getEditText().setText(entryDate);
+        setValueToComponent(entryDate, textInputLayoutEntryDate, entryDateCacheListener);
     }
 
     private String getSaleDate() {
         return textInputLayoutSaleDate.getEditText().getText().toString().trim();
     }
 
+    private TextWatcher saleDateCacheListener = createTextWatcher(RememberFieldKey.SALE_DATE);
     private void setSaleDate(String saleDate){
-        textInputLayoutSaleDate.getEditText().setText(saleDate);
+        setValueToComponent(saleDate, textInputLayoutSaleDate, saleDateCacheListener);
     }
 
     private void setPhotos(List<Photo> photos){

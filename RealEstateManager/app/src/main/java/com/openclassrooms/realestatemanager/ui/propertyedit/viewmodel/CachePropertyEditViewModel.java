@@ -18,11 +18,13 @@ public class CachePropertyEditViewModel {
     private List<Agent> agents;
     private List<PropertyType> propertyTypes;
     private List<Photo> pendingPhotos;
+    private RememberFieldList rememberFieldList;
 
     public CachePropertyEditViewModel() {
         agents = new ArrayList<>();
         propertyTypes = new ArrayList<>();
         pendingPhotos = new ArrayList<>();
+        rememberFieldList = new RememberFieldList();
     }
 
     public List<Agent> getAgents() {
@@ -46,6 +48,10 @@ public class CachePropertyEditViewModel {
     public void setPendingPhotos(List<Photo> pendingPhotos) {
         this.pendingPhotos = pendingPhotos;
         pendingPhotosMutableLiveData.setValue(pendingPhotos);
+    }
+
+    public RememberFieldList getRememberFieldList() {
+        return rememberFieldList;
     }
 
     private MutableLiveData<List<Photo>> pendingPhotosMutableLiveData = new MutableLiveData<>();
@@ -97,4 +103,5 @@ public class CachePropertyEditViewModel {
     public boolean isAllPhotoOk(){
         return getInvalidePhotoCaptionCount() == 0;
     }
+
 }

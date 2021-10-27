@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.textfield.TextInputLayout;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
+import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertyedit.view.PropertyEditFragment;
 
@@ -46,6 +48,7 @@ public class PhotoEditDialogFragment extends DialogFragment {
     }
 
     public static PhotoEditDialogFragment newInstance(String title, long id, int order, String uri, String caption, long propertyId) {
+        Log.d(Tag.TAG, "PhotoEditDialogFragment.newInstance() called with: title = [" + title + "], id = [" + id + "], order = [" + order + "], uri = [" + uri + "], caption = [" + caption + "], propertyId = [" + propertyId + "]");
         PhotoEditDialogFragment fragment = new PhotoEditDialogFragment();
         Bundle args = new Bundle();
         args.putString(PropertyConst.ARG_PHOTO_TITLE, title);
@@ -128,6 +131,7 @@ public class PhotoEditDialogFragment extends DialogFragment {
             buttonOk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d(Tag.TAG, "PhotoEditDialogFragment.onClick() called with: v = [" + v + "]");
                     dismiss();
                     photoEditListener.onPhotoEditOk(id, order, uri, getCaption(), propertyId);
                 }

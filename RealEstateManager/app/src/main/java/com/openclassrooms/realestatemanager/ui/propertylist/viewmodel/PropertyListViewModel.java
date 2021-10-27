@@ -116,10 +116,13 @@ public class PropertyListViewModel extends ViewModel {
                          @Nullable List<Photo> photos,
                          @Nullable List<Property> properties,
                          @Nullable List<PropertyType> types){
+        Log.d(Tag.TAG, "PropertyListViewModel.combine()");
+/*
         Log.d(Tag.TAG, "PropertyListViewModel.combine() called with: agents = [" + agents +
                 "], photos = [" + photos +
                 "], properties = [" + properties +
                 "], types = [" + types + "]");
+*/
 
         if (agents == null || photos == null || properties == null || types == null) {
             return;
