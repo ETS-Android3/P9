@@ -331,7 +331,6 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         return String.format("%s %s", addressTitle, Utils.convertPriceToString(price));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setOtherPropertiesLocation(List<PropertyLocationData> propertyLocationDataList){
         Log.d(Tag.TAG, "PropertyDetailFragment.setOtherPropertiesLocation() (propertyLocationDataList==null)=" + (propertyLocationDataList == null));
         if (propertyLocationDataList != null) {
@@ -358,7 +357,6 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setCurrentPropertyLocation(PropertyLocationData currentPropertyLocation) {
         this.currentPropertyLocation = currentPropertyLocation;
         drawCurrentPropertylocation();
@@ -373,6 +371,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
                     .position(latlng)
                     .title(formatTitleMarker(currentPropertyLocation.getAddressTitle(), currentPropertyLocation.getPrice()))
                     .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
         }
     }
 
@@ -387,7 +386,6 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
             LatLng latlng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latlng).title("Your position"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
         }
     }
 
