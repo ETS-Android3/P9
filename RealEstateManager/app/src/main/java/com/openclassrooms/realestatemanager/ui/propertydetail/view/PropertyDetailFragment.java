@@ -398,7 +398,6 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         Log.d(Tag.TAG, "PropertyDetailFragment.onMapReady()");
