@@ -85,32 +85,20 @@ public class PropertyEditViewModel extends ViewModel {
         return googleGeocodeRepository.getLocationByAddressLiveData(address);
     }
 
-    /**
-     * init
-     */
-    public void loadViewState(long propertyId){
-        Log.d(Tag.TAG, "PropertyEditViewModel.loadViewState() called with: propertyId = [" + propertyId + "]");
-        cache.getRememberFieldList().clearAll();
-        configureMediatorLiveData(propertyId);
-    }
-
-    /**
-     * Mediator expose PropertyListViewState
-     */
-    private final MediatorLiveData<PropertyEditViewState> propertyEditViewStateMediatorLiveData = new MediatorLiveData<>();
-    public LiveData<PropertyEditViewState> getViewState() { return propertyEditViewStateMediatorLiveData; }
-
-    private void configureMediatorLiveData(long propertyId){
-        Log.d(Tag.TAG, "PropertyEditViewModel.configureMediatorLiveData() called with: propertyId = [" + propertyId + "]");
+    public LiveData<PropertyEditViewState> getViewStateLiveData(long propertyId) {
+        Log.d(Tag.TAG, "PropertyEditViewModel.getViewStateLiveData.() called with: propertyId = [" + propertyId + "]");
         LiveData<List<Photo>> pendingPhotosLiveData = cache.getPendingPhotosLiveData();
         LiveData<PropertyDetailData> propertyDetailDataLiveData = databaseRepository.getPropertyRepository().getPropertyDetailByIdLiveData(propertyId);
         LiveData<List<Photo>> databasePhotosLiveData = databaseRepository.getPhotoRepository().getPhotosByPropertyId(propertyId);
 
-        propertyEditViewStateMediatorLiveData.addSource(propertyDetailDataLiveData,
+        MediatorLiveData<PropertyEditViewState> mediatorLiveData = new MediatorLiveData<>();
+        mediatorLiveData.addSource(propertyDetailDataLiveData,
                 new Observer<PropertyDetailData>() {
                     @Override
                     public void onChanged(PropertyDetailData propertyDetailData) {
-                        combine(propertyId,
+                        Log.d(Tag.TAG, "PropertyEditViewModel.getViewStateLiveData()->combine 1. propertyId = [" + propertyId + "]");
+                        combine(mediatorLiveData,
+                                propertyId,
                                 propertyDetailData,
                                 databasePhotosLiveData.getValue(),
                                 pendingPhotosLiveData.getValue());
@@ -118,37 +106,53 @@ public class PropertyEditViewModel extends ViewModel {
                     }
                 });
 
-        propertyEditViewStateMediatorLiveData.addSource(databasePhotosLiveData,
+
+        mediatorLiveData.addSource(databasePhotosLiveData,
                 new Observer<List<Photo>>() {
                     @Override
                     public void onChanged(List<Photo> photos) {
-                        combine(propertyId,
+                        Log.d(Tag.TAG, "PropertyEditViewModel.getViewStateLiveData()->combine 2. propertyId = [" + propertyId + "]");
+
+                        combine(mediatorLiveData,
+                                propertyId,
                                 propertyDetailDataLiveData.getValue(),
                                 photos,
                                 pendingPhotosLiveData.getValue());
                     }
                 });
 
-        propertyEditViewStateMediatorLiveData.removeSource(pendingPhotosLiveData);
-        propertyEditViewStateMediatorLiveData.addSource(pendingPhotosLiveData,
+        mediatorLiveData.addSource(pendingPhotosLiveData,
                 new Observer<List<Photo>>() {
                     @Override
                     public void onChanged(List<Photo> photos) {
-                        combine(propertyId,
+                        Log.d(Tag.TAG, "PropertyEditViewModel.getViewStateLiveData()->combine 3. propertyId = [" + propertyId + "]");
+
+                        combine(mediatorLiveData,
+                                propertyId,
                                 propertyDetailDataLiveData.getValue(),
                                 databasePhotosLiveData.getValue(),
                                 photos);
                     }
                 });
+        return mediatorLiveData;
+    }
 
+    private String debugString(String value) {
+        final int MAX_CAR = 20;
+        if ((value == null) || (value.length() <= MAX_CAR)){
+            return value;
+        }
+        else {
+            return value.substring(0, MAX_CAR) + "...";
+        }
     }
 
     private String getLastValue(RememberFieldKey cacheKey, String databaseValue){
         String cacheValue = cache.getRememberFieldList().getValue(cacheKey);
         Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() cacheKey = [" + cacheKey + "] cacheValue + [" + cacheValue + "]");
-        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() databaseValue = [" + databaseValue + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() databaseValue = [" + debugString(databaseValue) + "]");
         String result = (cacheValue == null) ? databaseValue : cacheValue;
-        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() return = [" + result + "]");
+        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() return = [" + debugString(result) + "]");
         return  result;
     }
 
@@ -174,13 +178,17 @@ public class PropertyEditViewModel extends ViewModel {
         return result;
     }
 
-
-    private void combine(long propertyId, PropertyDetailData propertyDetailData, List<Photo> databasePhotos, List<Photo> pendingPhotos) {
+    private void combine(MediatorLiveData<PropertyEditViewState> mediatorLiveData,
+                         long propertyId,
+                         PropertyDetailData propertyDetailData,
+                         List<Photo> databasePhotos,
+                         List<Photo> pendingPhotos) {
         Log.d(Tag.TAG, "PropertyEditViewModel.combine() called with: propertyId = [" + propertyId + "], propertyDetailData = [" + propertyDetailData + "], databasePhotos = [" + databasePhotos + "], pendingPhotos = [" + pendingPhotos + "]");
 
         if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
             PropertyEditViewState propertyEditViewState = new PropertyEditViewState(pendingPhotos);
-            propertyEditViewStateMediatorLiveData.setValue(propertyEditViewState);
+            // todo : get cache !
+            mediatorLiveData.setValue(propertyEditViewState);
             return;
         }
 
@@ -215,7 +223,7 @@ public class PropertyEditViewModel extends ViewModel {
 
         long agentId = getLastValue(RememberFieldKey.AGENT_ID, propertyDetailData.getAgentId());
         String agentName = getLastValue(RememberFieldKey.AGENT_NAME, propertyDetailData.getAgentName());
-        long propertyTypeId = getLastValue(RememberFieldKey.AGENT_ID, propertyDetailData.getAgentId());
+        long propertyTypeId = getLastValue(RememberFieldKey.PROPERTY_TYPE_ID, propertyDetailData.getAgentId());
         String propertyTypeName = getLastValue(RememberFieldKey.PROPERTY_TYPE_NAME, propertyDetailData.getTypeName());
 
         PropertyEditViewState propertyEditViewState = new PropertyEditViewState(
@@ -235,7 +243,7 @@ public class PropertyEditViewModel extends ViewModel {
                 propertyDetailData.getLatitude(),
                 propertyDetailData.getLongitude(),
                 photos);
-        propertyEditViewStateMediatorLiveData.setValue(propertyEditViewState);
+        mediatorLiveData.setValue(propertyEditViewState);
     }
 
     private final MediatorLiveData<DropdownViewstate> dropDownViewstateMediatorLiveData = new MediatorLiveData<>();

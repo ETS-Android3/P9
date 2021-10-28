@@ -74,8 +74,8 @@ public class CachePropertyEditViewModel {
     }
 
     public void removePhoto(Photo photo){
-        Log.d(Tag.TAG, "CachePropertyEditViewModel.removePhoto() called with: photo = [" + photo + "]");
         int idx = indexOfPhoto(photo);
+        Log.d(Tag.TAG, "CachePropertyEditViewModel.removePhoto() called with: idx=[" + idx + "] photo = [" + photo + "]");
         if (idx > -1){
             pendingPhotos.remove(idx);
             pendingPhotosMutableLiveData.setValue(pendingPhotos);

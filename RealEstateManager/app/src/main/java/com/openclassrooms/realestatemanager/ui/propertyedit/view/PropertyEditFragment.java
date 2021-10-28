@@ -371,7 +371,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     private void configureViewState(){
         Log.d(Tag.TAG, "PropertyEditFragment.configureViewState() called");
         propertyEditViewModel.clearFieldsCache();
-        propertyEditViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyEditViewState>() {
+        propertyEditViewModel.getViewStateLiveData(this.propertyId).observe(getViewLifecycleOwner(), new Observer<PropertyEditViewState>() {
             @Override
             public void onChanged(PropertyEditViewState propertyEditViewState) {
                 setAddressTitle(propertyEditViewState.getAddressTitle());
@@ -391,7 +391,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 checkAllValues();
             }
         });
-        propertyEditViewModel.loadViewState(this.propertyId);
     }
 
     /**
