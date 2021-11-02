@@ -514,7 +514,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     private boolean navigate(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.fragment_property_edit_cancel:
-                callbackEditProperty.onCancelEditProperty(this.propertyId);
+                cancelForm();
                 return true;
             case R.id.fragment_property_edit_ok:
                 validateForm();
@@ -524,6 +524,11 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 return true;
         }
         return false;
+    }
+
+    private void cancelForm() {
+        propertyEditViewModel.clearFieldsCache();
+        callbackEditProperty.onCancelEditProperty(this.propertyId);
     }
 
     private void setPropertyLatLng(LatLng latLng){

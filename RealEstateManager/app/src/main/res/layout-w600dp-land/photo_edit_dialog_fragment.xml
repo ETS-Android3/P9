@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/photo_edit_dialogue_fragment_textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:padding="@dimen/default_padding"
+        android:text="@string/edit_photo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/photo_edit_dialogue_fragment_imageViewPhoto"
+        android:layout_width="350dp"
+        android:layout_height="0dp"
+        app:layout_constraintHorizontal_weight="0.8"
+        android:padding="@dimen/default_padding"
+        android:contentDescription="@string/photo_description"
+        app:layout_constraintEnd_toEndOf="@+id/photo_edit_dialogue_fragment_constraint_layout_right"
+        app:layout_constraintEnd_toStartOf="@+id/photo_edit_dialogue_fragment_constraint_layout_right"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/photo_edit_dialogue_fragment_textViewTitle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/photo_edit_dialogue_fragment_constraint_layout_right"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:padding="@dimen/default_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/photo_edit_dialogue_fragment_imageViewPhoto"
+        app:layout_constraintTop_toBottomOf="@+id/photo_edit_dialogue_fragment_textViewTitle" >
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/photo_edit_dialogue_fragment_text_input_layout_caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/default_padding"
+            app:endIconMode="clear_text"
+            app:layout_constraintBottom_toBottomOf="@+id/photo_edit_dialogue_fragment_constraint_layout_right"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/photo_edit_dialogue_fragment_constraint_layout_right">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/entrer_caption_here"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/photo_edit_dialogue_fragment_button_cancel"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/default_padding"
+            android:text="@string/cancel"
+            app:layout_constraintEnd_toStartOf="@+id/photo_edit_dialogue_fragment_button_ok"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/photo_edit_dialogue_fragment_text_input_layout_caption" />
+
+        <Button
+            android:id="@+id/photo_edit_dialogue_fragment_button_ok"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/default_padding"
+            android:text="@android:string/ok"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/photo_edit_dialogue_fragment_button_cancel"
+            app:layout_constraintTop_toBottomOf="@+id/photo_edit_dialogue_fragment_text_input_layout_caption" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
