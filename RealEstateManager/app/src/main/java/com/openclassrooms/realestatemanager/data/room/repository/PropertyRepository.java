@@ -30,6 +30,7 @@ public class PropertyRepository {
 
     public LiveData<Long> getFirstPropertyIdLiveData() {return propertyDao.getFirstPropertyIdLiveData();}
     public LiveData<Long> getIsIdExistLiveData(Long id) {return propertyDao.getIsIdExistLiveData(id);}
+    public LiveData<Long> getFirstOrValidIdLiveData(Long id) {return propertyDao.getFirstOrValidIdLiveData(id);}
 
     // return a long. This is the newly generated ID
     public long insert(Property property) throws ExecutionException, InterruptedException {
