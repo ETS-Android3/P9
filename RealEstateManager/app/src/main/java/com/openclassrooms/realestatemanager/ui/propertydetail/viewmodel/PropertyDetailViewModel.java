@@ -8,9 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.data.location.LocationRepository;
@@ -20,16 +17,13 @@ import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.tag.Tag;
-import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class PropertyDetailViewModel extends ViewModel {
 
-    private long propertyId;
     /**
      * repositories
      */
@@ -46,9 +40,9 @@ public class PropertyDetailViewModel extends ViewModel {
     private final MediatorLiveData<PropertyDetailViewState> propertyDetailViewStateMediatorLiveData = new MediatorLiveData<>();
     public LiveData<PropertyDetailViewState> getViewState() { return propertyDetailViewStateMediatorLiveData; }
 
-    public PropertyDetailViewModel(PermissionChecker permissionChecker,
-                                   LocationRepository locationRepository,
-                                   DatabaseRepository databaseRepository) {
+    public PropertyDetailViewModel(@NonNull PermissionChecker permissionChecker,
+                                   @NonNull LocationRepository locationRepository,
+                                   @NonNull DatabaseRepository databaseRepository) {
         this.permissionChecker = permissionChecker;
         this.locationRepository = locationRepository;
         this.databaseRepository = databaseRepository;
@@ -67,47 +61,29 @@ public class PropertyDetailViewModel extends ViewModel {
 
         // must remove source to avoid bug "This source was already added with the different observer"
         propertyDetailViewStateMediatorLiveData.removeSource(locationLiveData);
-        propertyDetailViewStateMediatorLiveData.addSource(locationLiveData, new Observer<Location>() {
-            @Override
-            public void onChanged(Location location) {
-                if (location != null) {
-                    combine(location,
-                            propertyDetailDataLiveData.getValue(),
-                            propertyLocationDataLiveData.getValue(),
-                            photosLiveData.getValue());
-                }
-            }
-        });
-
-        propertyDetailViewStateMediatorLiveData.addSource(propertyDetailDataLiveData, new Observer<PropertyDetailData>() {
-            @Override
-            public void onChanged(PropertyDetailData propertyDetailData) {
-                combine(locationLiveData.getValue(),
-                        propertyDetailData,
+        propertyDetailViewStateMediatorLiveData.addSource(locationLiveData, location -> {
+            if (location != null) {
+                combine(location,
+                        propertyDetailDataLiveData.getValue(),
                         propertyLocationDataLiveData.getValue(),
                         photosLiveData.getValue());
             }
         });
 
-        propertyDetailViewStateMediatorLiveData.addSource(propertyLocationDataLiveData, new Observer<List<PropertyLocationData>>() {
-            @Override
-            public void onChanged(List<PropertyLocationData> propertyLocationData) {
-                combine(locationLiveData.getValue(),
-                        propertyDetailDataLiveData.getValue(),
-                        propertyLocationData,
-                        photosLiveData.getValue());
-            }
-        });
+        propertyDetailViewStateMediatorLiveData.addSource(propertyDetailDataLiveData, propertyDetailData -> combine(locationLiveData.getValue(),
+                propertyDetailData,
+                propertyLocationDataLiveData.getValue(),
+                photosLiveData.getValue()));
 
-        propertyDetailViewStateMediatorLiveData.addSource(photosLiveData, new Observer<List<Photo>>() {
-            @Override
-            public void onChanged(List<Photo> photos) {
-                combine(locationLiveData.getValue(),
-                        propertyDetailDataLiveData.getValue(),
-                        propertyLocationDataLiveData.getValue(),
-                        photos);
-            }
-        });
+        propertyDetailViewStateMediatorLiveData.addSource(propertyLocationDataLiveData, propertyLocationData -> combine(locationLiveData.getValue(),
+                propertyDetailDataLiveData.getValue(),
+                propertyLocationData,
+                photosLiveData.getValue()));
+
+        propertyDetailViewStateMediatorLiveData.addSource(photosLiveData, photos -> combine(locationLiveData.getValue(),
+                propertyDetailDataLiveData.getValue(),
+                propertyLocationDataLiveData.getValue(),
+                photos));
     }
 
     public LiveData<Long> getFirstOrValidId(long initialId){
@@ -118,8 +94,7 @@ public class PropertyDetailViewModel extends ViewModel {
     public void load(long propertyId){
         Log.d(Tag.TAG, "PropertyDetailViewModel.load(" + propertyId + ")");
         refreshLocation();
-        this.propertyId = propertyId;
-        configureMediatorLiveData(this.propertyId);
+        configureMediatorLiveData(propertyId);
     }
 
     @SuppressLint("MissingPermission")
@@ -142,13 +117,13 @@ public class PropertyDetailViewModel extends ViewModel {
         }
         Log.d(Tag.TAG, "PropertyDetailViewModel.combine() called");
 
-        String propertyState = "";
+        String propertyState;
 
         if (propertyDetailData.getSaleDate() == null) {
             propertyState = "For sal";
         } else {
             propertyState = "Sold";
-        };
+        }
 
         String entryDate = Utils.convertDateToString(propertyDetailData.getEntryDate());
         String saleDate = Utils.convertDateToString(propertyDetailData.getSaleDate());
