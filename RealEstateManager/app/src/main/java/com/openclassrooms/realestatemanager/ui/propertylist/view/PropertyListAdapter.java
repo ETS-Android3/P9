@@ -40,7 +40,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<PropertyListViewHo
         propertyListViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position = propertyListViewHolder.getAdapterPosition();
+                int position = propertyListViewHolder.getAbsoluteAdapterPosition();
                 long id = data.get(position).getId();
                 onRowPropertyClickListener.onClickRowProperty(id);
             }
