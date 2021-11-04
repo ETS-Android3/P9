@@ -1,18 +1,18 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.view;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.arch.core.util.Function;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -55,6 +55,8 @@ import com.openclassrooms.realestatemanager.ui.photoList.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.ui.photoedit.OnPhotoEditListener;
 import com.openclassrooms.realestatemanager.ui.photoedit.PhotoEditDialogFragment;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.ConfirmationDeletePhotoDialogFragment;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.ConfirmationDeletePhotoListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEditViewModel;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.RememberFieldKey;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodelfactory.PropertyEditViewModelFactory;
@@ -72,7 +74,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
-public class PropertyEditFragment extends Fragment implements OnMapReadyCallback {
+public class PropertyEditFragment extends Fragment implements OnMapReadyCallback, ConfirmationDeletePhotoListener {
 
     // Fields
     private long propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
@@ -849,26 +851,25 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     private void confirmDeletePhoto(){
         Log.d(Tag.TAG, "PropertyEditFragment.confirmDeletePhoto() photoToDelete=" + photoToDelete);
         if (photoToDelete != null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle(R.string.title_delete_photo);
-            builder.setMessage(R.string.confirm_delete_photo);
-            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (photoToDelete != null){
-                        propertyEditViewModel.deletePhoto(photoToDelete);
-                        photoToDelete = null;
-                    }
-                }
-            });
-            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    photoToDelete = null;
-                }
-            });
-            builder.create();
-            builder.show();
+            ConfirmationDeletePhotoDialogFragment confirmationDeletePhotoDialogFragment = new ConfirmationDeletePhotoDialogFragment();
+            confirmationDeletePhotoDialogFragment.setListener(this);
+            confirmationDeletePhotoDialogFragment.show(getChildFragmentManager(),
+                    ConfirmationDeletePhotoDialogFragment.TAG);
         }
+    }
+
+    @Override
+    public void onConfirmDeletePhoto() {
+        Log.d(Tag.TAG, "PropertyEditFragment.onConfirmDeletePhoto() called");
+        if (photoToDelete != null){
+            propertyEditViewModel.deletePhoto(photoToDelete);
+            photoToDelete = null;
+        }
+    }
+
+    @Override
+    public void onCancelDeletePhoto() {
+        Log.d(Tag.TAG, "PropertyEditFragment.onCancelDeletePhoto() called");
+        photoToDelete = null;
     }
 }
