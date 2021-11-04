@@ -264,16 +264,6 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     }
 
     /**
-     * Sell property
-     * @param propertyId
-     */
-    @Override
-    public void onSellProperty(long propertyId) {
-        Log.d(Tag.TAG, "MainActivity.onSellProperty() called with: propertyId = [" + propertyId + "]");
-        navFromEditToDetail(propertyId);
-    }
-
-    /**
      * go back to detail
      * @param propertyId
      */
