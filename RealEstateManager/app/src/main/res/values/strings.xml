@@ -100,6 +100,9 @@
     <string name="photo_description">photo</string>
     <string name="entrer_caption_here">Enter caption here</string>
     <string name="edit_photo">Edit photo</string>
+    <string name="delete">delete</string>
+    <string name="title_delete_photo">Remove photo</string>
+    <string name="confirm_delete_photo">Please confirm the deletion of the photo</string>
 
 
 </resources>

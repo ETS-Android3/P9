@@ -610,4 +610,10 @@ public class PropertyEditViewModel extends ViewModel {
         return false;
     }
 
+    public void deletePhoto(Photo photo){
+        cache.removePhoto(photo);
+        if (photo.getId() != PropertyConst.PHOTO_ID_NOT_INITIALIZED) {
+            databaseRepository.getPhotoRepository().delete(photo.getId());
+        }
+    }
 }

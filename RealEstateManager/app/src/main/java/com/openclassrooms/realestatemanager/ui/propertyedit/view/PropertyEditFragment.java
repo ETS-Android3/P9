@@ -1,7 +1,9 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.view;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +100,8 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     // call back
     private PropertyEditListener callbackEditProperty;
 
+    private Photo photoToDelete;
+
     public PropertyEditFragment() {
         // Required empty public constructor
     }
@@ -127,6 +133,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_edit, container, false);
+        registerForContextMenu(view);
         configureBottomNavigationBar(view);
         configureComponents(view);
         configureImageSelectorObserver();
@@ -199,12 +206,14 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
 
     private void configureRecyclerView(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.property_edit_recycler_view);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
         photoListAdapter = new PhotoListAdapter(getContext(), new OnRowPhotoListener() {
             @Override
             public void onClickRowPhoto(Photo photo) {
+                Log.d(Tag.TAG, "onClickRowPhoto() called with: photo = [" + photo + "]");
                 // open photo with call back
                 PhotoEditDialogFragment.newInstance(
                         getContext().getString(R.string.edit_photo),
@@ -227,6 +236,13 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                             }
                         })
                         .show(getChildFragmentManager(), null);
+            }
+
+            @Override
+            public void onLongClickRowPhoto(View view, Photo photo) {
+                Log.d(Tag.TAG, "PropertyEditFragment.onLongClickRowPhoto() called with: view = [" + view + "], photo = [" + photo + "]");
+                // cache photo to delete
+                photoToDelete = photo;
             }
         });
 
@@ -808,4 +824,51 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         propertyEditViewModel.addPhoto(uri, caption, propertyId);
     }
 
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        Log.d(Tag.TAG, "PropertyEditFragment.onCreateContextMenu() called with: menu = [" + menu + "], v = [" + v + "], menuInfo = [" + menuInfo + "]");
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.fragment_property_edit_context_menu_photo, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        Log.d(Tag.TAG, "PropertyEditFragment.onContextItemSelected() called with: item = [" + item + "]");
+        //AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        //Log.d(Tag.TAG, "onContextItemSelected() called with: info = [" + info + "]");
+        switch (item.getItemId()){
+            case R.id.fragment_property_edit_context_menu_photo_delete:
+                confirmDeletePhoto();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    private void confirmDeletePhoto(){
+        Log.d(Tag.TAG, "PropertyEditFragment.confirmDeletePhoto() photoToDelete=" + photoToDelete);
+        if (photoToDelete != null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(R.string.title_delete_photo);
+            builder.setMessage(R.string.confirm_delete_photo);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (photoToDelete != null){
+                        propertyEditViewModel.deletePhoto(photoToDelete);
+                        photoToDelete = null;
+                    }
+                }
+            });
+            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    photoToDelete = null;
+                }
+            });
+            builder.create();
+            builder.show();
+        }
+    }
 }

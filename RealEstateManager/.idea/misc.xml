@@ -9,6 +9,7 @@
         <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/drawable/ic_menu_camera.xml" value="0.2" />
         <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/drawable/ic_menu_cancel.xml" value="0.28425925925925927" />
         <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/drawable/ic_menu_check.xml" value="0.20555555555555555" />
+        <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/drawable/ic_menu_delete.xml" value="0.1" />
         <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/drawable/ic_menu_detail.xml" value="0.20555555555555555" />
         <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/drawable/ic_menu_done.xml" value="0.28425925925925927" />
         <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/drawable/ic_menu_edit.xml" value="0.20555555555555555" />
@@ -45,6 +46,7 @@
         <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/menu/activity_main_drawer.xml" value="0.303125" />
         <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/menu/fragment_property_detail_bottom_navigation_menu.xml" value="0.21875" />
         <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/menu/fragment_property_edit_bottom_navigation_menu.xml" value="0.21041666666666667" />
+        <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/menu/fragment_property_edit_context_menu_photo.xml" value="0.19583333333333333" />
         <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/menu/fragment_property_list_bottom_navigation_menu.xml" value="0.303125" />
         <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/menu/main.xml" value="0.303125" />
         <entry key="..\:/OpenClassRooms/TP/P9/RealEstateManager/app/src/main/res/menu/main_menu.xml" value="0.1109375" />

@@ -2,17 +2,22 @@ package com.openclassrooms.realestatemanager.ui.photoList;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
+import com.openclassrooms.realestatemanager.tag.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +49,18 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListViewHolder> 
                     onRowPhotoListener.onClickRowPhoto(photo);
                 }
             });
+            photoListViewHolder.image.setOnLongClickListener(new View.OnLongClickListener(){
+                @Override
+                public boolean onLongClick(View v) {
+                    Log.d(Tag.TAG, "PhotoListViewHolder.onLongClick() called with: v = [" + v + "]");
+                    int position = photoListViewHolder.getAbsoluteAdapterPosition();
+                    Photo photo = data.get(position);
+                    onRowPhotoListener.onLongClickRowPhoto(v, photo);
+                    // return true do not display menu
+                    // return false will display menu with onCreateContextMenu
+                    return false;
+                }
+            });
         }
 
         return photoListViewHolder;
@@ -61,7 +78,6 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListViewHolder> 
                 holder.textView.setTextColor(holder.textView.getResources().getColor(R.color.primaryColor));
             }
         }
-
 
         if ((photo.getUrl() == null) || (photo.getUrl().trim().isEmpty())) {
             // Clear picture

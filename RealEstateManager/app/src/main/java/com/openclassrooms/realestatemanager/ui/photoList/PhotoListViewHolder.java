@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.photoList;
 
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
