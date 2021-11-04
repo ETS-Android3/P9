@@ -24,7 +24,16 @@
         app:layout_constraintBottom_toTopOf="@id/fragment_property_list_bottom_navigation_view">
     </androidx.recyclerview.widget.RecyclerView>
 
-    <fragment
+    <View
+        android:id="@+id/fragment_property_view_vertical_line"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:background="@color/places_autocomplete_search_hint"
+        app:layout_constraintEnd_toEndOf="@+id/fragment_property_list_recyclerview"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fragment_property_list_bottom_navigation_view"/>
+
+    <androidx.fragment.app.FragmentContainerView
         tools:layout="@layout/fragment_property_detail"
         android:id="@+id/fragment_container_view"
         android:name="androidx.navigation.fragment.NavHostFragment"
