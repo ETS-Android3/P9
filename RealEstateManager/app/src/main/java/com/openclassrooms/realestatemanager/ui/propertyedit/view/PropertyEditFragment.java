@@ -519,9 +519,6 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
             case R.id.fragment_property_edit_ok:
                 validateForm();
                 return true;
-            case R.id.fragment_property_edit_sell:
-                callbackEditProperty.onSellProperty(this.propertyId);
-                return true;
         }
         return false;
     }

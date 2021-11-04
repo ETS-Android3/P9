@@ -8,8 +8,4 @@
         android:id="@+id/fragment_property_edit_ok"
         android:icon="@drawable/ic_menu_done"
         android:title="@string/ok"/>
-    <item
-        android:id="@+id/fragment_property_edit_sell"
-        android:icon="@drawable/ic_menu_check"
-        android:title="@string/sell"/>
 </menu>
