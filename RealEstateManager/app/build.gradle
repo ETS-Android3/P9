@@ -14,7 +14,9 @@ android {
     compileSdkVersion 30
     defaultConfig {
         applicationId "com.openclassrooms.realestatemanager"
-        minSdkVersion 19
+        // Application must support Android 5.0 and higher version
+        // Android 5.0 : https://developer.android.com/about/versions/lollipop
+        minSdkVersion 21
         multiDexEnabled true
         targetSdkVersion 30
         versionCode 1
