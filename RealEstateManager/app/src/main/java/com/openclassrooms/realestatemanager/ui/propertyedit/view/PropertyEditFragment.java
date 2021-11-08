@@ -10,9 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -39,6 +36,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -559,7 +557,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                     .position(propertyLatLng)
                     .title("Property position")
                     .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(propertyLatLng, 12));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(propertyLatLng, 10));
         }
     }
 
@@ -567,6 +565,11 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     public void onMapReady(@NonNull GoogleMap googleMap) {
         Log.d(Tag.TAG, "PropertyEditFragment.onMapReady()");
         mMap = googleMap;
+
+        UiSettings uiSettings = mMap.getUiSettings();
+        uiSettings.setAllGesturesEnabled(false);
+        uiSettings.setZoomControlsEnabled(false);
+
         if (this.propertyLatLng != null) {
             Log.d(Tag.TAG, "PropertyEditFragment.onMapReady() -> setLocation()");
             drawPropertylocation();
@@ -853,8 +856,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         if (photoToDelete != null) {
             ConfirmationDeletePhotoDialogFragment confirmationDeletePhotoDialogFragment = new ConfirmationDeletePhotoDialogFragment();
             confirmationDeletePhotoDialogFragment.setListener(this);
-            confirmationDeletePhotoDialogFragment.show(getChildFragmentManager(),
-                    ConfirmationDeletePhotoDialogFragment.TAG);
+            confirmationDeletePhotoDialogFragment.show(getChildFragmentManager(), ConfirmationDeletePhotoDialogFragment.TAG);
         }
     }
 
