@@ -27,6 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -402,8 +403,13 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     public void onMapReady(@NonNull GoogleMap googleMap) {
         Log.d(Tag.TAG, "PropertyDetailFragment.onMapReady()");
         mMap = googleMap;
+
+        UiSettings uiSettings = mMap.getUiSettings();
+        uiSettings.setZoomControlsEnabled(true);
+
         if (this.userLocation != null) {
             Log.d(Tag.TAG, "PropertyDetailFragment.onMapReady() -> setLocation()");
+
             drawUserLocation();
             drawCurrentPropertylocation();
             drawOtherPropertiesLocation();
