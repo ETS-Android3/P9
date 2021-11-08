@@ -1,19 +1,15 @@
-package com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel;
+package com.openclassrooms.realestatemanager.ui.propertyedit.view;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.openclassrooms.realestatemanager.R;
-
-import java.util.logging.LogManager;
+import com.openclassrooms.realestatemanager.ui.propertyedit.listener.ConfirmationDeletePhotoListener;
 
 public class ConfirmationDeletePhotoDialogFragment extends DialogFragment  {
 
@@ -41,7 +37,6 @@ public class ConfirmationDeletePhotoDialogFragment extends DialogFragment  {
                     listener.onCancelDeletePhoto();
                 }
             })
-
             .create();
     }
 

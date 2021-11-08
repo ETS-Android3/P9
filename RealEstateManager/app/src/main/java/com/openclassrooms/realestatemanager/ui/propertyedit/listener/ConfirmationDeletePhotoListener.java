@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel;
+package com.openclassrooms.realestatemanager.ui.propertyedit.listener;
 
 public interface ConfirmationDeletePhotoListener {
         void onConfirmDeletePhoto();
