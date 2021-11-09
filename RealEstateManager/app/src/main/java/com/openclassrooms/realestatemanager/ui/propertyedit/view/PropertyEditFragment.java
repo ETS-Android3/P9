@@ -132,7 +132,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_edit, container, false);
-        registerForContextMenu(view);
+
         configureBottomNavigationBar(view);
         configureComponents(view);
         configureImageSelectorObserver();
@@ -205,7 +205,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
 
     private void configureRecyclerView(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.property_edit_recycler_view);
-
+        registerForContextMenu(recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
