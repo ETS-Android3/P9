@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.openclassrooms.realestatemanager.MainApplication;
 import com.openclassrooms.realestatemanager.data.googlemaps.repository.GoogleGeocodeRepository;
+import com.openclassrooms.realestatemanager.data.googlemaps.repository.GoogleStaticMapRepository;
 import com.openclassrooms.realestatemanager.data.room.injection.InjectionDao;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEditViewModel;
@@ -18,18 +19,22 @@ public class PropertyEditViewModelFactory implements ViewModelProvider.Factory {
     private final DatabaseRepository databaseRepository;
     @NonNull
     private final GoogleGeocodeRepository googleGeocodeRepository;
+    @NonNull
+    private final GoogleStaticMapRepository googleStaticMapRepository;
 
     public PropertyEditViewModelFactory(@NonNull DatabaseRepository databaseRepository,
-                                        @NonNull GoogleGeocodeRepository googleGeocodeRepository) {
+                                        @NonNull GoogleGeocodeRepository googleGeocodeRepository,
+                                        @NonNull GoogleStaticMapRepository googleStaticMapRepository) {
         this.databaseRepository = databaseRepository;
         this.googleGeocodeRepository = googleGeocodeRepository;
+        this.googleStaticMapRepository = googleStaticMapRepository;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(PropertyEditViewModel.class)) {
-            return (T) new PropertyEditViewModel(databaseRepository, googleGeocodeRepository);
+            return (T) new PropertyEditViewModel(databaseRepository, googleGeocodeRepository, googleStaticMapRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class : " + modelClass);
     }
@@ -38,8 +43,10 @@ public class PropertyEditViewModelFactory implements ViewModelProvider.Factory {
         if (sInstance == null) {
             synchronized (PropertyEditViewModelFactory.class) {
                 if (sInstance == null) {
-                    sInstance = new PropertyEditViewModelFactory(InjectionDao.getDatabaseRepository(MainApplication.getApplication()),
-                                                                 new GoogleGeocodeRepository(MainApplication.getGoogleApiKey()));
+                    sInstance = new PropertyEditViewModelFactory(
+                            InjectionDao.getDatabaseRepository(MainApplication.getApplication()),
+                            new GoogleGeocodeRepository(MainApplication.getGoogleApiKey()),
+                            new GoogleStaticMapRepository((MainApplication.getGoogleApiKey())));
                 }
             }
         }

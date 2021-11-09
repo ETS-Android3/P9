@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.maps.model.LatLng;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.googlemaps.repository.GoogleGeocodeRepository;
+import com.openclassrooms.realestatemanager.data.googlemaps.repository.GoogleStaticMapRepository;
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
@@ -44,6 +45,8 @@ public class PropertyEditViewModel extends ViewModel {
     private final DatabaseRepository databaseRepository;
     @NonNull
     private final GoogleGeocodeRepository googleGeocodeRepository;
+    @NonNull
+    private final GoogleStaticMapRepository googleStaticMapRepository;
 
     private MutableLiveData<String> errorMutableLiveData = new MutableLiveData<>();
     public LiveData<String> getErrorLiveData() { return errorMutableLiveData; }
@@ -58,9 +61,13 @@ public class PropertyEditViewModel extends ViewModel {
      * @param databaseRepository
      * @param googleGeocodeRepository
      */
-    public PropertyEditViewModel(@NonNull DatabaseRepository databaseRepository, @NonNull GoogleGeocodeRepository googleGeocodeRepository) {
+    public PropertyEditViewModel(@NonNull DatabaseRepository databaseRepository,
+                                 @NonNull GoogleGeocodeRepository googleGeocodeRepository,
+                                 @NonNull GoogleStaticMapRepository googleStaticMapRepository) {
         this.databaseRepository = databaseRepository;
         this.googleGeocodeRepository = googleGeocodeRepository;
+        this.googleStaticMapRepository = googleStaticMapRepository;
+
         cache = new CachePropertyEditViewModel();
         cache.getAgents().addAll(databaseRepository.getAgentRepository().getAgents());
         cache.getPropertyTypes().addAll(databaseRepository.getPropertyTypeRepository().getPropertyTypes());
