@@ -1,7 +1,10 @@
 package com.openclassrooms.realestatemanager.data.googlemaps.repository;
 
+import android.util.Log;
+
 import com.openclassrooms.realestatemanager.data.googlemaps.api.GoogleGeocodeClient;
 import com.openclassrooms.realestatemanager.data.googlemaps.api.GoogleGeocodeInterface;
+import com.openclassrooms.realestatemanager.tag.Tag;
 
 public class GoogleStaticMapRepository {
 
@@ -26,7 +29,7 @@ public class GoogleStaticMapRepository {
     }
 
     private String formatZoomParam(){
-        return formatParamValue("zoom", "16");
+        return formatParamValue("zoom", "14");
     }
 
     private String formatImageFormatParam(){
@@ -46,14 +49,24 @@ public class GoogleStaticMapRepository {
         return formatParamValue("center", centerValue);
     }
 
-    public String getImage(double latitude, double longitude){
-        return String.format("%s?%s&%s&%s&%s&%s&%s",
+    private String formatMarkerParam(double latitude, double longitude){
+        String centerValue = String.format("%f,%f", latitude, longitude);
+        String markerValue = String.format("color:red|%s", centerValue);
+        return formatParamValue("markers", markerValue);
+    }
+
+    public String getUrlImage(double latitude, double longitude){
+        Log.d(Tag.TAG, "GoogleStaticMapRepository.getUrlImage() called with: latitude = [" + latitude + "], longitude = [" + longitude + "]");
+        String url = String.format("%s?%s&%s&%s&%s&%s&%s&%s",
                 getBaseUrl(),
                 formatCenterParam(latitude, longitude),
                 formatKeyParam(),
                 formatSizeParam(),
                 formatZoomParam(),
                 formatImageFormatParam(),
-                formatMapTypeParam());
+                formatMapTypeParam(),
+                formatMarkerParam(latitude, longitude));
+        Log.d(Tag.TAG, "GoogleStaticMapRepository.getUrlImage() return url = [" + url + "]");
+        return url;
     }
 }

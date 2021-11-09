@@ -30,6 +30,7 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownIt
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyEditViewState;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.StaticMapViewState;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
@@ -86,10 +87,39 @@ public class PropertyEditViewModel extends ViewModel {
         onCheckPropertyTypeIdValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
 
         initDropdownViewstateMediatorLiveData();
+        configureGoogleStaticMapUrlLiveData();
     }
 
-    public LiveData<LatLng> getLocationLiveDataByAddress(String address){
-        return googleGeocodeRepository.getLocationByAddressLiveData(address);
+    private MutableLiveData<String> addressMutableLiveData = new MutableLiveData<>();
+    public MutableLiveData<String> getAddressMutableLiveData() {
+        return addressMutableLiveData;
+    }
+
+    private MediatorLiveData<StaticMapViewState> googleStaticMapViewStateMediatorLiveData = new MediatorLiveData<>();
+    public LiveData<StaticMapViewState> getGoogleStaticMapViewState() {
+        return googleStaticMapViewStateMediatorLiveData;
+    }
+
+    public void configureGoogleStaticMapUrlLiveData(){
+        Log.d(Tag.TAG, "PropertyEditViewModel.configureGoogleStaticMapUrlLiveData() called");
+        LiveData<LatLng> latLngLiveData = Transformations.switchMap(addressMutableLiveData,
+                address -> {return googleGeocodeRepository.getLocationByAddressLiveData(address);});
+
+        googleStaticMapViewStateMediatorLiveData.addSource(addressMutableLiveData, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                Log.d(Tag.TAG, "PropertyEditViewModel.configureGoogleStaticMapUrlLiveData -> address onChanged() called with: s = [" + s + "]");
+            }
+        });
+
+        googleStaticMapViewStateMediatorLiveData.addSource(latLngLiveData, new Observer<LatLng>() {
+            @Override
+            public void onChanged(LatLng latLng) {
+                Log.d(Tag.TAG, "PropertyEditViewModel.configureGoogleStaticMapUrlLiveData -> url onChanged() called with: latLng = [" + latLng + "]");
+                String url = googleStaticMapRepository.getUrlImage(latLng.latitude, latLng.longitude);
+                googleStaticMapViewStateMediatorLiveData.setValue(new StaticMapViewState(latLng, url));
+            }
+        });
     }
 
     public LiveData<PropertyEditViewState> getViewStateLiveData(long propertyId) {
@@ -109,10 +139,8 @@ public class PropertyEditViewModel extends ViewModel {
                                 propertyDetailData,
                                 databasePhotosLiveData.getValue(),
                                 pendingPhotosLiveData.getValue());
-
                     }
                 });
-
 
         mediatorLiveData.addSource(databasePhotosLiveData,
                 new Observer<List<Photo>>() {
@@ -233,6 +261,8 @@ public class PropertyEditViewModel extends ViewModel {
         long propertyTypeId = getLastValue(RememberFieldKey.PROPERTY_TYPE_ID, propertyDetailData.getAgentId());
         String propertyTypeName = getLastValue(RememberFieldKey.PROPERTY_TYPE_NAME, propertyDetailData.getTypeName());
 
+        String googleStaticMapUrl = googleStaticMapRepository.getUrlImage(propertyDetailData.getLatitude(), propertyDetailData.getLongitude());
+
         PropertyEditViewState propertyEditViewState = new PropertyEditViewState(
                 addressTitle,
                 address,
@@ -249,7 +279,7 @@ public class PropertyEditViewModel extends ViewModel {
                 propertyTypeName,
                 propertyDetailData.getLatitude(),
                 propertyDetailData.getLongitude(),
-                photos);
+                photos, googleStaticMapUrl);
         mediatorLiveData.setValue(propertyEditViewState);
     }
 

@@ -324,7 +324,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/delete/baseline_delete_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/signal_wifi_connected_no_internet_4/baseline_signal_wifi_connected_no_internet_4_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -334,7 +334,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_menu_delete" />
+                            <entry key="outputName" value="ic_signal_wifi_connected_no_internet" />
                             <entry key="sourceFile" value="C:\OpenClassRooms\TP\P9\RealEstateManager" />
                           </map>
                         </option>

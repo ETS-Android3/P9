@@ -2,13 +2,11 @@ package com.openclassrooms.realestatemanager.ui.propertyedit.view;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -31,15 +29,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -61,9 +55,9 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownIt
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyEditViewState;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.StaticMapViewState;
 import com.openclassrooms.realestatemanager.ui.selectimage.ImageSelectorObserver;
 import com.openclassrooms.realestatemanager.utils.Utils;
-import com.openclassrooms.realestatemanager.utils.UtilsDrawable;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -71,7 +65,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
-public class PropertyEditFragment extends Fragment implements OnMapReadyCallback, ConfirmationDeletePhotoListener {
+public class PropertyEditFragment extends Fragment implements ConfirmationDeletePhotoListener {
 
     // Fields
     private long propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
@@ -94,7 +88,9 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     private TextInputLayout textInputLayoutAgent;
     private TextInputLayout textInputLayoutPropertyType;
     private MenuItem menuItemOk;
-    private GoogleMap mMap;
+    private ImageView imageViewGoogleStaticMap;
+
+
     PhotoListAdapter photoListAdapter;
     // call back
     private PropertyEditListener callbackEditProperty;
@@ -109,6 +105,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        // to select photo from gallery
         imageSelectorObserver = new ImageSelectorObserver(requireActivity().getActivityResultRegistry());
         getLifecycle().addObserver(imageSelectorObserver);
     }
@@ -163,6 +160,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
         textInputLayoutDescription = view.findViewById(R.id.fragment_property_edit_text_input_layout_description);
         textInputLayoutPointOfInterest = view.findViewById(R.id.fragment_property_edit_text_input_layout_point_of_interest);
         textInputLayoutEntryDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_entry_date);
+        imageViewGoogleStaticMap = view.findViewById(R.id.fragment_property_edit_image_view_map);
 
         ImageButton imageButtonEntryDate = view.findViewById(R.id.fragment_property_imageButton_entry_date);
         imageButtonEntryDate.setOnClickListener(new View.OnClickListener() {
@@ -269,6 +267,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 PropertyEditViewModelFactory.getInstance()).get(PropertyEditViewModel.class);
 
         configureGpsListener();
+        configureImageViewGoogleStaticMap();
         configureControlValues();
         configureControlAgentId();
         configureControlPropertyTypeId();
@@ -285,16 +284,38 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     String text = getAddress();
-                    propertyEditViewModel.getLocationLiveDataByAddress(text).observe(getViewLifecycleOwner(), new Observer<LatLng>() {
-                        @Override
-                        public void onChanged(LatLng latLng) {
-                            Log.d(Tag.TAG, "onChanged() called. with: latLng = [" + latLng + "]");
-                            setPropertyLatLng(latLng);
-                        }
-                    });
+                    Log.d(Tag.TAG, "PropertyEditFragment.onFocusChange() called text = [" + text + "]");
+                    propertyEditViewModel.getAddressMutableLiveData().setValue(text);
                 }
             }
         });
+    }
+
+    private void configureImageViewGoogleStaticMap(){
+        propertyEditViewModel.getGoogleStaticMapViewState().observe(getViewLifecycleOwner(), new Observer<StaticMapViewState>() {
+            @Override
+            public void onChanged(StaticMapViewState staticMapViewState) {
+                setPropertyLatLng(staticMapViewState.getLatLang());
+                setImageViewGoogleStaticMap(staticMapViewState.getUrl());
+            }
+        });
+    }
+
+    private void setImageViewGoogleStaticMap(String url){
+        if ((url == null) || (url.trim().isEmpty())) {
+            // Clear picture
+            Glide.with(imageViewGoogleStaticMap.getContext())
+                    .load("")
+                    .placeholder(R.drawable.ic_signal_wifi_connected_no_internet)
+                    .apply(RequestOptions.fitCenterTransform())
+                    .into(imageViewGoogleStaticMap);
+        } else {
+            //load picture
+            Glide.with(imageViewGoogleStaticMap.getContext())
+                    .load(url)
+                    .apply(RequestOptions.fitCenterTransform())
+                    .into(imageViewGoogleStaticMap);
+        }
     }
 
     /**
@@ -403,6 +424,7 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
                 setPropertyLatLng(new LatLng(propertyEditViewState.getLatitude(), propertyEditViewState.getLongitude()));
                 configureDropdown(propertyEditViewState.getAgentId(), propertyEditViewState.getPropertyTypeId());
                 setPhotos(propertyEditViewState.getPhotos());
+                setImageViewGoogleStaticMap(propertyEditViewState.getGoogleStaticMapUrl());
                 checkAllValues();
             }
         });
@@ -545,54 +567,21 @@ public class PropertyEditFragment extends Fragment implements OnMapReadyCallback
 
     private void setPropertyLatLng(LatLng latLng){
         this.propertyLatLng = latLng;
-        drawPropertylocation();
-    }
-
-    private void drawPropertylocation(){
-        if ((mMap != null) && (propertyLatLng != null)) {
-            Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_dark_red, getContext().getTheme()));
-            mMap.clear();
-            mMap.addMarker(new MarkerOptions()
-                    .position(propertyLatLng)
-                    .title("Property position")
-                    .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(propertyLatLng, 10));
-        }
-    }
-
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        Log.d(Tag.TAG, "PropertyEditFragment.onMapReady()");
-        mMap = googleMap;
-
-        UiSettings uiSettings = mMap.getUiSettings();
-        uiSettings.setAllGesturesEnabled(false);
-        uiSettings.setZoomControlsEnabled(false);
-
-        if (this.propertyLatLng != null) {
-            Log.d(Tag.TAG, "PropertyEditFragment.onMapReady() -> setLocation()");
-            drawPropertylocation();
-        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(Tag.TAG, "PropertyEditFragment.MapFragment.onStart() called");
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_property_edit_map);
-        assert mapFragment != null;
-        mapFragment.getMapAsync(this);
+        Log.d(Tag.TAG, "PropertyEditFragment.onStart() called");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(Tag.TAG, "PropertyEditFragment.MapFragment.onResume()");
-        if ((mMap != null) && (this.propertyLatLng != null)) {
-            propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
-            if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
-                propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
-            }
+        Log.d(Tag.TAG, "PropertyEditFragment.onResume()");
+        propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
+        if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
+            propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
         }
     }
 

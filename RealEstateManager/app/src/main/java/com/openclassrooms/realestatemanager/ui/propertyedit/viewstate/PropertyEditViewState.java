@@ -23,6 +23,7 @@ public class PropertyEditViewState {
     private final double latitude;
     private final double longitude;
     private final List<Photo> photos;
+    private final String googleStaticMapUrl;
 
     public PropertyEditViewState() {
         this.addressTitle = "";
@@ -41,6 +42,7 @@ public class PropertyEditViewState {
         this.latitude = 0;
         this.longitude = 0;
         this.photos = new ArrayList<>();
+        this.googleStaticMapUrl = "";
     }
 
     public PropertyEditViewState(List<Photo> photos) {
@@ -64,9 +66,10 @@ public class PropertyEditViewState {
         } else {
             this.photos = photos;
         }
+        this.googleStaticMapUrl = "";
     }
 
-    public PropertyEditViewState(String addressTitle, String address, String description, String pointOfInterest, String price, String surface, String rooms, String entryDate, String saleDate, long agentId, String agentName, long propertyTypeId, String propertyTypeName, double latitude, double longitude, List<Photo> photos) {
+    public PropertyEditViewState(String addressTitle, String address, String description, String pointOfInterest, String price, String surface, String rooms, String entryDate, String saleDate, long agentId, String agentName, long propertyTypeId, String propertyTypeName, double latitude, double longitude, List<Photo> photos, String googleStaticMapUrl) {
         this.addressTitle = addressTitle;
         this.address = address;
         this.description = description;
@@ -83,6 +86,7 @@ public class PropertyEditViewState {
         this.latitude = latitude;
         this.longitude = longitude;
         this.photos = photos;
+        this.googleStaticMapUrl = googleStaticMapUrl;
     }
 
     public String getAddressTitle() {
@@ -147,5 +151,9 @@ public class PropertyEditViewState {
 
     public List<Photo> getPhotos() {
         return photos;
+    }
+
+    public String getGoogleStaticMapUrl() {
+        return googleStaticMapUrl;
     }
 }
