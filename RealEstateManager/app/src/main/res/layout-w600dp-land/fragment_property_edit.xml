@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.propertyedit.view.PropertyEditFragment">
+
+    <ScrollView
+        android:id="@+id/fragment_property_edit_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="@dimen/default_padding"
+        app:layout_constraintBottom_toTopOf="@id/fragment_property_edit_bottom_navigation_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fragment_property_edit_constraintLayout_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_scrollview">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_address_title"
+                style="@style/My_TextInputLayoutStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:hintTextColor="#757575"
+                app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_constraintLayout_2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_edit_image_view_map"
+                app:startIconDrawable="@drawable/ic_location">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_address_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/property_address_title"
+                    android:inputType="text"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_address"
+                style="@style/My_TextInputLayoutStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:hintTextColor="#757575"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_edit_image_view_map"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_address_title"
+                app:startIconContentDescription="@string/property_address"
+                app:startIconDrawable="@drawable/ic_location">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/property_address"
+                    android:inputType="text"
+                    android:maxLines="3" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_property_type"
+                style="@style/My_TextInputLayoutDropdownStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:hintTextColor="#757575"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_edit_image_view_map"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_address"
+                app:startIconContentDescription="@string/property_type"
+                app:startIconDrawable="@drawable/ic_location_city">
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/property_type"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_price"
+                style="@style/My_TextInputLayoutStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:hintTextColor="#757575"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_edit_image_view_map"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_property_type"
+                app:startIconContentDescription="@string/property_price"
+                app:startIconDrawable="@drawable/ic_attach_money">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/property_price"
+                    android:inputType="numberDecimal"
+                    android:maxLength="9"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_surface"
+                style="@style/My_TextInputLayoutStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:hintTextColor="#757575"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_edit_image_view_map"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_price"
+                app:startIconContentDescription="@string/property_surface"
+                app:startIconDrawable="@drawable/ic_settings_overscan">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_surface"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/property_surface"
+                    android:inputType="numberDecimal"
+                    android:maxLength="9"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_rooms"
+                style="@style/My_TextInputLayoutStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:hintTextColor="#757575"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_edit_image_view_map"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_surface"
+                app:startIconContentDescription="@string/property_rooms"
+                app:startIconDrawable="@drawable/ic_pin">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_rooms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/property_rooms"
+                    android:inputType="numberDecimal"
+                    android:maxLength="9"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/fragment_property_edit_image_view_map"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/fragment_property_edit_text_input_layout_address_title"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars"
+                android:contentDescription="@string/image_map_description" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_description"
+                style="@style/My_TextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:hintTextColor="#757575"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_rooms"
+                app:startIconContentDescription="@string/property_description"
+                app:startIconDrawable="@drawable/ic_description">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/property_description"
+                    android:inputType="textMultiLine" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_point_of_interest"
+                style="@style/My_TextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:hintTextColor="#757575"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_description"
+                app:startIconContentDescription="@string/property_point_of_interest"
+                app:startIconDrawable="@drawable/ic_interests">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_point_of_interest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/property_point_of_interest"
+                    android:inputType="textMultiLine" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_entry_date"
+                style="@style/My_TextInputLayoutStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:hintTextColor="#757575"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageButton_entry_date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_point_of_interest"
+                app:startIconContentDescription="@string/property_entry_date"
+                app:startIconDrawable="@drawable/ic_date">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_entry_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="@string/property_entry_date"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageButton
+                android:id="@+id/fragment_property_imageButton_entry_date"
+                style="@style/ImageButtonIconOnlyStyle"
+                android:contentDescription="@string/property_entry_date"
+                app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_text_input_layout_entry_date"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_property_edit_text_input_layout_entry_date"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_edit_image_view_map"
+                app:layout_constraintStart_toEndOf="@+id/fragment_property_edit_text_input_layout_entry_date"
+                app:srcCompat="@drawable/ic_edit_calendar"
+                app:tint="@color/primaryTextColor" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_sale_date"
+                style="@style/My_TextInputLayoutStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:hintTextColor="#757575"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_point_of_interest"
+                app:layout_constraintStart_toStartOf="@+id/fragment_property_edit_image_view_map"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageButton_remove_sale_date"
+                app:startIconContentDescription="@string/property_sale_date"
+                app:startIconDrawable="@drawable/ic_menu_check">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_sale_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:hint="@string/property_sale_date"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageButton
+                android:id="@+id/fragment_property_imageButton_remove_sale_date"
+                style="@style/ImageButtonIconOnlyStyle"
+                android:contentDescription="@string/property_sale_date"
+                app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_text_input_layout_sale_date"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_property_edit_text_input_layout_sale_date"
+                app:layout_constraintEnd_toStartOf="@+id/fragment_property_imageButton_sale_date"
+                app:srcCompat="@drawable/ic_menu_cancel"
+                app:tint="@color/primaryTextColor" />
+
+            <ImageButton
+                android:id="@+id/fragment_property_imageButton_sale_date"
+                style="@style/ImageButtonIconOnlyStyle"
+                android:contentDescription="@string/property_sale_date"
+                app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_text_input_layout_sale_date"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_property_edit_text_input_layout_sale_date"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/ic_edit_calendar"
+                app:tint="@color/primaryTextColor" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_property_edit_text_input_layout_agent"
+                style="@style/My_TextInputLayoutDropdownStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintTextColor="#757575"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_sale_date"
+                app:startIconContentDescription="@string/property_agent_name"
+                app:startIconDrawable="@drawable/ic_real_estate_agent_24">
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/property_agent_name"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/property_edit_button_add_photo"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/default_margin"
+                android:layout_marginTop="@dimen/default_large_margin"
+                android:layout_marginRight="@dimen/default_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
+                android:padding="@dimen/default_large_padding"
+
+                android:text="@string/property_photo_add"
+                app:icon="@drawable/ic_add"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_agent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/property_edit_recycler_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/default_margin"
+                android:layout_marginTop="@dimen/default_margin"
+                android:layout_marginRight="@dimen/default_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
+                android:orientation="horizontal"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/property_edit_button_add_photo" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/fragment_property_edit_bottom_navigation_view"
+        style="@style/BottomNavigation"
+
+        app:itemIconTint="@drawable/menu_item_icon_selector"
+        app:itemTextColor="@drawable/menu_item_icon_selector"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/fragment_property_edit_bottom_navigation_menu"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
