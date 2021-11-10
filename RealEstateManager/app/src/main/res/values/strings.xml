@@ -67,7 +67,9 @@
 
     <string name="menu_add_property">Add property</string>
     <string name="menu_edit_property">Edit property</string>
-    <string name="search">search</string>
+    <string name="search">Search</string>
+    <string name="map">Map</string>
+
     <string name="title_activity_main">MainActivity</string>
 
 

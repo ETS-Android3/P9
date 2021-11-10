@@ -38,5 +38,10 @@
             app:argType="string"
             android:defaultValue="titre test" />
     </fragment>
+    <fragment
+        android:id="@+id/propertyMapsFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.propertymap.view.PropertyMapsFragment"
+        android:label="@string/map"
+        tools:layout="@layout/fragment_property_maps" />
 
 </navigation>

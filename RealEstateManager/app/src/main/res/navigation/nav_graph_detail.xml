@@ -15,4 +15,9 @@
         android:name="com.openclassrooms.realestatemanager.ui.propertyedit.view.PropertyEditFragment"
         android:label="fragment_property_edit"
         tools:layout="@layout/fragment_property_edit" />
+    <fragment
+        android:id="@+id/propertyMapsFragment_land"
+        android:name="com.openclassrooms.realestatemanager.ui.propertymap.view.PropertyMapsFragment"
+        android:label="@string/map"
+        tools:layout="@layout/fragment_property_maps" />
 </navigation>

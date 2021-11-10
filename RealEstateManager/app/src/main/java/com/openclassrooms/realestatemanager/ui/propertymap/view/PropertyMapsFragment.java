@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -95,6 +96,7 @@ public class PropertyMapsFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+        configureViewModel();
     }
 
     @Override
@@ -129,7 +131,6 @@ public class PropertyMapsFragment extends Fragment {
                 setPropertyMapItems(propertyMapViewState.getPropertyMapItems());
             }
         });
-
     }
 
     private void setUserLocation(Location userLocation) {
@@ -143,6 +144,7 @@ public class PropertyMapsFragment extends Fragment {
             LatLng latlng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latlng).title(getResources().getString(R.string.your_position)));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 13));
         }
     }
 
@@ -154,7 +156,7 @@ public class PropertyMapsFragment extends Fragment {
     private void drawPropertyLocations() {
         Log.d(Tag.TAG, "PropertyDetailFragment.drawPropertieslocation()");
         if ((mMap != null) && (this.propertyMapItems != null)) {
-            Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_primary_color, getContext().getTheme()));
+            Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_dark_red, getContext().getTheme()));
             for (PropertyMapItem item : propertyMapItems) {
                 LatLng latlng = new LatLng(item.getLatitude(), item.getLongitude());
                 Marker marker = mMap.addMarker(new MarkerOptions()

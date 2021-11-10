@@ -10,11 +10,13 @@ import android.os.Bundle;
 
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.WindowManager;
 
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -98,6 +100,18 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_item_toolbar_map:
+                navToMap();
+                return true;
+            case R.id.menu_item_toolbar_search:
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -292,6 +306,18 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
         NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
         navController.navigate(R.id.propertyEditFragment, PropertyBundle.createEditBundle(propertyId));
+    }
+
+    private void navToMap(){
+        if (LandscapeHelper.isLandscape()) {
+            //navToDetailWithLandscapeOrientation(propertyId);
+            NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
+            navController.navigate(R.id.propertyMapsFragment_land);
+        }
+        else {
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.propertyMapsFragment);
+        }
     }
 
 }
