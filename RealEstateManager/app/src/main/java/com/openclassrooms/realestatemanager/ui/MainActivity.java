@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         int width = size.x;
         int height = size.y;
         Log.d(Tag.TAG, String.format("logScreen(). width = %d, height = %d", width, height));
+        Log.d(Tag.TAG, String.format("logScreen(). density = %f", getResources().getDimension(R.dimen.density)));
 
         WindowManager manager = (WindowManager) this.getSystemService(Activity.WINDOW_SERVICE);
         if (manager != null && manager.getDefaultDisplay() != null) {

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="density">4dp</dimen>
+<!--10.1 WXGA-->
+    <dimen name="photo_width">750dp</dimen>
+    <dimen name="photo_height">750dp</dimen>
+</resources>

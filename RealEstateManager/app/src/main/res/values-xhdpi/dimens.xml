@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    pixel 3-->
+    <dimen name="density">6dp</dimen>
+    <dimen name="photo_width">350dp</dimen>
+    <dimen name="photo_height">350dp</dimen>
+</resources>
