@@ -8,24 +8,18 @@ import java.util.List;
 
 public class PropertyMapViewState {
     private final Location userLocation;
-    private final PropertyLocationData currentPropertyLocation;
-    private final List<PropertyLocationData> otherPropertyLocation;
+    private final List<PropertyMapItem> propertyMapItems;
 
-    public PropertyMapViewState(Location userLocation, PropertyLocationData currentPropertyLocation, List<PropertyLocationData> otherPropertyLocation) {
+    public PropertyMapViewState(Location userLocation, List<PropertyMapItem> propertyMapItems) {
         this.userLocation = userLocation;
-        this.currentPropertyLocation = currentPropertyLocation;
-        this.otherPropertyLocation = otherPropertyLocation;
+        this.propertyMapItems = propertyMapItems;
     }
 
     public Location getUserLocation() {
         return userLocation;
     }
 
-    public PropertyLocationData getCurrentPropertyLocation() {
-        return currentPropertyLocation;
-    }
-
-    public List<PropertyLocationData> getOtherPropertyLocation() {
-        return otherPropertyLocation;
+    public List<PropertyMapItem> getPropertyMapItems() {
+        return propertyMapItems;
     }
 }

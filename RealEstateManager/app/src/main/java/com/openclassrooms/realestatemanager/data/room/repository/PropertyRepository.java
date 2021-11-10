@@ -81,4 +81,8 @@ public class PropertyRepository {
     public LiveData<PropertyLocationData> getPropertyLocationById(long id){
         return propertyDao.getPropertyLocationById(id);
     }
+
+    public LiveData<List<PropertyLocationData>> getPropertiesLocation(){
+        return propertyDao.getPropertiesLocation();
+    }
 }

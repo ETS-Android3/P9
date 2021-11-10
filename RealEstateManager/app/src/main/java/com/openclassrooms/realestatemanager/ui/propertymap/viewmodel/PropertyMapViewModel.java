@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.data.location.LocationRepository;
@@ -18,8 +16,11 @@ import com.openclassrooms.realestatemanager.data.permission_checker.PermissionCh
 import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.tag.Tag;
+import com.openclassrooms.realestatemanager.ui.propertymap.viewstate.PropertyMapItem;
 import com.openclassrooms.realestatemanager.ui.propertymap.viewstate.PropertyMapViewState;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PropertyMapViewModel extends ViewModel {
@@ -54,68 +55,54 @@ public class PropertyMapViewModel extends ViewModel {
      * Mediator expose PropertyMapViewState
      */
     private final MediatorLiveData<PropertyMapViewState> propertyMapViewStateMediatorLiveData = new MediatorLiveData<>();
-    public LiveData<PropertyMapViewState> getPropertyMapViewStateLiveData() {
+    public LiveData<PropertyMapViewState> getViewState() {
         return propertyMapViewStateMediatorLiveData;
-    }
-
-    private MutableLiveData<Long> propertyIdMutableLiveData = new MutableLiveData<Long>();
-    public MutableLiveData<Long> getPropertyIdMutableLiveData() {
-        return propertyIdMutableLiveData;
     }
 
     private void configureMediatorLiveData() {
         Log.d(Tag.TAG, "PropertyMapViewModel.configureMediatorLiveData()");
         refreshLocation();
 
-        // current property location
-        LiveData<PropertyLocationData> currentPropertyLocationLiveData = Transformations.switchMap(propertyIdMutableLiveData,
-                id -> {
-                    return databaseRepository.getPropertyRepository().getPropertyLocationById(id);
-                });
-        // others properties location
-        LiveData<List<PropertyLocationData>> otherPropertyLocationLiveData = Transformations.switchMap(propertyIdMutableLiveData,
-                id -> {
-                    return databaseRepository.getPropertyRepository().getOtherPropertiesLocationById(id);
-                });
+        // all properties location
+        LiveData<List<PropertyLocationData>> propertiesLocationLiveData = databaseRepository.getPropertyRepository().getPropertiesLocation();
         // user location
-        LiveData<Location> locationLiveData = locationRepository.getLocationLiveData();
+        LiveData<Location> userLocationLiveData = locationRepository.getLocationLiveData();
+
+        propertyMapViewStateMediatorLiveData.addSource(propertiesLocationLiveData,
+                propertyLocationDataList -> combine(userLocationLiveData.getValue(), propertyLocationDataList));
 
         // must remove source to avoid bug "This source was already added with the different observer"
-        propertyMapViewStateMediatorLiveData.removeSource(locationLiveData);
-        propertyMapViewStateMediatorLiveData.addSource(locationLiveData,
+        propertyMapViewStateMediatorLiveData.removeSource(userLocationLiveData);
+        propertyMapViewStateMediatorLiveData.addSource(userLocationLiveData,
                 location -> { if (location != null) {
                     combine(location,
-                            currentPropertyLocationLiveData.getValue(),
-                            otherPropertyLocationLiveData.getValue());
+                            propertiesLocationLiveData.getValue());
             }
         });
+    }
 
-        propertyMapViewStateMediatorLiveData.addSource(currentPropertyLocationLiveData,
-                currentPropertyLocation -> {
-                    combine(locationLiveData.getValue(),
-                            currentPropertyLocation,
-                            otherPropertyLocationLiveData.getValue());
-                });
-
-        propertyMapViewStateMediatorLiveData.addSource(otherPropertyLocationLiveData,
-                otherPropertyLocation -> {
-                    combine(locationLiveData.getValue(),
-                            currentPropertyLocationLiveData.getValue(),
-                            otherPropertyLocation);
-                });
+    private String formatTitleMarker(String addressTitle, int price){
+        return String.format("%s %s", addressTitle, Utils.convertPriceToString(price));
     }
 
     private void combine(@Nullable Location userLocation,
-                         @Nullable PropertyLocationData currentPropertyLocation,
-                         @Nullable List<PropertyLocationData> otherPropertyLocation) {
-        if (userLocation == null || currentPropertyLocation == null || otherPropertyLocation == null) {
+                         @Nullable List<PropertyLocationData> propertiesLocation) {
+        if (userLocation == null || propertiesLocation == null) {
             return;
         }
         Log.d(Tag.TAG, "PropertyMapViewModel.combine() called");
 
+        List<PropertyMapItem> items = new ArrayList<>();
+
+        for (PropertyLocationData locationData : propertiesLocation){
+            items.add(new PropertyMapItem(locationData.getId(),
+                    formatTitleMarker(locationData.getAddressTitle(), locationData.getPrice()),
+                    locationData.getLatitude(),
+                    locationData.getLongitude()));
+        }
+
         PropertyMapViewState propertyMapViewState = new PropertyMapViewState(userLocation,
-                currentPropertyLocation,
-                otherPropertyLocation);
+                items);
 
         propertyMapViewStateMediatorLiveData.setValue(propertyMapViewState);
     }
