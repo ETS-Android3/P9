@@ -77,4 +77,8 @@ public class PropertyRepository {
     public LiveData<PropertyDetailData> getPropertyDetailByIdLiveData(long id) {
         return propertyDao.getPropertyDetailById(id);
     }
+
+    public LiveData<PropertyLocationData> getPropertyLocationById(long id){
+        return propertyDao.getPropertyLocationById(id);
+    }
 }

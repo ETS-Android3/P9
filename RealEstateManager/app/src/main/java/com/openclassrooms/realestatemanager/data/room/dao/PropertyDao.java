@@ -67,4 +67,9 @@ public interface PropertyDao {
            "from property " +
            "where (not ((latitude = 0) and (longitude = 0))) and (id <> :id)")
     LiveData<List<PropertyLocationData>> getOtherPropertiesLocationById(long id);
+
+    @Query("select id, price, address_title, latitude, longitude " +
+            "from property " +
+            "where (not ((latitude = 0) and (longitude = 0))) and (id = :id)")
+    LiveData<PropertyLocationData> getPropertyLocationById(long id);
 }
