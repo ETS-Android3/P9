@@ -4,4 +4,12 @@
 <!--10.1 WXGA-->
     <dimen name="photo_width">750dp</dimen>
     <dimen name="photo_height">750dp</dimen>
+
+    <!--    first photo in list properties-->
+    <dimen name="list_properties_photo_width">120dp</dimen>
+    <dimen name="list_properties_photo_height">120dp</dimen>
+
+    <dimen name="three_text_line1_text_size">22dp</dimen>
+    <dimen name="three_text_line2_text_size">22dp</dimen>
+    <dimen name="three_text_line3_text_size">22dp</dimen>
 </resources>

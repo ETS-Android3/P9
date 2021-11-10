@@ -2,6 +2,15 @@
 <resources>
 <!--    pixel 3-->
     <dimen name="density">6dp</dimen>
+<!--    properties photos list-->
     <dimen name="photo_width">350dp</dimen>
     <dimen name="photo_height">350dp</dimen>
+<!--    first photo in list properties-->
+    <dimen name="list_properties_photo_width">100dp</dimen>
+    <dimen name="list_properties_photo_height">100dp</dimen>
+
+    <dimen name="three_text_line1_text_size">16dp</dimen>
+    <dimen name="three_text_line2_text_size">16dp</dimen>
+    <dimen name="three_text_line3_text_size">16dp</dimen>
+
 </resources>

@@ -13,13 +13,12 @@
 
         <ImageView
             android:id="@+id/row_property_list_picture"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_margin="@dimen/default_margin"
+            android:layout_width="@dimen/list_properties_photo_width"
+            android:layout_height="@dimen/list_properties_photo_width"
+            android:layout_margin="10dp"
             android:contentDescription="@string/row_property_list_picture_description"
-
             android:gravity="center"
-            android:padding="@dimen/default_padding"
+            android:paddingRight="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -36,7 +35,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/row_property_list_picture"
-            app:layout_constraintTop_toTopOf="@id/row_property_list_picture" />
+            app:layout_constraintBottom_toTopOf="@id/row_property_list_type" />
 
         <TextView
             android:id="@+id/row_property_list_type"
@@ -61,7 +60,7 @@
             android:maxLines="1"
             android:text="@string/property_price"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            app:layout_constraintBottom_toBottomOf="@id/row_property_list_picture"
+            app:layout_constraintTop_toBottomOf="@id/row_property_list_type"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/row_property_list_picture" />
     </androidx.constraintlayout.widget.ConstraintLayout>

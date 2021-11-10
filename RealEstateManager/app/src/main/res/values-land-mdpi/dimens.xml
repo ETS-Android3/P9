@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--10.1 WXGA land   -->
+    <dimen name="photo_width">500dp</dimen>
+    <dimen name="photo_height">500dp</dimen>
+
+</resources>
