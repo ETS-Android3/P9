@@ -219,7 +219,6 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
                 .get(PropertyDetailViewModel.class);
 
         propertyDetailViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyDetailViewState>() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onChanged(PropertyDetailViewState propertyDetailViewState) {
                 setUserLocation(propertyDetailViewState.getUserLocation());
