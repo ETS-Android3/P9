@@ -2,8 +2,8 @@
 <resources>
     <dimen name="density">4dp</dimen>
 <!--10.1 WXGA-->
-    <dimen name="photo_width">750dp</dimen>
-    <dimen name="photo_height">750dp</dimen>
+    <dimen name="photo_width">720dp</dimen>
+    <dimen name="photo_height">720dp</dimen>
 
     <!--    first photo in list properties-->
     <dimen name="list_properties_photo_width">120dp</dimen>
