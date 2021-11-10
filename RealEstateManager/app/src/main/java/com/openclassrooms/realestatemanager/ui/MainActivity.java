@@ -168,19 +168,16 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
     @Override
     public void onPropertySelectedClicked(long propertyId) {
-        Log.d(Tag.TAG, "MainActivity.onPropertySelectedClicked() called with: propertyId = [" + propertyId + "]");
+        Log.d(Tag.TAG, "MainActivity.onPropertySelectedClicked() called with: propertyId = [" + propertyId + "] isLandscape = [" + LandscapeHelper.isLandscape() + "]");
         if (LandscapeHelper.isLandscape()) {
-            Log.d(Tag.TAG, "onPropertySelectedClicked() isLandscape");
             navToDetailWithLandscapeOrientation(propertyId);
         }
         else {
-            Log.d(Tag.TAG, "onPropertySelectedClicked() isLandscape = false");
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyDetailFragment,
                     PropertyBundle.createDetailBundle(propertyId));
         }
     }
-
 
     @Override
     public void onAddPropertyClicked() {
@@ -227,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             Log.d(Tag.TAG, "MainActivity.OnMapClicked() isLandscape = false");
 
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_propertyDetailFragment_self,
+            navController.navigate(R.id.action_propertyMapsFragment_to_nav_propertyDetailFragment,
                     PropertyBundle.createEditBundle(propertyId));
         }
     }
@@ -296,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
     private void navToDetailWithLandscapeOrientation(long propertyId) {
         Log.d(Tag.TAG, "MainActivity.navToDetailWithLandscapeOrientation() called with: propertyId = [" + propertyId + "]");
-
         NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
         navController.navigate(R.id.propertyDetailFragment, PropertyBundle.createDetailBundle(propertyId));
     }
@@ -309,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     }
 
     private void navToMap(){
+        Log.d(Tag.TAG, "MainActivity.navToMap");
         if (LandscapeHelper.isLandscape()) {
             //navToDetailWithLandscapeOrientation(propertyId);
             NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);

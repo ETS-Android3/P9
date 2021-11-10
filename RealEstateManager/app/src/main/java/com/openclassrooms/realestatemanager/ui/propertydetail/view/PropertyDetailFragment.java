@@ -315,7 +315,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     @Override
     public boolean onMarkerClick(Marker marker) {
         String strPropertyId = (String) marker.getTag();
-        Log.d(Tag.TAG, "PropertyDetailFragment.onMarkerClick() propertyId = [" + propertyId + "]");
+        Log.d(Tag.TAG, "PropertyDetailFragment.onMarkerClick() propertyId = [" + strPropertyId + "]");
         try {
             long propertyId = Long.parseLong(strPropertyId);
             callbackMap.OnMapClicked(propertyId);

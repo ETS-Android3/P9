@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
+import com.openclassrooms.realestatemanager.ui.propertydetail.listener.OnEditPropertyListener;
+import com.openclassrooms.realestatemanager.ui.propertydetail.listener.OnMapListener;
 import com.openclassrooms.realestatemanager.ui.propertymap.viewmodel.PropertyMapViewModel;
 import com.openclassrooms.realestatemanager.ui.propertymap.viewmodelfactory.PropertyMapViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertymap.viewstate.PropertyMapItem;
@@ -42,6 +45,7 @@ public class PropertyMapsFragment extends Fragment {
     private Location userLocation;
     private List<PropertyMapItem> propertyMapItems = new ArrayList<>();
     private GoogleMap mMap;
+    private OnMapListener callbackMap;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -71,11 +75,31 @@ public class PropertyMapsFragment extends Fragment {
     private GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(@NonNull Marker marker) {
-            Log.d(Tag.TAG, "PropertyMapsFragment.onMarkerClick() called with: marker = [" + marker + "]");
-
+            String strPropertyId = (String) marker.getTag();
+            Log.d(Tag.TAG, "PropertyMapsFragment.onMarkerClick() propertyId = [" + strPropertyId + "]");
+            try {
+                long id = Long.parseLong(strPropertyId);
+                callbackMap.OnMapClicked(id);
+            } catch (NumberFormatException nfe) {
+                Log.e(Tag.TAG, "PropertyMapsFragment.onMarkerClick: " + nfe.getMessage());
+            }
             return false;
         }
     };
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        createCallbackToParentActivity();
+    }
+
+    private void createCallbackToParentActivity() {
+        try {
+            callbackMap = (OnMapListener) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(e.toString() + " must implement OnMapListener");
+        }
+    }
 
     @Nullable
     @Override
