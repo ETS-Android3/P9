@@ -49,7 +49,7 @@ import com.openclassrooms.realestatemanager.ui.photoedit.PhotoEditDialogFragment
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.ConfirmationDeletePhotoListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEditViewModel;
-import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.RememberFieldKey;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.FieldKey;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodelfactory.PropertyEditViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
@@ -366,8 +366,8 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             DropdownItem item = (DropdownItem) adapterAgents.getItem(position);
                             agentId = item.getId();
-                            propertyEditViewModel.rememberValue(RememberFieldKey.AGENT_ID, Long.toString(agentId));
-                            propertyEditViewModel.rememberValue(RememberFieldKey.AGENT_NAME, item.getName());
+                            propertyEditViewModel.rememberValue(FieldKey.AGENT_ID, Long.toString(agentId));
+                            propertyEditViewModel.rememberValue(FieldKey.AGENT_NAME, item.getName());
                             // to check input
                             checkAllValues();
                         }
@@ -390,8 +390,8 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             DropdownItem item = (DropdownItem) adapterPropertyType.getItem(position);
                             propertyTypeId = item.getId();
-                            propertyEditViewModel.rememberValue(RememberFieldKey.PROPERTY_TYPE_ID, Long.toString(propertyId));
-                            propertyEditViewModel.rememberValue(RememberFieldKey.PROPERTY_TYPE_NAME, item.getName());
+                            propertyEditViewModel.rememberValue(FieldKey.PROPERTY_TYPE_ID, Long.toString(propertyId));
+                            propertyEditViewModel.rememberValue(FieldKey.PROPERTY_TYPE_NAME, item.getName());
                             // to check input
                             checkAllValues();
                         }
@@ -601,7 +601,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         return textInputLayoutAddressTitle.getEditText().getText().toString().trim();
     }
 
-    private TextWatcher createTextWatcher(RememberFieldKey key){
+    private TextWatcher createTextWatcher(FieldKey key){
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -638,7 +638,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         addCacheListener(textInputLayout, cacheListener);
     }
 
-    private TextWatcher addressTitleCacheListener = createTextWatcher(RememberFieldKey.ADDRESS_TITLE);
+    private TextWatcher addressTitleCacheListener = createTextWatcher(FieldKey.ADDRESS_TITLE);
     private void setAddressTitle(String addressTitle){
         setValueToComponent(addressTitle, textInputLayoutAddressTitle, addressTitleCacheListener);
     }
@@ -647,7 +647,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         return textInputLayoutAddress.getEditText().getText().toString().trim();
     }
 
-    private TextWatcher addressCacheListener = createTextWatcher(RememberFieldKey.ADDRESS);
+    private TextWatcher addressCacheListener = createTextWatcher(FieldKey.ADDRESS);
     private void setAdrress(String address){
         setValueToComponent(address, textInputLayoutAddress, addressCacheListener);
     }
@@ -676,7 +676,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         return textInputLayoutPrice.getEditText().getText().toString().trim();
     };
 
-    private TextWatcher priceCacheListener = createTextWatcher(RememberFieldKey.PRICE);
+    private TextWatcher priceCacheListener = createTextWatcher(FieldKey.PRICE);
     private void setPrice(String price){
         setValueToComponent(price, textInputLayoutPrice, priceCacheListener);
     }
@@ -685,7 +685,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         return textInputLayoutSurface.getEditText().getText().toString().trim();
     }
 
-    private TextWatcher surfaceCacheListener = createTextWatcher(RememberFieldKey.SURFACE);
+    private TextWatcher surfaceCacheListener = createTextWatcher(FieldKey.SURFACE);
     private void setSurface(String surface){
         setValueToComponent(surface, textInputLayoutSurface, surfaceCacheListener);
     }
@@ -694,7 +694,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         return textInputLayoutRooms.getEditText().getText().toString().trim();
     }
 
-    private TextWatcher roomsCacheListener = createTextWatcher(RememberFieldKey.ROOMS);
+    private TextWatcher roomsCacheListener = createTextWatcher(FieldKey.ROOMS);
     private void setRooms(String rooms){
         setValueToComponent(rooms, textInputLayoutRooms, roomsCacheListener);
     }
@@ -703,7 +703,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         return textInputLayoutDescription.getEditText().getText().toString().trim();
     }
 
-    private TextWatcher descriptionCacheListener = createTextWatcher(RememberFieldKey.DESCRIPTION);
+    private TextWatcher descriptionCacheListener = createTextWatcher(FieldKey.DESCRIPTION);
     private void setDescription(String description){
         setValueToComponent(description, textInputLayoutDescription, descriptionCacheListener);
     }
@@ -712,7 +712,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         return textInputLayoutPointOfInterest.getEditText().getText().toString().trim();
     }
 
-    private TextWatcher pointOfInterestCacheListener = createTextWatcher(RememberFieldKey.POINT_OF_INTEREST);
+    private TextWatcher pointOfInterestCacheListener = createTextWatcher(FieldKey.POINT_OF_INTEREST);
     private void setPointOfInterest(String pointOfInterest){
         setValueToComponent(pointOfInterest, textInputLayoutPointOfInterest, pointOfInterestCacheListener);
     }
@@ -721,7 +721,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         return textInputLayoutEntryDate.getEditText().getText().toString().trim();
     }
 
-    private TextWatcher entryDateCacheListener = createTextWatcher(RememberFieldKey.ENTRY_DATE);
+    private TextWatcher entryDateCacheListener = createTextWatcher(FieldKey.ENTRY_DATE);
     private void setEntryDate(String entryDate){
         Log.d(Tag.TAG, "PropertyEditFragment.setEntryDate() called with: entryDate = [" + entryDate + "]");
         setValueToComponent(entryDate, textInputLayoutEntryDate, entryDateCacheListener);
@@ -731,7 +731,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         return textInputLayoutSaleDate.getEditText().getText().toString().trim();
     }
 
-    private TextWatcher saleDateCacheListener = createTextWatcher(RememberFieldKey.SALE_DATE);
+    private TextWatcher saleDateCacheListener = createTextWatcher(FieldKey.SALE_DATE);
     private void setSaleDate(String saleDate){
         setValueToComponent(saleDate, textInputLayoutSaleDate, saleDateCacheListener);
     }

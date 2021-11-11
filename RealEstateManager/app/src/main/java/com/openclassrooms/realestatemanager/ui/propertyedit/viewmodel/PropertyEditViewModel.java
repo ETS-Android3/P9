@@ -25,7 +25,6 @@ import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
-import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
@@ -34,12 +33,10 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.StaticMapV
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
 
 public class PropertyEditViewModel extends ViewModel {
     @NonNull
@@ -116,8 +113,8 @@ public class PropertyEditViewModel extends ViewModel {
             @Override
             public void onChanged(LatLng latLng) {
                 Log.d(Tag.TAG, "PropertyEditViewModel.configureGoogleStaticMapUrlLiveData -> url onChanged() called with: latLng = [" + latLng + "]");
-                cache.getRememberFieldList().setValue(RememberFieldKey.LATITUDE, Double.toString(latLng.latitude));
-                cache.getRememberFieldList().setValue(RememberFieldKey.LONGITUDE, Double.toString(latLng.longitude));
+                cache.setValue(FieldKey.LATITUDE, Double.toString(latLng.latitude));
+                cache.setValue(FieldKey.LONGITUDE, Double.toString(latLng.longitude));
                 String url = googleStaticMapRepository.getUrlImage(latLng.latitude, latLng.longitude);
                 googleStaticMapViewStateMediatorLiveData.setValue(new StaticMapViewState(latLng, url));
             }
@@ -190,15 +187,15 @@ public class PropertyEditViewModel extends ViewModel {
      * @param databaseValue
      * @return
      */
-    private String getLastValue(RememberFieldKey cacheKey, String databaseValue){
-        String cacheValue = cache.getRememberFieldList().getValue(cacheKey);
+    private String getLastValue(FieldKey cacheKey, String databaseValue){
+        String cacheValue = cache.getValue(cacheKey);
 
-        if (cacheKey == RememberFieldKey.ENTRY_DATE) {
+        if (cacheKey == FieldKey.ENTRY_DATE) {
             Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() cacheKey = [" + cacheKey + "] cacheValue + [" + cacheValue + "]");
             Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() databaseValue = [" + debugString(databaseValue) + "]"); }
 
         String result = (cacheValue == null) ? databaseValue : cacheValue;
-        if (cacheKey == RememberFieldKey.ENTRY_DATE)
+        if (cacheKey == FieldKey.ENTRY_DATE)
             Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() return = [" + debugString(result) + "]");
         return  result;
     }
@@ -209,8 +206,8 @@ public class PropertyEditViewModel extends ViewModel {
      * @param databaseValue
      * @return
      */
-    private long getLastValue(RememberFieldKey cacheKey, long databaseValue){
-        String cacheValue = cache.getRememberFieldList().getValue(cacheKey);
+    private long getLastValue(FieldKey cacheKey, long databaseValue){
+        String cacheValue = cache.getValue(cacheKey);
         long result = 0;
         if (cacheValue == null) {
             result = databaseValue;
@@ -225,8 +222,8 @@ public class PropertyEditViewModel extends ViewModel {
         return result;
     }
 
-    private double getLastValue(RememberFieldKey cacheKey, double databaseValue){
-        String cacheValue = cache.getRememberFieldList().getValue(cacheKey);
+    private double getLastValue(FieldKey cacheKey, double databaseValue){
+        String cacheValue = cache.getValue(cacheKey);
         double result = 0;
         if (cacheValue == null) {
             result = databaseValue;
@@ -262,20 +259,20 @@ public class PropertyEditViewModel extends ViewModel {
         String databaseRooms = Integer.toString(propertyDetailData.getRooms());
 
         // get values from cache or from database ?
-        String addressTitle = getLastValue(RememberFieldKey.ADDRESS_TITLE, propertyDetailData.getAddressTitle());
-        String address = getLastValue(RememberFieldKey.ADDRESS, propertyDetailData.getAddress());
-        String description = getLastValue(RememberFieldKey.DESCRIPTION, propertyDetailData.getDescription());
-        String pointOfInterest = getLastValue(RememberFieldKey.POINT_OF_INTEREST, propertyDetailData.getPointsOfInterest());
-        String price = getLastValue(RememberFieldKey.PRICE, databasePrice);
-        String surface = getLastValue(RememberFieldKey.SURFACE, databaseSurface);
-        String rooms = getLastValue(RememberFieldKey.ROOMS, databaseRooms);
-        String entryDate = getLastValue(RememberFieldKey.ENTRY_DATE, databaseEntryDate);
-        String saleDate = getLastValue(RememberFieldKey.SALE_DATE, databaseSaleDate);
+        String addressTitle = getLastValue(FieldKey.ADDRESS_TITLE, propertyDetailData.getAddressTitle());
+        String address = getLastValue(FieldKey.ADDRESS, propertyDetailData.getAddress());
+        String description = getLastValue(FieldKey.DESCRIPTION, propertyDetailData.getDescription());
+        String pointOfInterest = getLastValue(FieldKey.POINT_OF_INTEREST, propertyDetailData.getPointsOfInterest());
+        String price = getLastValue(FieldKey.PRICE, databasePrice);
+        String surface = getLastValue(FieldKey.SURFACE, databaseSurface);
+        String rooms = getLastValue(FieldKey.ROOMS, databaseRooms);
+        String entryDate = getLastValue(FieldKey.ENTRY_DATE, databaseEntryDate);
+        String saleDate = getLastValue(FieldKey.SALE_DATE, databaseSaleDate);
 
-        long agentId = getLastValue(RememberFieldKey.AGENT_ID, propertyDetailData.getAgentId());
-        String agentName = getLastValue(RememberFieldKey.AGENT_NAME, propertyDetailData.getAgentName());
-        long propertyTypeId = getLastValue(RememberFieldKey.PROPERTY_TYPE_ID, propertyDetailData.getAgentId());
-        String propertyTypeName = getLastValue(RememberFieldKey.PROPERTY_TYPE_NAME, propertyDetailData.getTypeName());
+        long agentId = getLastValue(FieldKey.AGENT_ID, propertyDetailData.getAgentId());
+        String agentName = getLastValue(FieldKey.AGENT_NAME, propertyDetailData.getAgentName());
+        long propertyTypeId = getLastValue(FieldKey.PROPERTY_TYPE_ID, propertyDetailData.getAgentId());
+        String propertyTypeName = getLastValue(FieldKey.PROPERTY_TYPE_NAME, propertyDetailData.getTypeName());
 
         return new PropertyEditViewState(
                 addressTitle,
@@ -304,23 +301,23 @@ public class PropertyEditViewModel extends ViewModel {
             photos.addAll(pendingPhotos);
         }
         // get values from cache ?
-        String addressTitle = cache.getRememberFieldList().getValue(RememberFieldKey.ADDRESS_TITLE);
-        String address = cache.getRememberFieldList().getValue(RememberFieldKey.ADDRESS);
-        String description = cache.getRememberFieldList().getValue(RememberFieldKey.DESCRIPTION);
-        String pointOfInterest = cache.getRememberFieldList().getValue(RememberFieldKey.POINT_OF_INTEREST);
-        String price = cache.getRememberFieldList().getValue(RememberFieldKey.PRICE);
-        String surface = cache.getRememberFieldList().getValue(RememberFieldKey.SURFACE);
-        String rooms = cache.getRememberFieldList().getValue(RememberFieldKey.ROOMS);
-        String entryDate = cache.getRememberFieldList().getValue(RememberFieldKey.ENTRY_DATE);
-        String saleDate = cache.getRememberFieldList().getValue(RememberFieldKey.SALE_DATE);
+        String addressTitle = cache.getValue(FieldKey.ADDRESS_TITLE);
+        String address = cache.getValue(FieldKey.ADDRESS);
+        String description = cache.getValue(FieldKey.DESCRIPTION);
+        String pointOfInterest = cache.getValue(FieldKey.POINT_OF_INTEREST);
+        String price = cache.getValue(FieldKey.PRICE);
+        String surface = cache.getValue(FieldKey.SURFACE);
+        String rooms = cache.getValue(FieldKey.ROOMS);
+        String entryDate = cache.getValue(FieldKey.ENTRY_DATE);
+        String saleDate = cache.getValue(FieldKey.SALE_DATE);
 
-        long agentId = getLastValue(RememberFieldKey.AGENT_ID, 0);
-        String agentName = cache.getRememberFieldList().getValue(RememberFieldKey.AGENT_NAME);
-        long propertyTypeId = getLastValue(RememberFieldKey.PROPERTY_TYPE_ID, 0);
-        String propertyTypeName = cache.getRememberFieldList().getValue(RememberFieldKey.PROPERTY_TYPE_NAME);
+        long agentId = getLastValue(FieldKey.AGENT_ID, 0);
+        String agentName = cache.getValue(FieldKey.AGENT_NAME);
+        long propertyTypeId = getLastValue(FieldKey.PROPERTY_TYPE_ID, 0);
+        String propertyTypeName = cache.getValue(FieldKey.PROPERTY_TYPE_NAME);
 
-        double latitude = getLastValue(RememberFieldKey.LATITUDE, 0f);
-        double longitude = getLastValue(RememberFieldKey.LONGITUDE, 0f);
+        double latitude = getLastValue(FieldKey.LATITUDE, 0f);
+        double longitude = getLastValue(FieldKey.LONGITUDE, 0f);
         String googleStaticMapUrl = googleStaticMapRepository.getUrlImage(latitude, longitude);
 
         return new PropertyEditViewState(
@@ -726,11 +723,11 @@ public class PropertyEditViewModel extends ViewModel {
     }
 
     public void clearFieldsCache(){
-        cache.getRememberFieldList().clearAll();
+        cache.clearFields();
     }
 
-    public boolean rememberValue(RememberFieldKey key, String value){
-        cache.getRememberFieldList().setValue(key, value);
+    public boolean rememberValue(FieldKey key, String value){
+        cache.setValue(key, value);
         return false;
     }
 

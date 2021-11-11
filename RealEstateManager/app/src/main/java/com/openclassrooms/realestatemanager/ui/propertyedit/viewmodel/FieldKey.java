@@ -1,5 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel;
 
-public enum RememberFieldKey {
+public enum FieldKey {
     ADDRESS_TITLE, ADDRESS, PRICE, SURFACE, ROOMS, DESCRIPTION, POINT_OF_INTEREST, ENTRY_DATE, SALE_DATE, AGENT_ID, AGENT_NAME, PROPERTY_TYPE_ID, PROPERTY_TYPE_NAME, LATITUDE, LONGITUDE
 }
