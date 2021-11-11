@@ -208,6 +208,10 @@ public class PropertyEditViewModel extends ViewModel {
      */
     private long getLastValue(FieldKey cacheKey, long databaseValue){
         String cacheValue = cache.getValue(cacheKey);
+
+        if (cacheKey == FieldKey.PROPERTY_TYPE_ID)
+            Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() return = [" + debugString(cacheValue) + "]");
+
         long result = 0;
         if (cacheValue == null) {
             result = databaseValue;
@@ -271,7 +275,7 @@ public class PropertyEditViewModel extends ViewModel {
 
         long agentId = getLastValue(FieldKey.AGENT_ID, propertyDetailData.getAgentId());
         String agentName = getLastValue(FieldKey.AGENT_NAME, propertyDetailData.getAgentName());
-        long propertyTypeId = getLastValue(FieldKey.PROPERTY_TYPE_ID, propertyDetailData.getAgentId());
+        long propertyTypeId = getLastValue(FieldKey.PROPERTY_TYPE_ID, propertyDetailData.getPropertyTypeId());
         String propertyTypeName = getLastValue(FieldKey.PROPERTY_TYPE_NAME, propertyDetailData.getTypeName());
 
         return new PropertyEditViewState(

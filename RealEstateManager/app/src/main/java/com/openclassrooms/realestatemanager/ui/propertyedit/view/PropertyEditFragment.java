@@ -390,7 +390,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             DropdownItem item = (DropdownItem) adapterPropertyType.getItem(position);
                             propertyTypeId = item.getId();
-                            propertyEditViewModel.rememberValue(FieldKey.PROPERTY_TYPE_ID, Long.toString(propertyId));
+                            propertyEditViewModel.rememberValue(FieldKey.PROPERTY_TYPE_ID, Long.toString(propertyTypeId));
                             propertyEditViewModel.rememberValue(FieldKey.PROPERTY_TYPE_NAME, item.getName());
                             // to check input
                             checkAllValues();
