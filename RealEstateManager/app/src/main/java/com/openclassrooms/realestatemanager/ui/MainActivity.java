@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
                                                                OnAddPropertyListener,
                                                                OnEditPropertyListener,
                                                                PropertyEditListener,
-        OnMapListener {
+                                                               OnMapListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;

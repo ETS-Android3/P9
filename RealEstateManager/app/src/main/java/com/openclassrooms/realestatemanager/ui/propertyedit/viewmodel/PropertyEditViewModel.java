@@ -116,6 +116,8 @@ public class PropertyEditViewModel extends ViewModel {
             @Override
             public void onChanged(LatLng latLng) {
                 Log.d(Tag.TAG, "PropertyEditViewModel.configureGoogleStaticMapUrlLiveData -> url onChanged() called with: latLng = [" + latLng + "]");
+                cache.getRememberFieldList().setValue(RememberFieldKey.LATITUDE, Double.toString(latLng.latitude));
+                cache.getRememberFieldList().setValue(RememberFieldKey.LONGITUDE, Double.toString(latLng.longitude));
                 String url = googleStaticMapRepository.getUrlImage(latLng.latitude, latLng.longitude);
                 googleStaticMapViewStateMediatorLiveData.setValue(new StaticMapViewState(latLng, url));
             }
@@ -182,22 +184,33 @@ public class PropertyEditViewModel extends ViewModel {
         }
     }
 
+    /**
+     * if cache exist get cache value else get database value.
+     * @param cacheKey
+     * @param databaseValue
+     * @return
+     */
     private String getLastValue(RememberFieldKey cacheKey, String databaseValue){
         String cacheValue = cache.getRememberFieldList().getValue(cacheKey);
-        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() cacheKey = [" + cacheKey + "] cacheValue + [" + cacheValue + "]");
-        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() databaseValue = [" + debugString(databaseValue) + "]");
+
+        if (cacheKey == RememberFieldKey.ENTRY_DATE) {
+            Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() cacheKey = [" + cacheKey + "] cacheValue + [" + cacheValue + "]");
+            Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() databaseValue = [" + debugString(databaseValue) + "]"); }
+
         String result = (cacheValue == null) ? databaseValue : cacheValue;
-        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() return = [" + debugString(result) + "]");
+        if (cacheKey == RememberFieldKey.ENTRY_DATE)
+            Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() return = [" + debugString(result) + "]");
         return  result;
     }
 
+    /**
+     * if cache exist get cache value else get database value
+     * @param cacheKey
+     * @param databaseValue
+     * @return
+     */
     private long getLastValue(RememberFieldKey cacheKey, long databaseValue){
         String cacheValue = cache.getRememberFieldList().getValue(cacheKey);
-        if (cacheValue != null) {
-
-        }
-        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() cacheKey = [" + cacheKey + "] cacheValue + [" + cacheValue + "]");
-        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() databaseValue = [" + databaseValue + "]");
         long result = 0;
         if (cacheValue == null) {
             result = databaseValue;
@@ -209,34 +222,30 @@ public class PropertyEditViewModel extends ViewModel {
                 result = Long.parseLong(cacheValue);
             }
         }
-        Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() return = [" + result + "]");
         return result;
     }
 
-    private void combine(MediatorLiveData<PropertyEditViewState> mediatorLiveData,
-                         long propertyId,
-                         PropertyDetailData propertyDetailData,
-                         List<Photo> databasePhotos,
-                         List<Photo> pendingPhotos) {
-        Log.d(Tag.TAG, "PropertyEditViewModel.combine() called with: propertyId = [" + propertyId + "], propertyDetailData = [" + propertyDetailData + "], databasePhotos = [" + databasePhotos + "], pendingPhotos = [" + pendingPhotos + "]");
-
-        if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
-            PropertyEditViewState propertyEditViewState = new PropertyEditViewState(pendingPhotos);
-            // todo : get cache !
-            mediatorLiveData.setValue(propertyEditViewState);
-            return;
+    private double getLastValue(RememberFieldKey cacheKey, double databaseValue){
+        String cacheValue = cache.getRememberFieldList().getValue(cacheKey);
+        double result = 0;
+        if (cacheValue == null) {
+            result = databaseValue;
+        } else {
+            cacheValue = cacheValue.trim();
+            if (cacheValue.isEmpty()) {
+                result = databaseValue;
+            } else {
+                result = Double.parseDouble(cacheValue);
+            }
         }
+        return result;
+    }
 
-        if (propertyDetailData == null) {
-            return;
-        }
-
-        String databaseEntryDate = Utils.convertDateToLocalFormat(propertyDetailData.getEntryDate());
-        String databaseSaleDate = Utils.convertDateToLocalFormat(propertyDetailData.getSaleDate());
-        String databasePrice = Integer.toString(propertyDetailData.getPrice());
-        String databaseSurface = Integer.toString(propertyDetailData.getSurface());
-        String databaseRooms = Integer.toString(propertyDetailData.getRooms());
-
+    private PropertyEditViewState createViewStateFromCacheAndDatabase(PropertyDetailData propertyDetailData,
+                                             List<Photo> databasePhotos,
+                                             List<Photo> pendingPhotos,
+                                             String googleStaticMapUrl){
+        // merge photo
         List<Photo> photos = new ArrayList<>();
         if (pendingPhotos != null) {
             photos.addAll(pendingPhotos);
@@ -245,7 +254,14 @@ public class PropertyEditViewModel extends ViewModel {
             photos.addAll(databasePhotos);
         }
 
-        // get values from cache or from database
+        // convert values toString
+        String databaseEntryDate = Utils.convertDateToLocalFormat(propertyDetailData.getEntryDate());
+        String databaseSaleDate = Utils.convertDateToLocalFormat(propertyDetailData.getSaleDate());
+        String databasePrice = Integer.toString(propertyDetailData.getPrice());
+        String databaseSurface = Integer.toString(propertyDetailData.getSurface());
+        String databaseRooms = Integer.toString(propertyDetailData.getRooms());
+
+        // get values from cache or from database ?
         String addressTitle = getLastValue(RememberFieldKey.ADDRESS_TITLE, propertyDetailData.getAddressTitle());
         String address = getLastValue(RememberFieldKey.ADDRESS, propertyDetailData.getAddress());
         String description = getLastValue(RememberFieldKey.DESCRIPTION, propertyDetailData.getDescription());
@@ -261,10 +277,7 @@ public class PropertyEditViewModel extends ViewModel {
         long propertyTypeId = getLastValue(RememberFieldKey.PROPERTY_TYPE_ID, propertyDetailData.getAgentId());
         String propertyTypeName = getLastValue(RememberFieldKey.PROPERTY_TYPE_NAME, propertyDetailData.getTypeName());
 
-        // googleStaticMapRepository is not async so we can call it in combine
-        String googleStaticMapUrl = googleStaticMapRepository.getUrlImage(propertyDetailData.getLatitude(), propertyDetailData.getLongitude());
-
-        PropertyEditViewState propertyEditViewState = new PropertyEditViewState(
+        return new PropertyEditViewState(
                 addressTitle,
                 address,
                 description,
@@ -280,7 +293,80 @@ public class PropertyEditViewModel extends ViewModel {
                 propertyTypeName,
                 propertyDetailData.getLatitude(),
                 propertyDetailData.getLongitude(),
-                photos, googleStaticMapUrl);
+                photos,
+                googleStaticMapUrl);
+    }
+
+    private PropertyEditViewState createViewStateFromCache(List<Photo> pendingPhotos){
+        // merge photo
+        List<Photo> photos = new ArrayList<>();
+        if (pendingPhotos != null) {
+            photos.addAll(pendingPhotos);
+        }
+        // get values from cache ?
+        String addressTitle = cache.getRememberFieldList().getValue(RememberFieldKey.ADDRESS_TITLE);
+        String address = cache.getRememberFieldList().getValue(RememberFieldKey.ADDRESS);
+        String description = cache.getRememberFieldList().getValue(RememberFieldKey.DESCRIPTION);
+        String pointOfInterest = cache.getRememberFieldList().getValue(RememberFieldKey.POINT_OF_INTEREST);
+        String price = cache.getRememberFieldList().getValue(RememberFieldKey.PRICE);
+        String surface = cache.getRememberFieldList().getValue(RememberFieldKey.SURFACE);
+        String rooms = cache.getRememberFieldList().getValue(RememberFieldKey.ROOMS);
+        String entryDate = cache.getRememberFieldList().getValue(RememberFieldKey.ENTRY_DATE);
+        String saleDate = cache.getRememberFieldList().getValue(RememberFieldKey.SALE_DATE);
+
+        long agentId = getLastValue(RememberFieldKey.AGENT_ID, 0);
+        String agentName = cache.getRememberFieldList().getValue(RememberFieldKey.AGENT_NAME);
+        long propertyTypeId = getLastValue(RememberFieldKey.PROPERTY_TYPE_ID, 0);
+        String propertyTypeName = cache.getRememberFieldList().getValue(RememberFieldKey.PROPERTY_TYPE_NAME);
+
+        double latitude = getLastValue(RememberFieldKey.LATITUDE, 0f);
+        double longitude = getLastValue(RememberFieldKey.LONGITUDE, 0f);
+        String googleStaticMapUrl = googleStaticMapRepository.getUrlImage(latitude, longitude);
+
+        return new PropertyEditViewState(
+                addressTitle,
+                address,
+                description,
+                pointOfInterest,
+                price,
+                surface,
+                rooms,
+                entryDate,
+                saleDate,
+                agentId,
+                agentName,
+                propertyTypeId,
+                propertyTypeName,
+                latitude,
+                longitude,
+                photos,
+                googleStaticMapUrl);
+    }
+
+    private void combine(MediatorLiveData<PropertyEditViewState> mediatorLiveData,
+                         long propertyId,
+                         PropertyDetailData propertyDetailData,
+                         List<Photo> databasePhotos,
+                         List<Photo> pendingPhotos) {
+        Log.d(Tag.TAG, "PropertyEditViewModel.combine() called with: propertyId = [" + propertyId + "], propertyDetailData = [" + propertyDetailData + "], databasePhotos = [" + databasePhotos + "], pendingPhotos = [" + pendingPhotos + "]");
+
+        if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
+            Log.d(Tag.TAG, "combine() !!! return empty viewstate without");
+            PropertyEditViewState propertyEditViewState = createViewStateFromCache(pendingPhotos);
+            //PropertyEditViewState propertyEditViewState = new PropertyEditViewState(pendingPhotos);
+            // todo : get cache !
+            mediatorLiveData.setValue(propertyEditViewState);
+            return;
+        }
+
+        if (propertyDetailData == null) {
+            return;
+        }
+
+        // googleStaticMapRepository is not async so we can call it in combine
+        String googleStaticMapUrl = googleStaticMapRepository.getUrlImage(propertyDetailData.getLatitude(), propertyDetailData.getLongitude());
+
+        PropertyEditViewState propertyEditViewState = createViewStateFromCacheAndDatabase(propertyDetailData, databasePhotos, pendingPhotos, googleStaticMapUrl);
         mediatorLiveData.setValue(propertyEditViewState);
     }
 

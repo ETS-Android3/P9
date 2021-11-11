@@ -291,7 +291,7 @@
                 android:layout_height="wrap_content"
                 app:hintTextColor="#757575"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_sale_date"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_entry_date"
                 app:startIconContentDescription="@string/property_agent_name"
                 app:startIconDrawable="@drawable/ic_real_estate_agent_24">
 

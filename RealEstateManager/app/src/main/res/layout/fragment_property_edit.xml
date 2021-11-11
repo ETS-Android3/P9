@@ -224,7 +224,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_text_input_layout_entry_date"
                 app:srcCompat="@drawable/ic_edit_calendar"
-                android:contentDescription="@string/property_entry_date" />
+                android:contentDescription="@string/property_entry_date"
+                />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/fragment_property_edit_text_input_layout_sale_date"
@@ -255,7 +256,8 @@
                 app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_text_input_layout_sale_date"
                 app:layout_constraintBottom_toBottomOf="@+id/fragment_property_edit_text_input_layout_sale_date"
                 app:srcCompat="@drawable/ic_menu_cancel"
-                android:contentDescription="@string/property_sale_date" />
+                android:contentDescription="@string/property_sale_date"
+                />
             <ImageButton
                 android:id="@+id/fragment_property_imageButton_sale_date"
                 style="@style/ImageButtonIconOnlyStyle"

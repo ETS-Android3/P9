@@ -640,7 +640,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     private TextWatcher addressTitleCacheListener = createTextWatcher(RememberFieldKey.ADDRESS_TITLE);
     private void setAddressTitle(String addressTitle){
-        Log.d(Tag.TAG, "PropertyEditFragment.setAddressTitle() called with: addressTitle = [" + addressTitle + "]");
         setValueToComponent(addressTitle, textInputLayoutAddressTitle, addressTitleCacheListener);
     }
 
@@ -724,6 +723,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     private TextWatcher entryDateCacheListener = createTextWatcher(RememberFieldKey.ENTRY_DATE);
     private void setEntryDate(String entryDate){
+        Log.d(Tag.TAG, "PropertyEditFragment.setEntryDate() called with: entryDate = [" + entryDate + "]");
         setValueToComponent(entryDate, textInputLayoutEntryDate, entryDateCacheListener);
     }
 

@@ -57,6 +57,8 @@ public class GoogleStaticMapRepository {
 
     public String getUrlImage(double latitude, double longitude){
         Log.d(Tag.TAG, "GoogleStaticMapRepository.getUrlImage() called with: latitude = [" + latitude + "], longitude = [" + longitude + "]");
+        if ((latitude == 0) && (longitude == 0)) return "";
+
         String url = String.format("%s?%s&%s&%s&%s&%s&%s&%s",
                 getBaseUrl(),
                 formatCenterParam(latitude, longitude),

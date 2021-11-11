@@ -209,4 +209,8 @@ public class PropertyDetailData {
     public void setTypeName(String typeName) {
         this.typeName = typeName;
     }
+
+    public static PropertyDetailData createEmptyInstance(){
+        return new PropertyDetailData(0, 0, 0, "", "", "", "", null, null, 0, 0, 0, 0, 0, "", "", "", "" );
+    }
 }

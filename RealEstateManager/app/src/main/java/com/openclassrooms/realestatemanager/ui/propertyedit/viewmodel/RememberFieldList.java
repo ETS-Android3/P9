@@ -22,7 +22,9 @@ public class RememberFieldList {
             new RememberField(RememberFieldKey.AGENT_ID),
             new RememberField(RememberFieldKey.AGENT_NAME),
             new RememberField(RememberFieldKey.PROPERTY_TYPE_ID),
-            new RememberField(RememberFieldKey.PROPERTY_TYPE_NAME)
+            new RememberField(RememberFieldKey.PROPERTY_TYPE_NAME),
+            new RememberField(RememberFieldKey.LATITUDE),
+            new RememberField(RememberFieldKey.LONGITUDE)
     );
 
     private RememberField findField(RememberFieldKey key) {
