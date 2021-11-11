@@ -31,14 +31,11 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.bundle.PropertyBundle;
 import com.openclassrooms.realestatemanager.ui.propertydetail.listener.OnEditPropertyListener;
-import com.openclassrooms.realestatemanager.ui.propertydetail.listener.OnMapListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
-import com.openclassrooms.realestatemanager.ui.propertyedit.view.PropertyEditFragment;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
-import com.openclassrooms.realestatemanager.ui.propertydetail.view.PropertyDetailFragment;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnAddPropertyListener;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnPropertySelectedListener;
-import com.openclassrooms.realestatemanager.ui.propertylist.view.PropertyListFragment;
+import com.openclassrooms.realestatemanager.ui.propertymap.listener.OnMapListener;
 import com.openclassrooms.realestatemanager.utils.LandscapeHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
                                                                OnAddPropertyListener,
                                                                OnEditPropertyListener,
                                                                PropertyEditListener,
-                                                               OnMapListener {
+        OnMapListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
