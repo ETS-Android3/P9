@@ -199,6 +199,6 @@ public class PhotoEditDialogFragment extends DialogFragment {
     }
 
     private String getCaption(){
-        return textInputLayoutCaption.getEditText().getText().toString();
+        return textInputLayoutCaption.getEditText().getText().toString().trim();
     }
 }
