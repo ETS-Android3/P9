@@ -261,6 +261,7 @@ public class PropertyEditViewModel extends ViewModel {
         long propertyTypeId = getLastValue(RememberFieldKey.PROPERTY_TYPE_ID, propertyDetailData.getAgentId());
         String propertyTypeName = getLastValue(RememberFieldKey.PROPERTY_TYPE_NAME, propertyDetailData.getTypeName());
 
+        // googleStaticMapRepository is not async so we can call it in combine
         String googleStaticMapUrl = googleStaticMapRepository.getUrlImage(propertyDetailData.getLatitude(), propertyDetailData.getLongitude());
 
         PropertyEditViewState propertyEditViewState = new PropertyEditViewState(

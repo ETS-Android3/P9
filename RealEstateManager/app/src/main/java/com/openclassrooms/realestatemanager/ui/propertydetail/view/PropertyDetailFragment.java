@@ -21,8 +21,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -55,12 +58,7 @@ import java.util.List;
  * Use the {@link PropertyDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PropertyDetailFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
-
-    private GoogleMap mMap;
-    private Location userLocation;
-    private PropertyLocationData currentPropertyLocation;
-    private List<PropertyLocationData> otherPropertiesLocation = new ArrayList<>();
+public class PropertyDetailFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private long propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
@@ -79,7 +77,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     TextView textViewAgentEmail;
     TextView textViewAgentPhone;
     TextView textViewType;
-    TextView textViewPhotoLegend;
+    private ImageView imageViewGoogleStaticMap;
 
     private PropertyDetailViewModel propertyDetailViewModel;
 
@@ -115,7 +113,6 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     this interface used to edit property
      */
     private OnEditPropertyListener callbackEditProperty;
-    private OnMapListener callbackMap;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -128,11 +125,6 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
             callbackEditProperty = (OnEditPropertyListener) getActivity();
         } catch (ClassCastException e) {
             throw new ClassCastException(e.toString() + " must implement OnPropertyClickedListener");
-        }
-        try {
-            callbackMap = (OnMapListener) getActivity();
-        } catch (ClassCastException e) {
-            throw new ClassCastException(e.toString() + " must implement OnMapListener");
         }
     }
 
@@ -179,7 +171,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         textViewAgentEmail = view.findViewById(R.id.property_detail_agent_email_value);
         textViewAgentPhone = view.findViewById(R.id.property_detail_agent_phone_value);
         textViewType = view.findViewById(R.id.property_detail_type_value);
-        textViewPhotoLegend = view.findViewById(R.id.property_detail_photo_legend_value);
+        imageViewGoogleStaticMap = view.findViewById(R.id.fragment_property_detail_image_view_map);
     }
 
     private void configureRecyclerView(View view) {
@@ -190,7 +182,6 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         photoListAdapter = new PhotoListAdapter(getContext(), null);
         recyclerView.setAdapter(photoListAdapter);
     }
-
 
     private void configureBottomNavigationBar(View view) {
         BottomNavigationView bottomNavigationView = view.findViewById(R.id.fragment_property_detail_bottom_navigation_view);
@@ -219,9 +210,6 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         propertyDetailViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyDetailViewState>() {
             @Override
             public void onChanged(PropertyDetailViewState propertyDetailViewState) {
-                setUserLocation(propertyDetailViewState.getUserLocation());
-                setCurrentPropertyLocation(propertyDetailViewState.getCurrentPropertyLocation());
-                setOtherPropertiesLocation(propertyDetailViewState.getPropertyLocationData());
                 setPrice(propertyDetailViewState.getPropertyDetailData().getPrice());
                 setSurface(propertyDetailViewState.getPropertyDetailData().getSurface());
                 setRooms(propertyDetailViewState.getPropertyDetailData().getRooms());
@@ -236,7 +224,7 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
                 setAgentEmail(propertyDetailViewState.getPropertyDetailData().getAgentEmail());
                 setAgentPhone(propertyDetailViewState.getPropertyDetailData().getAgentPhone());
                 setTypeName(propertyDetailViewState.getPropertyDetailData().getTypeName());
-                setPhotoLegend("");
+                setImageViewGoogleStaticMap(propertyDetailViewState.getStaticMapUrl());
                 // list photos
                 photoListAdapter.updateData(propertyDetailViewState.getPhotos());
             }
@@ -308,82 +296,20 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
         textViewType.setText(typeName);
     }
 
-    private void setPhotoLegend(String photoLegend) {
-        textViewPhotoLegend.setText(photoLegend);
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        String strPropertyId = (String) marker.getTag();
-        Log.d(Tag.TAG, "PropertyDetailFragment.onMarkerClick() propertyId = [" + strPropertyId + "]");
-        try {
-            long propertyId = Long.parseLong(strPropertyId);
-            callbackMap.OnMapClicked(propertyId);
-        } catch (NumberFormatException nfe) {
-            Log.e(Tag.TAG, "PropertyDetailFragment.onMarkerClick: " + nfe.getMessage());
-        }
-        return false;
-    }
-
-    private String formatTitleMarker(String addressTitle, int price){
-        return String.format("%s %s", addressTitle, Utils.convertPriceToString(price));
-    }
-
-    private void setOtherPropertiesLocation(List<PropertyLocationData> propertyLocationDataList){
-        Log.d(Tag.TAG, "PropertyDetailFragment.setOtherPropertiesLocation() (propertyLocationDataList==null)=" + (propertyLocationDataList == null));
-        if (propertyLocationDataList != null) {
-            this.otherPropertiesLocation.clear();
-            this.otherPropertiesLocation.addAll(propertyLocationDataList);
-            drawOtherPropertiesLocation();
-        }
-    }
-
-    private void drawOtherPropertiesLocation() {
-        Log.d(Tag.TAG, "PropertyDetailFragment.drawOtherPropertiesLocation() (mMap==null)=" + (mMap==null) + " (otherPropertiesLocation==null)=" + (otherPropertiesLocation==null));
-        if ((mMap != null) && (this.otherPropertiesLocation != null)) {
-            Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_primary_color, getContext().getTheme()));
-            for (PropertyLocationData propertyLocationData : otherPropertiesLocation) {
-                LatLng latlng = new LatLng(propertyLocationData.getLatitude(), propertyLocationData.getLongitude());
-                Marker marker = mMap.addMarker(new MarkerOptions()
-                        .position(latlng)
-                        .title(formatTitleMarker(propertyLocationData.getAddressTitle(), propertyLocationData.getPrice()))
-                        .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
-                String tag = String.format("%s", propertyLocationData.getId());
-                marker.setTag(tag);
-                mMap.setOnMarkerClickListener(this::onMarkerClick);
-            }
-        }
-    }
-
-    private void setCurrentPropertyLocation(PropertyLocationData currentPropertyLocation) {
-        this.currentPropertyLocation = currentPropertyLocation;
-        drawCurrentPropertylocation();
-    }
-
-    private void drawCurrentPropertylocation(){
-        Log.d(Tag.TAG, "PropertyDetailFragment.drawCurrentPropertylocation() (mMap==null)=" + (mMap==null) + " (currentPropertyLocation==null)=" + (currentPropertyLocation==null));
-        if ((mMap != null) && (currentPropertyLocation != null)) {
-            Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_dark_red, getContext().getTheme()));
-            LatLng latlng = new LatLng(currentPropertyLocation.getLatitude(), currentPropertyLocation.getLongitude());
-            mMap.addMarker(new MarkerOptions()
-                    .position(latlng)
-                    .title(formatTitleMarker(currentPropertyLocation.getAddressTitle(), currentPropertyLocation.getPrice()))
-                    .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
-        }
-    }
-
-    private void setUserLocation(Location userLocation){
-        this.userLocation = userLocation;
-        drawUserLocation();
-    }
-
-    private void drawUserLocation(){
-        Log.d(Tag.TAG, "PropertyDetailFragment.drawUserLocation() (mMap==null)=" + (mMap==null) + " (userLocation==null)=" + (userLocation==null));
-        if ((mMap!=null) && (this.userLocation != null)) {
-            LatLng latlng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
-            mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(latlng).title("Your position"));
+    private void setImageViewGoogleStaticMap(String url){
+        if ((url == null) || (url.trim().isEmpty())) {
+            // Clear picture
+            Glide.with(imageViewGoogleStaticMap.getContext())
+                    .load("")
+                    .placeholder(R.drawable.ic_signal_wifi_connected_no_internet)
+                    .apply(RequestOptions.fitCenterTransform())
+                    .into(imageViewGoogleStaticMap);
+        } else {
+            //load picture
+            Glide.with(imageViewGoogleStaticMap.getContext())
+                    .load(url)
+                    .apply(RequestOptions.fitCenterTransform())
+                    .into(imageViewGoogleStaticMap);
         }
     }
 
@@ -391,40 +317,17 @@ public class PropertyDetailFragment extends Fragment implements OnMapReadyCallba
     public void onStart() {
         super.onStart();
         Log.d(Tag.TAG, "PropertyDetailFragment.onStart() called");
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_property_detail_map);
-        assert mapFragment != null;
-        mapFragment.getMapAsync(this);
-    }
-
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        Log.d(Tag.TAG, "PropertyDetailFragment.onMapReady()");
-        mMap = googleMap;
-
-        UiSettings uiSettings = mMap.getUiSettings();
-        uiSettings.setZoomControlsEnabled(true);
-
-        if (this.userLocation != null) {
-            Log.d(Tag.TAG, "PropertyDetailFragment.onMapReady() -> setLocation()");
-
-            drawUserLocation();
-            drawCurrentPropertylocation();
-            drawOtherPropertiesLocation();
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.d(Tag.TAG, "PropertyDetailFragment.onResume()");
-        if ((mMap != null) && (this.userLocation != null) && (propertyDetailViewModel != null)) {
-
-            propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
-            if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
-                propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
-            }
-            Log.d(Tag.TAG, "PropertyDetailFragment.onResume() -> propertyDetailViewModel.load(" + propertyId + ")");
-            propertyDetailViewModel.load(propertyId);
+        propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
+        if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
+            propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
         }
+        Log.d(Tag.TAG, "PropertyDetailFragment.onResume() -> propertyDetailViewModel.load(" + propertyId + ")");
+        propertyDetailViewModel.load(propertyId);
     }
 }

@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.openclassrooms.realestatemanager.data.googlemaps.repository.GoogleStaticMapRepository;
 import com.openclassrooms.realestatemanager.data.location.LocationRepository;
 import com.openclassrooms.realestatemanager.data.permission_checker.PermissionChecker;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
@@ -30,9 +31,7 @@ public class PropertyDetailViewModel extends ViewModel {
     @NonNull
     private final DatabaseRepository databaseRepository;
     @NonNull
-    private final PermissionChecker permissionChecker;
-    @NonNull
-    private final LocationRepository locationRepository;
+    private final GoogleStaticMapRepository googleStaticMapRepository;
 
     /**
      * Mediator expose PropertyListViewState
@@ -40,50 +39,24 @@ public class PropertyDetailViewModel extends ViewModel {
     private final MediatorLiveData<PropertyDetailViewState> propertyDetailViewStateMediatorLiveData = new MediatorLiveData<>();
     public LiveData<PropertyDetailViewState> getViewState() { return propertyDetailViewStateMediatorLiveData; }
 
-    public PropertyDetailViewModel(@NonNull PermissionChecker permissionChecker,
-                                   @NonNull LocationRepository locationRepository,
-                                   @NonNull DatabaseRepository databaseRepository) {
-        this.permissionChecker = permissionChecker;
-        this.locationRepository = locationRepository;
+    public PropertyDetailViewModel(@NonNull DatabaseRepository databaseRepository,
+                                   @NonNull GoogleStaticMapRepository googleStaticMapRepository) {
         this.databaseRepository = databaseRepository;
+        this.googleStaticMapRepository = googleStaticMapRepository;
     }
 
     private void configureMediatorLiveData(long propertyId) {
         Log.d(Tag.TAG, "PropertyDetailViewModel.configureMediatorLiveData(propertyId=" + propertyId + ")");
         // Property detail with agent information, and type
         LiveData<PropertyDetailData> propertyDetailDataLiveData = databaseRepository.getPropertyRepository().getPropertyDetailByIdLiveData(propertyId);
-        // other properties location
-        LiveData<List<PropertyLocationData>> propertyLocationDataLiveData = databaseRepository.getPropertyRepository().getOtherPropertiesLocationById(propertyId);
-        // user location
-        LiveData<Location> locationLiveData = locationRepository.getLocationLiveData();
         // photos
         LiveData<List<Photo>> photosLiveData = databaseRepository.getPhotoRepository().getPhotosByPropertyId(propertyId);
 
-        // must remove source to avoid bug "This source was already added with the different observer"
-        propertyDetailViewStateMediatorLiveData.removeSource(locationLiveData);
-        propertyDetailViewStateMediatorLiveData.addSource(locationLiveData, location -> {
-            if (location != null) {
-                combine(location,
-                        propertyDetailDataLiveData.getValue(),
-                        propertyLocationDataLiveData.getValue(),
-                        photosLiveData.getValue());
-            }
-        });
+        propertyDetailViewStateMediatorLiveData.addSource(propertyDetailDataLiveData,
+                propertyDetailData -> combine(propertyDetailData, photosLiveData.getValue()));
 
-        propertyDetailViewStateMediatorLiveData.addSource(propertyDetailDataLiveData, propertyDetailData -> combine(locationLiveData.getValue(),
-                propertyDetailData,
-                propertyLocationDataLiveData.getValue(),
-                photosLiveData.getValue()));
-
-        propertyDetailViewStateMediatorLiveData.addSource(propertyLocationDataLiveData, propertyLocationData -> combine(locationLiveData.getValue(),
-                propertyDetailDataLiveData.getValue(),
-                propertyLocationData,
-                photosLiveData.getValue()));
-
-        propertyDetailViewStateMediatorLiveData.addSource(photosLiveData, photos -> combine(locationLiveData.getValue(),
-                propertyDetailDataLiveData.getValue(),
-                propertyLocationDataLiveData.getValue(),
-                photos));
+        propertyDetailViewStateMediatorLiveData.addSource(photosLiveData,
+                photos -> combine(propertyDetailDataLiveData.getValue(), photos));
     }
 
     public LiveData<Long> getFirstOrValidId(long initialId){
@@ -93,26 +66,13 @@ public class PropertyDetailViewModel extends ViewModel {
 
     public void load(long propertyId){
         Log.d(Tag.TAG, "PropertyDetailViewModel.load(" + propertyId + ")");
-        refreshLocation();
         configureMediatorLiveData(propertyId);
     }
 
-    @SuppressLint("MissingPermission")
-    private void refreshLocation() {
-        // No GPS permission
-        if (!permissionChecker.hasLocationPermission()) {
-            locationRepository.stopLocationRequest();
-        } else {
-            locationRepository.startLocationRequest();
-        }
-    }
-
-    private void combine(@Nullable Location location,
-                         @Nullable PropertyDetailData propertyDetailData,
-                         @Nullable List<PropertyLocationData> otherPropertiesLocation,
+    private void combine(@Nullable PropertyDetailData propertyDetailData,
                          @Nullable List<Photo> photos){
 
-        if (location == null || propertyDetailData == null || photos == null) {
+        if (propertyDetailData == null || photos == null) {
             return;
         }
         Log.d(Tag.TAG, "PropertyDetailViewModel.combine() called");
@@ -128,15 +88,12 @@ public class PropertyDetailViewModel extends ViewModel {
         String entryDate = Utils.convertDateToString(propertyDetailData.getEntryDate());
         String saleDate = Utils.convertDateToString(propertyDetailData.getSaleDate());
 
-        PropertyLocationData currentPropertyLocation = new PropertyLocationData(propertyDetailData.getId(),
-                propertyDetailData.getPrice(),
-                propertyDetailData.getAddressTitle(),
-                propertyDetailData.getLatitude(),
-                propertyDetailData.getLongitude());
+        // googleStaticMapRepository is not async so we can call it in combine
+        String googleStaticMapUrl = googleStaticMapRepository.getUrlImage(propertyDetailData.getLatitude(), propertyDetailData.getLongitude());
 
         // ViewModel emit ViewState
-        propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(location,
-                propertyDetailData, currentPropertyLocation, otherPropertiesLocation, photos, propertyState, entryDate, saleDate));
+        propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(propertyDetailData,
+                photos, propertyState, entryDate, saleDate, googleStaticMapUrl));
     }
 }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.LocationServices;
 import com.openclassrooms.realestatemanager.MainApplication;
+import com.openclassrooms.realestatemanager.data.googlemaps.repository.GoogleStaticMapRepository;
 import com.openclassrooms.realestatemanager.data.location.LocationRepository;
 import com.openclassrooms.realestatemanager.data.permission_checker.PermissionChecker;
 import com.openclassrooms.realestatemanager.data.room.injection.InjectionDao;
@@ -17,11 +18,9 @@ public class PropertyDetailViewModelFactory implements ViewModelProvider.Factory
     private volatile static PropertyDetailViewModelFactory sInstance;
 
     @NonNull
-    private final PermissionChecker permissionChecker;
-    @NonNull
-    private final LocationRepository locationRepository;
-    @NonNull
     private final DatabaseRepository databaseRepository;
+    @NonNull
+    private final GoogleStaticMapRepository googleStaticMapRepository;
 
 
     public static PropertyDetailViewModelFactory getInstance() {
@@ -30,9 +29,8 @@ public class PropertyDetailViewModelFactory implements ViewModelProvider.Factory
             synchronized (PropertyDetailViewModelFactory.class) {
                 if (sInstance == null) {
                     //Application application = MainApplication.getApplication();
-                    sInstance = new PropertyDetailViewModelFactory(new PermissionChecker(MainApplication.getApplication()),
-                                                                   new LocationRepository(LocationServices.getFusedLocationProviderClient(MainApplication.getApplication())),
-                                                                   InjectionDao.getDatabaseRepository(MainApplication.getApplication()));
+                    sInstance = new PropertyDetailViewModelFactory(InjectionDao.getDatabaseRepository(MainApplication.getApplication()),
+                            new GoogleStaticMapRepository(MainApplication.getGoogleApiKey()));
                 }
             }
         }
@@ -40,22 +38,17 @@ public class PropertyDetailViewModelFactory implements ViewModelProvider.Factory
         return sInstance;
     }
 
-    private PropertyDetailViewModelFactory(
-            @NonNull PermissionChecker permissionChecker,
-            @NonNull LocationRepository locationRepository,
-            @NonNull DatabaseRepository databaseRepository) {
-        this.permissionChecker = permissionChecker;
-        this.locationRepository = locationRepository;
+    private PropertyDetailViewModelFactory(@NonNull DatabaseRepository databaseRepository,
+                                           @NonNull GoogleStaticMapRepository googleStaticMapRepository) {
         this.databaseRepository = databaseRepository;
+        this.googleStaticMapRepository = googleStaticMapRepository;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(PropertyDetailViewModel.class)) {
-            return (T) new PropertyDetailViewModel(permissionChecker,
-                                                   locationRepository,
-                                                   databaseRepository);
+            return (T) new PropertyDetailViewModel(databaseRepository, googleStaticMapRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class : " + modelClass);
     }
