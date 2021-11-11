@@ -100,6 +100,10 @@ public class CachePropertyEditViewModel {
         return getInvalidePhotoCaptionCount() == 0;
     }
 
+    public void clearFields(){
+        fields.clear();
+    }
+
     public void setValue(FieldKey key, String value){
         fields.setValue(key, value);
     }
@@ -108,7 +112,59 @@ public class CachePropertyEditViewModel {
         return fields.getValue(key);
     }
 
-    public void clearFields(){
-        fields.clear();
+    /**
+     * if cache exist get cache value else get database value
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+
+    public String getValue(FieldKey key, String defaultValue){
+        String cacheValue = getValue(key);
+        Log.d(Tag.TAG, "cache.getValue() key = [" + key + "] cacheValue + [" + cacheValue + "] defaultValue = [" + debugString(defaultValue) + "]");
+        String result = (cacheValue == null) ? defaultValue : cacheValue;
+        return  result;
+    }
+
+    public long getValue(FieldKey key, long defaultValue){
+        String cacheValue = getValue(key);
+        long result = 0;
+        if (cacheValue == null) {
+            result = defaultValue;
+        } else {
+            cacheValue = cacheValue.trim();
+            if (cacheValue.isEmpty()) {
+                result = defaultValue;
+            } else {
+                result = Long.parseLong(cacheValue);
+            }
+        }
+        return result;
+    }
+
+    public double getValue(FieldKey key, double defaultValue){
+        String cacheValue = getValue(key);
+        double result = 0;
+        if (cacheValue == null) {
+            result = defaultValue;
+        } else {
+            cacheValue = cacheValue.trim();
+            if (cacheValue.isEmpty()) {
+                result = defaultValue;
+            } else {
+                result = Double.parseDouble(cacheValue);
+            }
+        }
+        return result;
+    }
+
+    private String debugString(String value) {
+        final int MAX_CAR = 20;
+        if ((value == null) || (value.length() <= MAX_CAR)){
+            return value;
+        }
+        else {
+            return value.substring(0, MAX_CAR) + "...";
+        }
     }
 }

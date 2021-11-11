@@ -737,6 +737,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     }
 
     private void setPhotos(List<Photo> photos){
+        Log.d(Tag.TAG, "PropertyEditFragment.setPhotos() called with: photos = [" + photos + "]");
         photoListAdapter.updateData(photos);
     }
 

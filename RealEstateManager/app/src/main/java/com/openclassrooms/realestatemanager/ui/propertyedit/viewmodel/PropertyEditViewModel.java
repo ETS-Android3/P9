@@ -171,77 +171,6 @@ public class PropertyEditViewModel extends ViewModel {
         return mediatorLiveData;
     }
 
-    private String debugString(String value) {
-        final int MAX_CAR = 20;
-        if ((value == null) || (value.length() <= MAX_CAR)){
-            return value;
-        }
-        else {
-            return value.substring(0, MAX_CAR) + "...";
-        }
-    }
-
-    /**
-     * if cache exist get cache value else get database value.
-     * @param cacheKey
-     * @param databaseValue
-     * @return
-     */
-    private String getLastValue(FieldKey cacheKey, String databaseValue){
-        String cacheValue = cache.getValue(cacheKey);
-
-        if (cacheKey == FieldKey.ENTRY_DATE) {
-            Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() cacheKey = [" + cacheKey + "] cacheValue + [" + cacheValue + "]");
-            Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() databaseValue = [" + debugString(databaseValue) + "]"); }
-
-        String result = (cacheValue == null) ? databaseValue : cacheValue;
-        if (cacheKey == FieldKey.ENTRY_DATE)
-            Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() return = [" + debugString(result) + "]");
-        return  result;
-    }
-
-    /**
-     * if cache exist get cache value else get database value
-     * @param cacheKey
-     * @param databaseValue
-     * @return
-     */
-    private long getLastValue(FieldKey cacheKey, long databaseValue){
-        String cacheValue = cache.getValue(cacheKey);
-
-        if (cacheKey == FieldKey.PROPERTY_TYPE_ID)
-            Log.d(Tag.TAG, "PropertyEditViewModel.getLastValue() return = [" + debugString(cacheValue) + "]");
-
-        long result = 0;
-        if (cacheValue == null) {
-            result = databaseValue;
-        } else {
-            cacheValue = cacheValue.trim();
-            if (cacheValue.isEmpty()) {
-                result = databaseValue;
-            } else {
-                result = Long.parseLong(cacheValue);
-            }
-        }
-        return result;
-    }
-
-    private double getLastValue(FieldKey cacheKey, double databaseValue){
-        String cacheValue = cache.getValue(cacheKey);
-        double result = 0;
-        if (cacheValue == null) {
-            result = databaseValue;
-        } else {
-            cacheValue = cacheValue.trim();
-            if (cacheValue.isEmpty()) {
-                result = databaseValue;
-            } else {
-                result = Double.parseDouble(cacheValue);
-            }
-        }
-        return result;
-    }
-
     private PropertyEditViewState createViewStateFromCacheAndDatabase(PropertyDetailData propertyDetailData,
                                              List<Photo> databasePhotos,
                                              List<Photo> pendingPhotos,
@@ -263,20 +192,20 @@ public class PropertyEditViewModel extends ViewModel {
         String databaseRooms = Integer.toString(propertyDetailData.getRooms());
 
         // get values from cache or from database ?
-        String addressTitle = getLastValue(FieldKey.ADDRESS_TITLE, propertyDetailData.getAddressTitle());
-        String address = getLastValue(FieldKey.ADDRESS, propertyDetailData.getAddress());
-        String description = getLastValue(FieldKey.DESCRIPTION, propertyDetailData.getDescription());
-        String pointOfInterest = getLastValue(FieldKey.POINT_OF_INTEREST, propertyDetailData.getPointsOfInterest());
-        String price = getLastValue(FieldKey.PRICE, databasePrice);
-        String surface = getLastValue(FieldKey.SURFACE, databaseSurface);
-        String rooms = getLastValue(FieldKey.ROOMS, databaseRooms);
-        String entryDate = getLastValue(FieldKey.ENTRY_DATE, databaseEntryDate);
-        String saleDate = getLastValue(FieldKey.SALE_DATE, databaseSaleDate);
+        String addressTitle = cache.getValue(FieldKey.ADDRESS_TITLE, propertyDetailData.getAddressTitle());
+        String address = cache.getValue(FieldKey.ADDRESS, propertyDetailData.getAddress());
+        String description = cache.getValue(FieldKey.DESCRIPTION, propertyDetailData.getDescription());
+        String pointOfInterest = cache.getValue(FieldKey.POINT_OF_INTEREST, propertyDetailData.getPointsOfInterest());
+        String price = cache.getValue(FieldKey.PRICE, databasePrice);
+        String surface = cache.getValue(FieldKey.SURFACE, databaseSurface);
+        String rooms = cache.getValue(FieldKey.ROOMS, databaseRooms);
+        String entryDate = cache.getValue(FieldKey.ENTRY_DATE, databaseEntryDate);
+        String saleDate = cache.getValue(FieldKey.SALE_DATE, databaseSaleDate);
 
-        long agentId = getLastValue(FieldKey.AGENT_ID, propertyDetailData.getAgentId());
-        String agentName = getLastValue(FieldKey.AGENT_NAME, propertyDetailData.getAgentName());
-        long propertyTypeId = getLastValue(FieldKey.PROPERTY_TYPE_ID, propertyDetailData.getPropertyTypeId());
-        String propertyTypeName = getLastValue(FieldKey.PROPERTY_TYPE_NAME, propertyDetailData.getTypeName());
+        long agentId = cache.getValue(FieldKey.AGENT_ID, propertyDetailData.getAgentId());
+        String agentName = cache.getValue(FieldKey.AGENT_NAME, propertyDetailData.getAgentName());
+        long propertyTypeId = cache.getValue(FieldKey.PROPERTY_TYPE_ID, propertyDetailData.getPropertyTypeId());
+        String propertyTypeName = cache.getValue(FieldKey.PROPERTY_TYPE_NAME, propertyDetailData.getTypeName());
 
         return new PropertyEditViewState(
                 addressTitle,
@@ -299,6 +228,7 @@ public class PropertyEditViewModel extends ViewModel {
     }
 
     private PropertyEditViewState createViewStateFromCache(List<Photo> pendingPhotos){
+        Log.d(Tag.TAG, "PropertyEditViewModel.createViewStateFromCache() called with: pendingPhotos = [" + pendingPhotos + "]");
         // merge photo
         List<Photo> photos = new ArrayList<>();
         if (pendingPhotos != null) {
@@ -315,13 +245,13 @@ public class PropertyEditViewModel extends ViewModel {
         String entryDate = cache.getValue(FieldKey.ENTRY_DATE);
         String saleDate = cache.getValue(FieldKey.SALE_DATE);
 
-        long agentId = getLastValue(FieldKey.AGENT_ID, 0);
+        long agentId = cache.getValue(FieldKey.AGENT_ID, 0);
         String agentName = cache.getValue(FieldKey.AGENT_NAME);
-        long propertyTypeId = getLastValue(FieldKey.PROPERTY_TYPE_ID, 0);
+        long propertyTypeId = cache.getValue(FieldKey.PROPERTY_TYPE_ID, 0);
         String propertyTypeName = cache.getValue(FieldKey.PROPERTY_TYPE_NAME);
 
-        double latitude = getLastValue(FieldKey.LATITUDE, 0f);
-        double longitude = getLastValue(FieldKey.LONGITUDE, 0f);
+        double latitude = cache.getValue(FieldKey.LATITUDE, 0f);
+        double longitude = cache.getValue(FieldKey.LONGITUDE, 0f);
         String googleStaticMapUrl = googleStaticMapRepository.getUrlImage(latitude, longitude);
 
         return new PropertyEditViewState(
@@ -352,7 +282,6 @@ public class PropertyEditViewModel extends ViewModel {
         Log.d(Tag.TAG, "PropertyEditViewModel.combine() called with: propertyId = [" + propertyId + "], propertyDetailData = [" + propertyDetailData + "], databasePhotos = [" + databasePhotos + "], pendingPhotos = [" + pendingPhotos + "]");
 
         if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
-            Log.d(Tag.TAG, "combine() !!! return empty viewstate without");
             PropertyEditViewState propertyEditViewState = createViewStateFromCache(pendingPhotos);
             //PropertyEditViewState propertyEditViewState = new PropertyEditViewState(pendingPhotos);
             // todo : get cache !
