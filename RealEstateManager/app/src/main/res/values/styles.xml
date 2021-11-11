@@ -108,7 +108,7 @@
         <item name="android:layout_marginBottom">0dp</item>
         <item name="android:layout_marginStart">@dimen/default_margin</item>
         <item name="android:layout_marginEnd">@dimen/default_margin</item>
-        <item name="android:background">@color/primaryColor</item>
+        <item name="android:background">@drawable/rounded_image_button</item>
     </style>
 
 
