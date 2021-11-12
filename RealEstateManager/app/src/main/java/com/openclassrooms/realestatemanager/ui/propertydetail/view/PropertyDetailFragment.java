@@ -282,7 +282,6 @@ public class PropertyDetailFragment extends Fragment {
             Glide.with(imageViewGoogleStaticMap.getContext())
                     .load("")
                     .placeholder(R.drawable.ic_signal_wifi_connected_no_internet)
-                    .apply(RequestOptions.fitCenterTransform())
                     .into(imageViewGoogleStaticMap);
         } else {
             //load picture

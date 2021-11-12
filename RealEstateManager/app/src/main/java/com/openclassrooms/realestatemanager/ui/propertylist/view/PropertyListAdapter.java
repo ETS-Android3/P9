@@ -61,7 +61,6 @@ public class PropertyListAdapter extends RecyclerView.Adapter<PropertyListViewHo
             Glide.with(holder.image.getContext())
                     .load("")
                     .placeholder(R.drawable.ic_house)
-                    .apply(RequestOptions.fitCenterTransform())
                     .into(holder.image);
         } else {
             //load picture

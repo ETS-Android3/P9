@@ -87,22 +87,26 @@ public class GoogleGeocodeRepository {
 
     public LiveData<LatLng> getLocationByAddressLiveData(String address){
         MutableLiveData<LatLng> latLngMutableLiveData = new MutableLiveData<>();
-        Call<Geocode> call = getGeocode(address);
-        call.enqueue(new Callback<Geocode>() {
-            @Override
-            public void onResponse(Call<Geocode> call, Response<Geocode> response) {
-                if (response.isSuccessful()) {
-                    Geocode geocode = response.body();
-                    LatLng latLng = extractLocation(geocode);
-                    latLngMutableLiveData.setValue(latLng);
+        if (address.trim().isEmpty()) {
+            latLngMutableLiveData.setValue(new LatLng(0f, 0f));
+        } else {
+            Call<Geocode> call = getGeocode(address);
+            call.enqueue(new Callback<Geocode>() {
+                @Override
+                public void onResponse(Call<Geocode> call, Response<Geocode> response) {
+                    if (response.isSuccessful()) {
+                        Geocode geocode = response.body();
+                        LatLng latLng = extractLocation(geocode);
+                        latLngMutableLiveData.setValue(latLng);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Geocode> call, Throwable t) {
-                errorMutableLiveData.postValue(t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<Geocode> call, Throwable t) {
+                    errorMutableLiveData.postValue(t.getMessage());
+                }
+            });
+        }
         return latLngMutableLiveData;
     }
 

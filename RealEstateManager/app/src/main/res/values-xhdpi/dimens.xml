@@ -13,4 +13,5 @@
     <dimen name="three_text_line2_text_size">16dp</dimen>
     <dimen name="three_text_line3_text_size">16dp</dimen>
 
+    <dimen name="image_map_height">350dp</dimen>
 </resources>

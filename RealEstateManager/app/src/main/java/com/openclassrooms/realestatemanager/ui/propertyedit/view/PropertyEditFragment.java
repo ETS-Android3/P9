@@ -304,16 +304,19 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     private void setImageViewGoogleStaticMap(String url){
         if ((url == null) || (url.trim().isEmpty())) {
             // Clear picture
+            imageViewGoogleStaticMap.setVisibility(View.GONE);
+            imageViewGoogleStaticMap.setMaxHeight(100);
             Glide.with(imageViewGoogleStaticMap.getContext())
                     .load("")
-                    .placeholder(R.drawable.ic_signal_wifi_connected_no_internet)
-                    .apply(RequestOptions.fitCenterTransform())
+                    .placeholder(R.drawable.ic_location)
                     .into(imageViewGoogleStaticMap);
+            imageViewGoogleStaticMap.setMaxWidth(100);
         } else {
             //load picture
+            imageViewGoogleStaticMap.setVisibility(View.VISIBLE);
             Glide.with(imageViewGoogleStaticMap.getContext())
                     .load(url)
-                    .apply(RequestOptions.fitCenterTransform())
+                    .centerCrop()
                     .into(imageViewGoogleStaticMap);
         }
     }

@@ -183,13 +183,12 @@ public class PhotoEditDialogFragment extends DialogFragment {
             Glide.with(imageViewPhoto.getContext())
                     .load("")
                     .placeholder(R.drawable.ic_house)
-                    .apply(RequestOptions.fitCenterTransform())
                     .into(imageViewPhoto);
         } else {
             //load restaurant picture
             Glide.with(imageViewPhoto.getContext())
                     .load(uri)
-                    .apply(RequestOptions.fitCenterTransform())
+                    .centerCrop()
                     .into(imageViewPhoto);
         }
     }

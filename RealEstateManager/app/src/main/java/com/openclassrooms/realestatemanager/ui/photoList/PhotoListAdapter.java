@@ -84,13 +84,12 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListViewHolder> 
             Glide.with(holder.image.getContext())
                     .load("")
                     .placeholder(R.drawable.ic_house)
-                    .apply(RequestOptions.fitCenterTransform())
-                    .into(holder.image);
+                     .into(holder.image);
         } else {
             //load restaurant picture
             Glide.with(holder.image.getContext())
                     .load(photo.getUrl())
-                    .apply(RequestOptions.fitCenterTransform())
+                    .centerCrop()
                     .into(holder.image);
         }
     }
