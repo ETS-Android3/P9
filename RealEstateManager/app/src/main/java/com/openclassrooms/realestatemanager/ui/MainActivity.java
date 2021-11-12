@@ -49,8 +49,6 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
-    private static final int LOAD_FIRST_PROPERTY = -1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
