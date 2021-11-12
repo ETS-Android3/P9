@@ -24,6 +24,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding;
+import com.openclassrooms.realestatemanager.databinding.FragmentPropertyDetailBinding;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.photoList.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.ui.propertydetail.listener.OnEditPropertyListener;
@@ -40,23 +42,10 @@ import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.Property
  */
 public class PropertyDetailFragment extends Fragment {
 
+    private FragmentPropertyDetailBinding binding;
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private long propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
 
-    TextView textViewPrice;
-    TextView textViewSurface;
-    TextView textViewRooms;
-    TextView textViewDescription;
-    TextView textViewAddressTitle;
-    TextView textViewAddress;
-    TextView textViewPointOfInterest;
-    TextView textViewState;
-    TextView textViewEntryDate;
-    TextView textViewSaleDate;
-    TextView textViewAgentName;
-    TextView textViewAgentEmail;
-    TextView textViewAgentPhone;
-    TextView textViewType;
     private ImageView imageViewGoogleStaticMap;
 
     private PropertyDetailViewModel propertyDetailViewModel;
@@ -116,13 +105,17 @@ public class PropertyDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        // Inflate the layout for this fragment
+        //View view = inflater.inflate(R.layout.fragment_property_detail, container, false);
+        binding = FragmentPropertyDetailBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+
         propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
         if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
             propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
         }
         Log.d(Tag.TAG, "PropertyDetailFragment.onCreateView() propertyId=" + propertyId + "");
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_property_detail, container, false);
         configureComponents(view);
         configureRecyclerView(view);
         configureBottomNavigationBar(view);
@@ -137,20 +130,6 @@ public class PropertyDetailFragment extends Fragment {
     }
 
     private void configureComponents(View view){
-        textViewPrice = view.findViewById(R.id.property_detail_prive_value);
-        textViewSurface = view.findViewById(R.id.property_detail_surface_value);
-        textViewRooms = view.findViewById(R.id.property_detail_rooms_value);
-        textViewDescription = view.findViewById(R.id.property_detail_description_value);
-        textViewAddressTitle = view.findViewById(R.id.property_detail_address_title_value);
-        textViewAddress = view.findViewById(R.id.property_detail_address_value);
-        textViewPointOfInterest = view.findViewById(R.id.property_detail_point_of_interest_value);
-        textViewState = view.findViewById(R.id.property_detail_state_value);
-        textViewEntryDate = view.findViewById(R.id.property_detail_entry_date_value);
-        textViewSaleDate = view.findViewById(R.id.property_detail_sale_date_value);
-        textViewAgentName = view.findViewById(R.id.property_detail_agent_name_value);
-        textViewAgentEmail = view.findViewById(R.id.property_detail_agent_email_value);
-        textViewAgentPhone = view.findViewById(R.id.property_detail_agent_phone_value);
-        textViewType = view.findViewById(R.id.property_detail_type_value);
         imageViewGoogleStaticMap = view.findViewById(R.id.fragment_property_detail_image_view_map);
     }
 
@@ -221,59 +200,59 @@ public class PropertyDetailFragment extends Fragment {
     }
 
     private void setPrice(int price){
-        textViewPrice.setText(Utils.convertPriceToString(price));
+        binding.propertyDetailPriveValue.setText(Utils.convertPriceToString(price));
     }
 
     private void setSurface(int surface){
-        textViewSurface.setText(Utils.convertSurfaceToString(surface));
+        binding.propertyDetailSurfaceValue.setText(Utils.convertSurfaceToString(surface));
     }
 
     private void setRooms(int rooms){
-        textViewRooms.setText(String.format("%d", rooms));
+        binding.propertyDetailRoomsValue.setText(String.format("%d", rooms));
     }
 
     private void setDescription(String description){
-        textViewDescription.setText(description);
+        binding.propertyDetailDescriptionValue.setText(description);
     }
 
     private void setAddressTitle(String addressTitle){
-        textViewAddressTitle.setText(addressTitle);
+        binding.propertyDetailAddressTitleValue.setText(addressTitle);
     }
 
     private void setAddress(String address){
-        textViewAddress.setText(address);
+        binding.propertyDetailAddressValue.setText(address);
     }
 
     private void setPointOfInterest(String pointOfInterest){
-        textViewPointOfInterest.setText(pointOfInterest);
+        binding.propertyDetailPointOfInterestValue.setText(pointOfInterest);
     }
 
     private void setState(String available){
-        textViewState.setText(available);
+        binding.propertyDetailStateValue.setText(available);
     }
 
     private void setEntryDate(String entryDate) {
-        textViewEntryDate.setText(entryDate);
+        binding.propertyDetailEntryDateValue.setText(entryDate);
     }
 
     private void setSaleDate(String saleDate){
-        textViewSaleDate.setText(saleDate);
+        binding.propertyDetailSaleDateValue.setText(saleDate);
     }
 
     private void setAgentName(String agentName) {
-        textViewAgentName.setText(agentName);
+        binding.propertyDetailAgentNameValue.setText(agentName);
     }
 
     private void setAgentEmail(String agentEmail) {
-        textViewAgentEmail.setText(agentEmail);
+        binding.propertyDetailAgentEmailValue.setText(agentEmail);
     }
 
     private void setAgentPhone(String agentPhone) {
-        textViewAgentPhone.setText(agentPhone);
+        binding.propertyDetailAgentPhoneValue.setText(agentPhone);
     }
 
     private void setTypeName(String typeName) {
-        textViewType.setText(typeName);
+        binding.propertyDetailTypeValue.setText(typeName);
     }
 
     private void setImageViewGoogleStaticMap(String url){

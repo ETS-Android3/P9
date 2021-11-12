@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/detail_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -291,13 +292,6 @@
                     android:text="@string/property_agent_phone_value"
                     style="@style/TextviewStyle.Value"/>
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/property_detail_photo_legend"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/property_photo_legend"
-                style="@style/TextviewStyle.Label"/>
         </LinearLayout>
     </ScrollView>
     <com.google.android.material.bottomnavigation.BottomNavigationView
