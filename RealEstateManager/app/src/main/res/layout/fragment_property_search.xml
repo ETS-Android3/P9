@@ -13,17 +13,27 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginBottom="@dimen/default_margin"
         android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toTopOf="@+id/button2" />
+        app:layout_constraintBottom_toTopOf="@+id/fragment_property_search_reset_all" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/fragment_property_search_reset_all"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="@dimen/default_margin"
         android:text="@string/reset_all"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/fragment_property_search_apply"/>
+
+    <Button
+        android:id="@+id/fragment_property_search_apply"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:text="@string/apply"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,7 +41,6 @@ import com.openclassrooms.realestatemanager.utils.LandscapeHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends AppCompatActivity implements OnPropertySelectedListener,
-                                                               OnAddPropertyListener,
                                                                OnEditPropertyListener,
                                                                PropertyEditListener,
                                                                OnMapListener {
@@ -101,6 +100,9 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
+            case R.id.menu_item_toolbar_add:
+                navToAdd();
+                return true;
             case R.id.menu_item_toolbar_map:
                 navToMap();
                 return true;
@@ -173,23 +175,6 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyDetailFragment,
                     PropertyBundle.createDetailBundle(propertyId));
-        }
-    }
-
-    @Override
-    public void onAddPropertyClicked() {
-        Log.d(Tag.TAG, "MainActivity.onAddPropertyCLicked() called");
-
-        if (LandscapeHelper.isLandscape()) {
-            Log.d(Tag.TAG, "MainActivity.onAddPropertyCLicked() isLandscape");
-            navToEditWithLandscapeOrientation(PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
-        }
-        else {
-            Log.d(Tag.TAG, "MainActivity.onAddPropertyCLicked() isLandscape = false");
-
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyEditFragment,
-                    PropertyBundle.createEditBundle(PropertyConst.PROPERTY_ID_NOT_INITIALIZED));
         }
     }
 
@@ -299,6 +284,21 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
         NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
         navController.navigate(R.id.propertyEditFragment, PropertyBundle.createEditBundle(propertyId));
+    }
+
+    private void navToAdd(){
+        Log.d(Tag.TAG, "navToAdd() called");
+        if (LandscapeHelper.isLandscape()) {
+            Log.d(Tag.TAG, "MainActivity.onAddPropertyCLicked() isLandscape");
+            navToEditWithLandscapeOrientation(PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
+        }
+        else {
+            Log.d(Tag.TAG, "MainActivity.onAddPropertyCLicked() isLandscape = false");
+
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyEditFragment,
+                    PropertyBundle.createEditBundle(PropertyConst.PROPERTY_ID_NOT_INITIALIZED));
+        }
     }
 
     private void navToMap(){

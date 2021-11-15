@@ -18,11 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
-import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnAddPropertyListener;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnPropertySelectedListener;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnRowPropertyClickListener;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewmodel.PropertyListViewModel;
@@ -39,17 +36,11 @@ public class PropertyListFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     PropertyListAdapter propertyListAdapter;
-    // PropertyListFragmentArgs
-    // PropertyListFragmentDirections
 
     /**
      * this interface is for sending propertyId to MainActivity
      */
     private OnPropertySelectedListener callbackPropertySelected;
-
-    /** this interface is for adding new property
-     */
-    private OnAddPropertyListener callbackAddProperty;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -60,11 +51,6 @@ public class PropertyListFragment extends Fragment {
     private void createCallbackToParentActivity() {
         try {
             callbackPropertySelected = (OnPropertySelectedListener) getActivity();
-        } catch (ClassCastException e) {
-            throw new ClassCastException(e.toString() + "must implement OnPropertyClickedListener");
-        }
-        try {
-            callbackAddProperty = (OnAddPropertyListener) getActivity();
         } catch (ClassCastException e) {
             throw new ClassCastException(e.toString() + "must implement OnPropertyClickedListener");
         }
@@ -94,7 +80,6 @@ public class PropertyListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_list, container, false);
         configureRecyclerView(view);
-        configureBottomNavigationBar(view);
         return view;
     }
 
@@ -125,25 +110,6 @@ public class PropertyListFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
-    }
-
-    private void configureBottomNavigationBar(View view) {
-        BottomNavigationView bottomNavigationView = view.findViewById(R.id.fragment_property_list_bottom_navigation_view);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                return navigate(item);
-            }
-        });
-    }
-
-    private boolean navigate(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_propertyEditFragment:
-                callbackAddProperty.onAddPropertyClicked();
-                return true;
-        }
-        return false;
     }
 
     private void configureViewModel() {
