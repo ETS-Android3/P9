@@ -47,5 +47,9 @@
             android:id="@+id/action_propertyMapsFragment_to_nav_propertyDetailFragment"
             app:destination="@id/nav_propertyDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/propertySearchFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.propertysearch.view.PropertySearchFragment"
+        android:label="@string/search" />
 
 </navigation>

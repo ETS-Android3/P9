@@ -20,6 +20,36 @@ public interface PropertyDao {
     @Query("SELECT * FROM property ORDER BY property.id")
     LiveData<List<Property>> getProperties();
 
+    @Query("SELECT * FROM property ORDER BY property.price ASC, property.entry_date DESC, property.id")
+    LiveData<List<Property>> getPropertiesOrderByPriceAsc();
+
+    @Query("SELECT * FROM property ORDER BY property.price DESC, property.entry_date DESC, property.id")
+    LiveData<List<Property>> getPropertiesOrderByPriceDesc();
+
+    @Query("SELECT * FROM property ORDER BY property.surface ASC, property.entry_date DESC, property.id")
+    LiveData<List<Property>> getPropertiesOrderBySurfaceAsc();
+
+    @Query("SELECT * FROM property ORDER BY property.surface DESC, property.entry_date DESC, property.id")
+    LiveData<List<Property>> getPropertiesOrderBySurfaceDesc();
+
+    @Query("SELECT * FROM property ORDER BY property.rooms ASC, property.entry_date DESC, property.id")
+    LiveData<List<Property>> getPropertiesOrderByRoomsAsc();
+
+    @Query("SELECT * FROM property ORDER BY property.rooms DESC, property.entry_date DESC, property.id")
+    LiveData<List<Property>> getPropertiesOrderByRoomsDesc();
+
+    @Query("SELECT * FROM property ORDER BY property.entry_date ASC, property.entry_date DESC, property.id")
+    LiveData<List<Property>> getPropertiesOrderByEntryDateAsc();
+
+    @Query("SELECT * FROM property ORDER BY property.entry_date DESC, property.id")
+    LiveData<List<Property>> getPropertiesOrderByEntryDateDesc();
+
+    @Query("SELECT * FROM property ORDER BY property.sale_date ASC, property.entry_date DESC, property.id")
+    LiveData<List<Property>> getPropertiesOrderBySaleDateAsc();
+
+    @Query("SELECT * FROM property ORDER BY property.sale_date DESC, property.entry_date DESC, property.id")
+    LiveData<List<Property>> getPropertiesOrderBySaleDateDesc();
+
     @Query("SELECT * FROM property WHERE property.id = :id")
     LiveData<Property> getPropertyById(Long id);
 

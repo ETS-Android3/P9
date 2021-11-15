@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
                 navToMap();
                 return true;
             case R.id.menu_item_toolbar_search:
+                navToSearch();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -312,5 +313,19 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             navController.navigate(R.id.propertyMapsFragment);
         }
     }
+
+    private void navToSearch() {
+        Log.d(Tag.TAG, "navToSearch() called");
+        if (LandscapeHelper.isLandscape()) {
+            //navToDetailWithLandscapeOrientation(propertyId);
+            NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
+            navController.navigate(R.id.propertySearchFragment_land);
+        }
+        else {
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.propertySearchFragment);
+        }
+    }
+
 
 }

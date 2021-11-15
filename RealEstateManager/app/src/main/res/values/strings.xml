@@ -107,6 +107,8 @@
     <string name="confirm_delete_photo">Please confirm the deletion of the photo</string>
     <string name="image_map_description">map</string>
     <string name="your_position">Your position</string>
+    <string name="apply">Apply</string>
+    <string name="reset_all">Reset all</string>
 
 
 </resources>
