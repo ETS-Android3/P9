@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -30,10 +31,10 @@ import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.bundle.PropertyBundle;
-import com.openclassrooms.realestatemanager.ui.propertydetail.listener.OnEditPropertyListener;
+import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
+import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.PropertyDetailViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
-import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnAddPropertyListener;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnPropertySelectedListener;
 import com.openclassrooms.realestatemanager.ui.propertymap.listener.OnMapListener;
 import com.openclassrooms.realestatemanager.utils.LandscapeHelper;
@@ -41,7 +42,6 @@ import com.openclassrooms.realestatemanager.utils.LandscapeHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends AppCompatActivity implements OnPropertySelectedListener,
-                                                               OnEditPropertyListener,
                                                                PropertyEditListener,
                                                                OnMapListener {
 
@@ -102,6 +102,9 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         switch (item.getItemId()){
             case R.id.menu_item_toolbar_add:
                 navToAdd();
+                return true;
+            case R.id.menu_item_tool_bar_edit:
+                navToEdit();
                 return true;
             case R.id.menu_item_toolbar_map:
                 navToMap();
@@ -175,23 +178,6 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyDetailFragment,
                     PropertyBundle.createDetailBundle(propertyId));
-        }
-    }
-
-    @Override
-    public void onEditPropertyClicked(long propertyId) {
-        Log.d(Tag.TAG, "MainActivity.onEditPropertyClicked() called with: propertyId = [" + propertyId + "]");
-
-        if (LandscapeHelper.isLandscape()) {
-            Log.d(Tag.TAG, "MainActivity.onEditPropertyClicked() isLandscape");
-            navToEditWithLandscapeOrientation((propertyId));
-        }
-        else {
-            Log.d(Tag.TAG, "MainActivity.onEditPropertyClicked() isLandscape = false");
-
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_propertyDetailFragment_to_nav_propertyEditFragment,
-                    PropertyBundle.createEditBundle(propertyId));
         }
     }
 
@@ -298,6 +284,27 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyEditFragment,
                     PropertyBundle.createEditBundle(PropertyConst.PROPERTY_ID_NOT_INITIALIZED));
+        }
+    }
+
+    private void navToEdit(){
+        Log.d(Tag.TAG, "navToEdit() called");
+        // retrieve property id from view model
+        PropertyDetailViewModel propertyDetailViewModel = new ViewModelProvider(
+                this, PropertyDetailViewModelFactory.getInstance())
+                .get(PropertyDetailViewModel.class);
+        long id = propertyDetailViewModel.getCurrentPropertyId();
+
+        if (LandscapeHelper.isLandscape()) {
+            Log.d(Tag.TAG, "MainActivity.onEditPropertyClicked() isLandscape");
+            navToEditWithLandscapeOrientation((id));
+        }
+        else {
+            Log.d(Tag.TAG, "MainActivity.onEditPropertyClicked() isLandscape = false");
+
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.action_nav_propertyDetailFragment_to_nav_propertyEditFragment,
+                    PropertyBundle.createEditBundle(id));
         }
     }
 

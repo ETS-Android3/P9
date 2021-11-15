@@ -7,6 +7,11 @@
         android:title="@string/menu_add_property"
         app:showAsAction="ifRoom"/>
     <item
+        android:id="@+id/menu_item_tool_bar_edit"
+        android:icon="@drawable/ic_menu_edit"
+        android:title="@string/menu_edit_property"
+        app:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/menu_item_toolbar_map"
         android:icon="@drawable/ic_menu_map"
         android:title="@string/map"

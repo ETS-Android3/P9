@@ -17,18 +17,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding;
 import com.openclassrooms.realestatemanager.databinding.FragmentPropertyDetailBinding;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.photoList.PhotoListAdapter;
-import com.openclassrooms.realestatemanager.ui.propertydetail.listener.OnEditPropertyListener;
 import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
@@ -78,25 +75,6 @@ public class PropertyDetailFragment extends Fragment {
         return fragment;
     }
 
-    /*
-    this interface used to edit property
-     */
-    private OnEditPropertyListener callbackEditProperty;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.createCallbackToParentActivity();
-    }
-
-    private void createCallbackToParentActivity() {
-        try {
-            callbackEditProperty = (OnEditPropertyListener) getActivity();
-        } catch (ClassCastException e) {
-            throw new ClassCastException(e.toString() + " must implement OnPropertyClickedListener");
-        }
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +96,6 @@ public class PropertyDetailFragment extends Fragment {
         Log.d(Tag.TAG, "PropertyDetailFragment.onCreateView() propertyId=" + propertyId + "");
         configureComponents(view);
         configureRecyclerView(view);
-        configureBottomNavigationBar(view);
         configureDetailViewModel();
         return view;
     }
@@ -140,25 +117,6 @@ public class PropertyDetailFragment extends Fragment {
 
         photoListAdapter = new PhotoListAdapter(getContext(), null);
         recyclerView.setAdapter(photoListAdapter);
-    }
-
-    private void configureBottomNavigationBar(View view) {
-        BottomNavigationView bottomNavigationView = view.findViewById(R.id.fragment_property_detail_bottom_navigation_view);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                return navigate(item);
-            }
-        });
-    }
-
-    private boolean navigate(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_propertyEditFragment:
-                callbackEditProperty.onEditPropertyClicked(this.propertyId);
-                return true;
-        }
-        return false;
     }
 
     private void configureDetailViewModel(){

@@ -33,6 +33,12 @@ public class PropertyDetailViewModel extends ViewModel {
     @NonNull
     private final GoogleStaticMapRepository googleStaticMapRepository;
 
+    private long currentPropertyId;
+
+    public long getCurrentPropertyId() {
+        return currentPropertyId;
+    }
+
     /**
      * Mediator expose PropertyListViewState
      */
@@ -66,6 +72,7 @@ public class PropertyDetailViewModel extends ViewModel {
 
     public void load(long propertyId){
         Log.d(Tag.TAG, "PropertyDetailViewModel.load(" + propertyId + ")");
+        this.currentPropertyId = propertyId;
         configureMediatorLiveData(propertyId);
     }
 
