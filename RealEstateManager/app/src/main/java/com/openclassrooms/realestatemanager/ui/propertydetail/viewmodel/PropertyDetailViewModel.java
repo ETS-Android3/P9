@@ -18,6 +18,7 @@ import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.tag.Tag;
+import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
@@ -33,7 +34,7 @@ public class PropertyDetailViewModel extends ViewModel {
     @NonNull
     private final GoogleStaticMapRepository googleStaticMapRepository;
 
-    private long currentPropertyId;
+    private long currentPropertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
 
     public long getCurrentPropertyId() {
         return currentPropertyId;

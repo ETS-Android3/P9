@@ -203,13 +203,13 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="propertySearchFragment2">
+                  <entry key="propertySearchFragment_land">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="30" />
-                            <option name="y" value="355" />
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
                           </Point>
                         </option>
                       </LayoutPositions>

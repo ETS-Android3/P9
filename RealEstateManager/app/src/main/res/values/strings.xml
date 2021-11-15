@@ -66,6 +66,7 @@
     <string name="property_edit_title_modify">Modify property</string>
 
     <string name="menu_add_property">Add property</string>
+    <string name="menu_detail_property">Property detail</string>
     <string name="menu_edit_property">Edit property</string>
     <string name="search">Search</string>
     <string name="map">Map</string>
