@@ -16,7 +16,7 @@ public enum NavigationState {
     EDIT {
         @Override
         public boolean isEnable(boolean isLandscape, NavigationState currentState) {
-            return (currentState == NavigationState.DETAIL);
+            return (currentState == NavigationState.DETAIL) || (isLandscape && currentState == NavigationState.HOME);
         }
     },
     ADD {
