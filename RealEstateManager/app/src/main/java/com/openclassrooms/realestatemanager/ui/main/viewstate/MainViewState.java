@@ -1,26 +1,29 @@
 package com.openclassrooms.realestatemanager.ui.main.viewstate;
 
+import com.openclassrooms.realestatemanager.ui.main.MenuItemViewState;
 import com.openclassrooms.realestatemanager.ui.main.NavigationState;
 
 public class MainViewState {
     private NavigationState navigationState;
     private boolean landscape;
-    private boolean homeEnable;
-    private boolean detailEnable;
-    private boolean editEnable;
-    private boolean addEnable;
-    private boolean mapEnable;
-    private boolean searchEnable;
+    private boolean orientationChanged;
+    private MenuItemViewState home;
+    private MenuItemViewState detail;
+    private MenuItemViewState edit;
+    private MenuItemViewState add;
+    private MenuItemViewState map;
+    private MenuItemViewState search;
 
-    public MainViewState(NavigationState navigationState, boolean landscape, boolean homeEnable, boolean detailEnable, boolean editEnable, boolean addEnable, boolean mapEnable, boolean searchEnable) {
+    public MainViewState(NavigationState navigationState, boolean landscape, boolean orientationChanged, MenuItemViewState home, MenuItemViewState detail, MenuItemViewState edit, MenuItemViewState add, MenuItemViewState map, MenuItemViewState search) {
         this.navigationState = navigationState;
         this.landscape = landscape;
-        this.homeEnable = homeEnable;
-        this.detailEnable = detailEnable;
-        this.editEnable = editEnable;
-        this.addEnable = addEnable;
-        this.mapEnable = mapEnable;
-        this.searchEnable = searchEnable;
+        this.orientationChanged = orientationChanged;
+        this.home = home;
+        this.detail = detail;
+        this.edit = edit;
+        this.add = add;
+        this.map = map;
+        this.search = search;
     }
 
     public NavigationState getNavigationState() {
@@ -31,27 +34,31 @@ public class MainViewState {
         return landscape;
     }
 
-    public boolean isHomeEnable() {
-        return homeEnable;
+    public boolean isOrientationChanged() {
+        return orientationChanged;
     }
 
-    public boolean isDetailEnable() {
-        return detailEnable;
+    public MenuItemViewState getHome() {
+        return home;
     }
 
-    public boolean isEditEnable() {
-        return editEnable;
+    public MenuItemViewState getDetail() {
+        return detail;
     }
 
-    public boolean isAddEnable() {
-        return addEnable;
+    public MenuItemViewState getEdit() {
+        return edit;
     }
 
-    public boolean isMapEnable() {
-        return mapEnable;
+    public MenuItemViewState getAdd() {
+        return add;
     }
 
-    public boolean isSearchEnable() {
-        return searchEnable;
+    public MenuItemViewState getMap() {
+        return map;
+    }
+
+    public MenuItemViewState getSearch() {
+        return search;
     }
 }

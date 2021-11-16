@@ -3,33 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_propertyListFragment">
+    app:startDestination="@+id/nav_propertyListFragment_portrait">
     <fragment
-        android:id="@+id/nav_propertyListFragment"
+        android:id="@+id/nav_propertyListFragment_portrait"
         android:name="com.openclassrooms.realestatemanager.ui.propertylist.view.PropertyListFragment"
         android:label="@string/property_list_title"
         tools:layout="@layout/fragment_property_list">
         <action
-            android:id="@+id/action_nav_propertyListFragment_to_nav_propertyDetailFragment"
-            app:destination="@id/nav_propertyDetailFragment" />
+            android:id="@+id/action_nav_portrait_list_to_detail"
+            app:destination="@id/nav_propertyDetailFragment_portrait" />
         <action
-            android:id="@+id/action_nav_propertyListFragment_to_nav_propertyEditFragment"
-            app:destination="@id/nav_propertyEditFragment" />
+            android:id="@+id/action_nav_portrait_list_to_edit"
+            app:destination="@id/nav_propertyEditFragment_portrait" />
     </fragment>
     <fragment
-        android:id="@+id/nav_propertyDetailFragment"
+        android:id="@+id/nav_propertyDetailFragment_portrait"
         android:name="com.openclassrooms.realestatemanager.ui.propertydetail.view.PropertyDetailFragment"
         android:label="@string/property_detail_title"
         tools:layout="@layout/fragment_property_detail" >
         <action
-            android:id="@+id/action_nav_propertyDetailFragment_to_nav_propertyEditFragment"
-            app:destination="@id/nav_propertyEditFragment" />
-        <action
-            android:id="@+id/action_nav_propertyDetailFragment_self"
-            app:destination="@id/nav_propertyDetailFragment" />
+            android:id="@+id/action_nav_portrait_detail_to_edit"
+            app:destination="@id/nav_propertyEditFragment_portrait" />
     </fragment>
     <fragment
-        android:id="@+id/nav_propertyEditFragment"
+        android:id="@+id/nav_propertyEditFragment_portrait"
         android:name="com.openclassrooms.realestatemanager.ui.propertyedit.view.PropertyEditFragment"
         android:label="{title}"
         tools:layout="@layout/fragment_property_edit" >
@@ -39,17 +36,18 @@
             android:defaultValue="titre test" />
     </fragment>
     <fragment
-        android:id="@+id/propertyMapsFragment"
+        android:id="@+id/nav_propertyMapsFragment_portrait"
         android:name="com.openclassrooms.realestatemanager.ui.propertymap.view.PropertyMapsFragment"
         android:label="@string/map"
         tools:layout="@layout/fragment_property_maps" >
         <action
-            android:id="@+id/action_propertyMapsFragment_to_nav_propertyDetailFragment"
-            app:destination="@id/nav_propertyDetailFragment" />
+            android:id="@+id/action_nav_portrait_maps_to_detail"
+            app:destination="@id/nav_propertyDetailFragment_portrait" />
     </fragment>
     <fragment
-        android:id="@+id/propertySearchFragment"
+        android:id="@+id/nav_propertySearchFragment_portrait"
         android:name="com.openclassrooms.realestatemanager.ui.propertysearch.view.PropertySearchFragment"
-        android:label="@string/search" />
+        android:label="@string/search"
+        tools:layout="@layout/fragment_property_search"/>
 
 </navigation>

@@ -4,7 +4,6 @@ package com.openclassrooms.realestatemanager.ui.main;
 
 import android.app.Activity;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -22,13 +21,10 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -49,8 +45,6 @@ import com.openclassrooms.realestatemanager.ui.propertymap.listener.OnMapListene
 import com.openclassrooms.realestatemanager.utils.LandscapeHelper;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnPropertySelectedListener,
                                                                PropertyEditListener,
@@ -81,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_propertyListFragment)
+                R.id.nav_propertyListFragment_portrait)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -127,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
+        super.onBackPressed();
         Log.d(Tag.TAG, "MainActivity.onBackPressed() called");
     }
 
@@ -167,12 +161,19 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         mainViewModel.getMainViewStateLiveData().observe(this, new Observer<MainViewState>() {
             @Override
             public void onChanged(MainViewState mainViewState) {
-                menuItemHome.setEnabled(mainViewState.isHomeEnable());
-                menuItemDetail.setEnabled(mainViewState.isDetailEnable());
-                menuItemEdit.setEnabled(mainViewState.isEditEnable());
-                menuItemAdd.setEnabled(mainViewState.isAddEnable());
-                menuItemMap.setEnabled(mainViewState.isMapEnable());
-                menuItemSearch.setEnabled(mainViewState.isSearchEnable());
+                setMenuItemHome(mainViewState.getHome());
+                setMenuItemDetail(mainViewState.getDetail());
+                setMenuItemEdit(mainViewState.getEdit());
+                setMenuItemAdd(mainViewState.getAdd());
+                setMenuItemMap(mainViewState.getMap());
+                setMenuItemSearch(mainViewState.getSearch());
+                if (mainViewState.isOrientationChanged()) {
+                    Log.d(Tag.TAG, "MainActivity ViewSate onChanged() orientation changed " +
+                            "isLandscape = [" + mainViewState.isLandscape() + "] " +
+                            "sate = [" + mainViewState.getNavigationState() + "]");
+
+                    navigateTo(mainViewState.getNavigationState());
+                }
             }
         });
 
@@ -180,6 +181,35 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.HOME);
 
         return true;
+    }
+
+    private void setMenuItemState(MenuItem menuItem, MenuItemViewState menuItemViewState){
+        menuItem.setEnabled(menuItemViewState.isEnabled());
+        menuItem.setVisible(menuItemViewState.isVisible());
+    }
+
+    private void setMenuItemHome(MenuItemViewState menuItemViewState) {
+        setMenuItemState(menuItemHome, menuItemViewState);
+    }
+
+    private void setMenuItemDetail(MenuItemViewState menuItemViewState) {
+        setMenuItemState(menuItemDetail, menuItemViewState);
+    }
+
+    private void setMenuItemEdit(MenuItemViewState menuItemViewState) {
+        setMenuItemState(menuItemEdit, menuItemViewState);
+    }
+
+    private void setMenuItemAdd(MenuItemViewState menuItemViewState) {
+        setMenuItemState(menuItemAdd, menuItemViewState);
+    }
+
+    private void setMenuItemMap(MenuItemViewState menuItemViewState) {
+        setMenuItemState(menuItemMap, menuItemViewState);
+    }
+
+    private void setMenuItemSearch(MenuItemViewState menuItemViewState) {
+        setMenuItemState(menuItemSearch, menuItemViewState);
     }
 
     @Override
@@ -195,29 +225,30 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             //Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
             loadConfigurationPortrait();
         }
+        mainViewModel.getIsLandscapeMutableLiveData().setValue(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE);
     }
 
     private void loadConfiguration(){
         Log.d(Tag.TAG, "MainActivity.onConfigurationChanged() -> portrait|landscape");
-        Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_view);
+        Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_landscape);
         if (detailFragment == null) {
             // screen rotation can come with null fragment
             // go to main view with detail
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.nav_propertyListFragment);
+            navController.navigate(R.id.nav_propertyListFragment_portrait);
         }
     }
 
     private void loadConfigurationPortrait(){
-        // rotate from landscape to portrait. remove détail to only show list
+        // rotate from landscape to portrait. remove detail to only show list
         if (! LandscapeHelper.isLandscape()) {
             Log.d(Tag.TAG, "MainActivity.onConfigurationChanged() -> portrait");
-            Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_view);
+            Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_landscape);
             if (detailFragment == null) {
                 // screen rotation can come with null fragment
                 // go to main view with detail
                 NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-                navController.navigate(R.id.nav_propertyListFragment);
+                navController.navigate(R.id.nav_propertyListFragment_portrait);
             }
         }
     }
@@ -226,12 +257,12 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         // rotate from portrait to landscape
         if (LandscapeHelper.isLandscape()) {
             Log.d(Tag.TAG, "MainActivity.onConfigurationChanged() -> landscape");
-            Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_view);
+            Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_landscape);
             if (detailFragment == null) {
                 // screen rotation can come with null fragment
                 // go to main view with detail
                 NavController navControllerMain = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-                navControllerMain.navigate(R.id.nav_propertyListFragment);
+                navControllerMain.navigate(R.id.nav_propertyListFragment_portrait);
             }
         }
     }
@@ -240,22 +271,42 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_item_toolbar_home:
-                navToHome();
+                navigateTo(NavigationState.HOME);
                 return true;
             case R.id.menu_item_toolbar_add:
-                navToAdd();
+                navigateTo(NavigationState.ADD);
                 return true;
             case R.id.menu_item_toolbar_edit:
-                navToEdit();
+                navigateTo(NavigationState.EDIT);
                 return true;
             case R.id.menu_item_toolbar_map:
-                navToMap();
+                navigateTo(NavigationState.MAP);
                 return true;
             case R.id.menu_item_toolbar_search:
-                navToSearch();
+                navigateTo(NavigationState.SEARCH);
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void navigateTo(NavigationState destination){
+        switch (destination){
+            case HOME:
+                navToHome();
+                return;
+            case ADD:
+                navToAdd();
+                return;
+            case EDIT:
+                navToEdit();
+                return;
+            case MAP:
+                navToMap();
+                return;
+            case SEARCH:
+                navToSearch();
+                return;
+        }
     }
 
     /**
@@ -282,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         }
         else {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_nav_propertyListFragment_to_nav_propertyDetailFragment,
+            navController.navigate(R.id.action_nav_portrait_list_to_detail,
                     PropertyBundle.createDetailBundle(propertyId));
         }
         mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.DETAIL);
@@ -299,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             Log.d(Tag.TAG, "MainActivity.OnMapClicked() isLandscape = false");
 
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.action_propertyMapsFragment_to_nav_propertyDetailFragment,
+            navController.navigate(R.id.action_nav_portrait_maps_to_detail,
                     PropertyBundle.createEditBundle(propertyId));
         }
         mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.DETAIL);
@@ -348,8 +399,8 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
     private void navToDetailWithLandscapeOrientation(long propertyId) {
         Log.d(Tag.TAG, "MainActivity.navToDetailWithLandscapeOrientation() called with: propertyId = [" + propertyId + "]");
-        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
-        navController.navigate(R.id.propertyDetailFragment, PropertyBundle.createDetailBundle(propertyId));
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_landscape);
+        navController.navigate(R.id.nav_propertyDetailFragment_landscape, PropertyBundle.createDetailBundle(propertyId));
 
         mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.DETAIL);
     }
@@ -357,8 +408,8 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     private void navToEditWithLandscapeOrientation(long propertyId){
         Log.d(Tag.TAG, "MainActivity.navToEditWithLandscapeOrientation() called with: propertyId = [" + propertyId + "]");
 
-        NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
-        navController.navigate(R.id.propertyEditFragment, PropertyBundle.createEditBundle(propertyId));
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_landscape);
+        navController.navigate(R.id.nav_propertyEditFragment_landscape, PropertyBundle.createEditBundle(propertyId));
 
         mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.EDIT);
     }
@@ -374,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             Log.d(Tag.TAG, "MainActivity.navToHome() isLandscape = false");
 
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.nav_propertyListFragment);
+            navController.navigate(R.id.nav_propertyListFragment_portrait);
         }
 
         mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.HOME);
@@ -391,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             Log.d(Tag.TAG, "MainActivity.onAddPropertyCLicked() isLandscape = false");
 
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.nav_propertyEditFragment,
+            navController.navigate(R.id.nav_propertyEditFragment_portrait,
                     PropertyBundle.createEditBundle(PropertyConst.PROPERTY_ID_NOT_INITIALIZED));
         }
 
@@ -415,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             Log.d(Tag.TAG, "MainActivity.onEditPropertyClicked() isLandscape = false");
 
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.nav_propertyEditFragment,
+            navController.navigate(R.id.nav_propertyEditFragment_portrait,
                     PropertyBundle.createEditBundle(id));
         }
 
@@ -427,12 +478,12 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
         if (LandscapeHelper.isLandscape()) {
             //navToDetailWithLandscapeOrientation(propertyId);
-            NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
-            navController.navigate(R.id.propertyMapsFragment_land);
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_landscape);
+            navController.navigate(R.id.nav_propertyMapsFragment_landscape);
         }
         else {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.propertyMapsFragment);
+            navController.navigate(R.id.nav_propertyMapsFragment_portrait);
         }
 
         mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.MAP);
@@ -443,12 +494,12 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
         if (LandscapeHelper.isLandscape()) {
             //navToDetailWithLandscapeOrientation(propertyId);
-            NavController navController = Navigation.findNavController(this, R.id.fragment_container_view);
-            navController.navigate(R.id.propertySearchFragment_land);
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_landscape);
+            navController.navigate(R.id.nav_propertySearchFragment_landscape);
         }
         else {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.propertySearchFragment);
+            navController.navigate(R.id.nav_propertySearchFragment_portrait);
         }
 
         mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.SEARCH);
