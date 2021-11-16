@@ -4,11 +4,13 @@ package com.openclassrooms.realestatemanager.ui.main;
 
 import android.app.Activity;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -20,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -68,22 +69,24 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // display icons and menu item in tools bar
         setSupportActionBar(binding.appBarMain.toolbar);
 
-        DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_propertyListFragment_portrait)
-                .setOpenableLayout(drawer)
-                .build();
+        // Configure tool bar to display title
+        Toolbar toolbar = binding.appBarMain.toolbar;
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_propertyListFragment_portrait)
+                .setFallbackOnNavigateUpListener(new AppBarConfiguration.OnNavigateUpListener() {
+                    @Override
+                    public boolean onNavigateUp() {
+                        Log.d(Tag.TAG, "MainActivity.onNavigateUp() called");
+                        return false;
+                    }
+                })
+                .build();
+        NavigationUI.setupWithNavController(toolbar, navController, mAppBarConfiguration);
 
         logScreen();
-
         configureViewModel();
     }
 
@@ -315,13 +318,16 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
      */
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 
+/*
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         // back button in tool bar call onBackPressed;
         onBackPressed();
-
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+*/
+
+        return false;
     }
 
     @Override
