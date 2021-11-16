@@ -34,8 +34,9 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.fragment.app.FragmentContainerView
-        tools:layout="@layout/fragment_property_detail"
         android:id="@+id/nav_host_fragment_landscape"
+        tools:layout="@layout/fragment_property_detail"
+
         android:name="androidx.navigation.fragment.NavHostFragment"
 
         app:layout_constraintHorizontal_weight="8"

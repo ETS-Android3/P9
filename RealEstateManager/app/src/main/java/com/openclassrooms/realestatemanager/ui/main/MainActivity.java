@@ -4,14 +4,12 @@ package com.openclassrooms.realestatemanager.ui.main;
 
 import android.app.Activity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
-
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +24,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -74,7 +73,12 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
         // Configure tool bar to display title
         Toolbar toolbar = binding.appBarMain.toolbar;
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+        NavController navController = navHostFragment.getNavController();
+
+        //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_propertyListFragment_portrait)
                 .setFallbackOnNavigateUpListener(new AppBarConfiguration.OnNavigateUpListener() {
                     @Override
@@ -89,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         logScreen();
         configureViewModel();
     }
-
 
     private void configureViewModel() {
         mainViewModel = new ViewModelProvider(this, MainViewModelFactory.getInstance())
@@ -224,22 +227,13 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             //Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
             loadConfigurationLandscape();
+
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             //Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
             loadConfigurationPortrait();
+
         }
         mainViewModel.getIsLandscapeMutableLiveData().setValue(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE);
-    }
-
-    private void loadConfiguration(){
-        Log.d(Tag.TAG, "MainActivity.onConfigurationChanged() -> portrait|landscape");
-        Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_landscape);
-        if (detailFragment == null) {
-            // screen rotation can come with null fragment
-            // go to main view with detail
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.nav_propertyListFragment_portrait);
-        }
     }
 
     private void loadConfigurationPortrait(){
@@ -247,6 +241,9 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         if (! LandscapeHelper.isLandscape()) {
             Log.d(Tag.TAG, "MainActivity.onConfigurationChanged() -> portrait");
             Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_landscape);
+
+            Log.d(Tag.TAG, "MainActivity.onConfigurationChanged() -> loadConfigurationPortrait detailFragmant = " + detailFragment);
+
             if (detailFragment == null) {
                 // screen rotation can come with null fragment
                 // go to main view with detail
@@ -261,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         if (LandscapeHelper.isLandscape()) {
             Log.d(Tag.TAG, "MainActivity.onConfigurationChanged() -> landscape");
             Fragment detailFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_landscape);
+            Log.d(Tag.TAG, "MainActivity.onConfigurationChanged() -> loadConfigurationLandscape detailFragmant + " + detailFragment);
             if (detailFragment == null) {
                 // screen rotation can come with null fragment
                 // go to main view with detail
@@ -509,5 +507,11 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         }
 
         mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.SEARCH);
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        Log.d(Tag.TAG, "onPostCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
     }
 }

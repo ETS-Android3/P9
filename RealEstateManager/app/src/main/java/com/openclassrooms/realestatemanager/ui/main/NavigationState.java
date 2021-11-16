@@ -15,7 +15,7 @@ public enum NavigationState {
     DETAIL {
         @Override
         public boolean isEnable(boolean isLandscape, NavigationState currentState) {
-            return currentState == NavigationState.EDIT;
+            return (currentState == NavigationState.EDIT);
         }
 
         @Override
@@ -51,7 +51,7 @@ public enum NavigationState {
     MAP {
         @Override
         public boolean isEnable(boolean isLandscape, NavigationState currentState) {
-            return true;
+            return (currentState != NavigationState.MAP);
         }
 
         @Override
@@ -62,7 +62,7 @@ public enum NavigationState {
     SEARCH {
         @Override
         public boolean isEnable(boolean isLandscape, NavigationState currentState) {
-            return true;
+            return (currentState != NavigationState.SEARCH);
         }
 
         @Override
