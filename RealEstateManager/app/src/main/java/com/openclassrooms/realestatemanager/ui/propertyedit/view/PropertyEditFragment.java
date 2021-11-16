@@ -87,9 +87,8 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     private TextInputLayout textInputLayoutSaleDate;
     private TextInputLayout textInputLayoutAgent;
     private TextInputLayout textInputLayoutPropertyType;
-    private MenuItem menuItemOk;
     private ImageView imageViewGoogleStaticMap;
-
+    private Button buttonOk;
 
     PhotoListAdapter photoListAdapter;
     // call back
@@ -130,7 +129,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_edit, container, false);
 
-        configureBottomNavigationBar(view);
         configureComponents(view);
         configureImageSelectorObserver();
         configureRecyclerView(view);
@@ -197,8 +195,21 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
             }
         });
 
-        BottomNavigationView bottomNavigationView = view.findViewById(R.id.fragment_property_edit_bottom_navigation_view);
-        menuItemOk = bottomNavigationView.getMenu().findItem(R.id.fragment_property_edit_ok);
+        buttonOk = view.findViewById(R.id.fragment_property_edit_button_ok);
+        buttonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                validateForm();
+            }
+        });
+
+        Button buttonCancel = view.findViewById(R.id.fragment_property_edit_button_cancel);
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelForm();
+            }
+        });
     }
 
     private void configureRecyclerView(View view) {
@@ -488,7 +499,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         propertyEditViewModel.getOnCheckAllValuesLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                menuItemOk.setEnabled(aBoolean);
+                buttonOk.setEnabled(aBoolean);
             }
         });
     }
@@ -504,7 +515,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         } else {
             textInputLayout.setErrorEnabled(true);
             textInputLayout.setError(getString(fieldState.getResId()));
-            menuItemOk.setEnabled(false);
+            buttonOk.setEnabled(false);
         }
     }
 
@@ -539,28 +550,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
                 setErrorEnabledLayout(textInputLayout, fieldState);
             }
         });
-    }
-
-    private void configureBottomNavigationBar(View view) {
-        BottomNavigationView bottomNavigationView = view.findViewById(R.id.fragment_property_edit_bottom_navigation_view);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                return navigate(item);
-            }
-        });
-    }
-
-    private boolean navigate(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.fragment_property_edit_cancel:
-                cancelForm();
-                return true;
-            case R.id.fragment_property_edit_ok:
-                validateForm();
-                return true;
-        }
-        return false;
     }
 
     private void cancelForm() {

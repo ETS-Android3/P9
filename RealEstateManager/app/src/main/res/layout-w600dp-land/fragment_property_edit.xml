@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="@dimen/default_padding"
-        app:layout_constraintBottom_toTopOf="@id/fragment_property_edit_bottom_navigation_view"
+        app:layout_constraintBottom_toTopOf="@id/fragment_property_edit_bottom_divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -336,15 +336,30 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/fragment_property_edit_bottom_navigation_view"
-        style="@style/BottomNavigation"
-
-        app:itemIconTint="@drawable/menu_item_icon_selector"
-        app:itemTextColor="@drawable/menu_item_icon_selector"
-
+    <View
+        android:id="@+id/fragment_property_edit_bottom_divider"
         android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_property_edit_button_ok" />
+
+    <Button
+        android:id="@+id/fragment_property_edit_button_cancel"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/fragment_property_edit_bottom_navigation_menu"/>
+        app:layout_constraintEnd_toStartOf="@id/fragment_property_edit_button_ok"/>
+
+    <Button
+        android:id="@+id/fragment_property_edit_button_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:text="@string/apply"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
