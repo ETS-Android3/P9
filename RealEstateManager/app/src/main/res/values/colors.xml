@@ -1,26 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#3f51b5</color>
-    <color name="primaryLightColor">#757de8</color>
-    <color name="primaryDarkColor">#002984</color>
-
-    <color name="secondaryColor">#4caf50</color>
-    <color name="secondaryLightColor">#80e27e</color>
-    <color name="secondaryDarkColor">#087f23</color>
-
+    <color name="primaryColor">#455a64</color>
+    <color name="primaryLightColor">#718792</color>
+    <color name="primaryDarkColor">#1c313a</color>
+    <color name="secondaryColor">#e64a19</color>
+    <color name="secondaryLightColor">#ff7d47</color>
+    <color name="secondaryDarkColor">#ac0800</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#000000</color>
 
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-
-    <color name="photo_caption">#757de8</color>
-    <color name="dark_red_house">#ba000d</color>
-
-    <color name="enabledMenuIconColor">@color/white</color>
-    <color name="disabledMenuIconColor">#757de8</color>
-
-    <color name="red">#FF0000</color>
-
-
+    <color name="enabledMenuIconColor">@color/primaryTextColor </color>
+    <color name="disabledMenuIconColor">@color/primaryLightColor</color>
 </resources>
