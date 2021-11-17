@@ -23,6 +23,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.databinding.FragmentPropertyDetailBinding;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.photoList.PhotoListAdapter;
@@ -31,6 +32,8 @@ import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.PropertyDetailViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,10 +49,6 @@ public class PropertyDetailFragment extends Fragment {
     private ImageView imageViewGoogleStaticMap;
 
     private PropertyDetailViewModel propertyDetailViewModel;
-
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    PhotoListAdapter photoListAdapter;
 
     private void setPropertyDetailViewModel(PropertyDetailViewModel propertyDetailViewModel) {
         this.propertyDetailViewModel = propertyDetailViewModel;
@@ -111,12 +110,16 @@ public class PropertyDetailFragment extends Fragment {
     }
 
     private void configureRecyclerView(View view) {
-        recyclerView = view.findViewById(R.id.property_detail_recycler_view);
-        layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
 
-        photoListAdapter = new PhotoListAdapter(getContext(), null);
-        recyclerView.setAdapter(photoListAdapter);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        binding.propertyDetailRecyclerView.setLayoutManager(layoutManager);
+
+        PhotoListAdapter photoListAdapter = new PhotoListAdapter(getContext(), null);
+        binding.propertyDetailRecyclerView.setAdapter(photoListAdapter);
+    }
+
+    private void setPhotos(List<Photo> photos){
+        ((PhotoListAdapter) binding.propertyDetailRecyclerView.getAdapter()).updateData(photos);
     }
 
     private void configureDetailViewModel(){
@@ -143,7 +146,7 @@ public class PropertyDetailFragment extends Fragment {
                 setTypeName(propertyDetailViewState.getPropertyDetailData().getTypeName());
                 setImageViewGoogleStaticMap(propertyDetailViewState.getStaticMapUrl());
                 // list photos
-                photoListAdapter.updateData(propertyDetailViewState.getPhotos());
+                setPhotos(propertyDetailViewState.getPhotos());
             }
         });
 
