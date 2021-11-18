@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
                             "isLandscape = [" + mainViewState.isLandscape() + "] " +
                             "sate = [" + mainViewState.getNavigationState() + "]");
 
+                    loadConfiguration();
                     navigateTo(mainViewState.getNavigationState());
                 }
             }
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         super.onConfigurationChanged(newConfig);
         Log.d(Tag.TAG, "MainActivity.onConfigurationChanged()");
 
-        // Checks the orientation of the screen
+/*        // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             //Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
             loadConfigurationLandscape();
@@ -232,8 +233,17 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             //Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
             loadConfigurationPortrait();
 
-        }
+        }*/
+        //loadConfiguration();
         mainViewModel.getIsLandscapeMutableLiveData().setValue(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE);
+    }
+
+    private void loadConfiguration(){
+        Log.d(Tag.TAG, "loadConfiguration() called");
+        // screen rotation can come with null fragment
+        // go to main view with detail
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        navController.navigate(R.id.nav_propertyListFragment_portrait);
     }
 
     private void loadConfigurationPortrait(){
@@ -289,6 +299,10 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         }
         return super.onOptionsItemSelected(item);
     }
+
+    // to remove backStack
+    // use navController.popBackStack(R.id.fragment_apps, true);
+    // or setPopUpTo(int, boolean) with the id of the NavController's graph and set inclusive to true.
 
     public void navigateTo(NavigationState destination){
         switch (destination){
