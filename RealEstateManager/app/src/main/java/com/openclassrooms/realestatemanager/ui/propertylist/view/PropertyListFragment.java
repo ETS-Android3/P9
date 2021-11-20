@@ -76,7 +76,7 @@ public class PropertyListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(Tag.TAG, "PropertyListFragment.onCreateView() called with: inflater = [" + inflater + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
+        Log.d(Tag.TAG, "PropertyListFragment.onCreateView() called with: container = [" + container + "]");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_list, container, false);
         configureRecyclerView(view);

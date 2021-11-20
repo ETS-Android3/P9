@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.ui.main;
+package com.openclassrooms.realestatemanager.ui.main.viewstate;
 
 public class MenuItemViewState {
     private final boolean enabled;

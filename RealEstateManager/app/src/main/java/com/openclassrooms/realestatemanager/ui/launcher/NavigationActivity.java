@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import com.openclassrooms.realestatemanager.ui.main.MainActivity;
+import com.openclassrooms.realestatemanager.ui.main.view.MainActivity;
 import com.openclassrooms.realestatemanager.ui.permission.PermissionActivity;
 
 public class NavigationActivity extends AppCompatActivity {

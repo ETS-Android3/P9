@@ -82,7 +82,7 @@ public class PropertyDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        Log.d(Tag.TAG, "PropertyDetailFragment.onCreateView() called with: container = [" + container + "]");
         // Inflate the layout for this fragment
         //View view = inflater.inflate(R.layout.fragment_property_detail, container, false);
         binding = FragmentPropertyDetailBinding.inflate(inflater, container, false);

@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.main.viewmodel;
 
 import android.content.res.Configuration;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -8,13 +9,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.openclassrooms.realestatemanager.ui.main.MenuItemViewState;
 import com.openclassrooms.realestatemanager.ui.main.NavigationState;
 import com.openclassrooms.realestatemanager.ui.main.viewstate.MainViewState;
+import com.openclassrooms.realestatemanager.ui.main.viewstate.MenuItemViewState;
 
 public class MainViewModel extends ViewModel {
-
-    private int orientation = Configuration.ORIENTATION_UNDEFINED;
+    private NavigationState currentNavigationState = NavigationState.LIST;
 
     private final MutableLiveData<Boolean> isLandscapeMutableLiveData = new MutableLiveData<>();
     public MutableLiveData<Boolean> getIsLandscapeMutableLiveData() {
@@ -27,69 +27,67 @@ public class MainViewModel extends ViewModel {
     }
 
     private final MediatorLiveData<MainViewState> mainViewStateMediatorLiveData = new MediatorLiveData<>();
-
     public LiveData<MainViewState> getMainViewStateLiveData() {
         return mainViewStateMediatorLiveData;
     }
 
     public MainViewModel() {
+        navigationStateMutableLiveData.setValue(NavigationState.HOME);
         configureMediator();
+
     }
 
     private void configureMediator(){
-
         mainViewStateMediatorLiveData.addSource(isLandscapeMutableLiveData, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                Boolean orientationChanged = true;
-
-                if (aBoolean && orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    orientationChanged = false;
-                } else {
-                    if (!aBoolean && orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        orientationChanged = false;
-                    }
-                }
-
-                // maj cache
-                if (aBoolean)
-                    orientation = Configuration.ORIENTATION_LANDSCAPE;
-                else
-                    orientation = Configuration.ORIENTATION_PORTRAIT;
-
-                combine(orientationChanged, aBoolean, navigationStateMutableLiveData.getValue());
+                combine(aBoolean, navigationStateMutableLiveData.getValue());
             }
         });
 
         mainViewStateMediatorLiveData.addSource(navigationStateMutableLiveData, new Observer<NavigationState>() {
             @Override
             public void onChanged(NavigationState navigationState) {
-                combine(false, isLandscapeMutableLiveData.getValue(), navigationState);
+                combine(isLandscapeMutableLiveData.getValue(), navigationState);
             }
         });
     }
 
-    private void combine(boolean orientationChanged, Boolean isLandscape, NavigationState navigationState){
+    private NavigationState checkAndRedirectDestination(boolean isLandScape, NavigationState askedDestination) {
+        switch (askedDestination){
+            case HOME:
+                return NavigationState.HOME.redirectNavigation(isLandScape, askedDestination);
+            case LIST:
+                return NavigationState.LIST.redirectNavigation(isLandScape, askedDestination);
+            default:
+                return askedDestination;
+        }
+    }
 
-        if ((isLandscape == null) || (navigationState == null))
+    private void combine(Boolean isLandscape, NavigationState askedDestination){
+
+        if ((isLandscape == null) || (askedDestination == null))
             return;
 
-        MenuItemViewState home = new MenuItemViewState(NavigationState.HOME.isEnable(isLandscape, navigationState),
-                NavigationState.HOME.isVisible(isLandscape, navigationState));
-        MenuItemViewState detail = new MenuItemViewState(NavigationState.DETAIL.isEnable(isLandscape, navigationState),
-                NavigationState.DETAIL.isVisible(isLandscape, navigationState));
-        MenuItemViewState edit = new MenuItemViewState(NavigationState.EDIT.isEnable(isLandscape, navigationState),
-                NavigationState.EDIT.isVisible(isLandscape, navigationState));
-        MenuItemViewState add = new MenuItemViewState(NavigationState.ADD.isEnable(isLandscape, navigationState),
-                NavigationState.ADD.isVisible(isLandscape, navigationState));
-        MenuItemViewState map = new MenuItemViewState(NavigationState.MAP.isEnable(isLandscape, navigationState),
-                NavigationState.MAP.isVisible(isLandscape, navigationState));
-        MenuItemViewState search = new MenuItemViewState(NavigationState.SEARCH.isEnable(isLandscape, navigationState),
-                NavigationState.SEARCH.isVisible(isLandscape, navigationState));
+        NavigationState redirectNavigation = checkAndRedirectDestination(isLandscape, askedDestination);
 
-        MainViewState mainViewState = new MainViewState(navigationState, isLandscape, orientationChanged,
-                home, detail, edit, add, map, search);
+        MenuItemViewState home = new MenuItemViewState(NavigationState.HOME.isEnable(isLandscape, redirectNavigation),
+                NavigationState.HOME.isVisible(isLandscape, redirectNavigation));
+        MenuItemViewState detail = new MenuItemViewState(NavigationState.DETAIL.isEnable(isLandscape, redirectNavigation),
+                NavigationState.DETAIL.isVisible(isLandscape, redirectNavigation));
+        MenuItemViewState edit = new MenuItemViewState(NavigationState.EDIT.isEnable(isLandscape, redirectNavigation),
+                NavigationState.EDIT.isVisible(isLandscape, redirectNavigation));
+        MenuItemViewState add = new MenuItemViewState(NavigationState.ADD.isEnable(isLandscape, redirectNavigation),
+                NavigationState.ADD.isVisible(isLandscape, redirectNavigation));
+        MenuItemViewState map = new MenuItemViewState(NavigationState.MAP.isEnable(isLandscape, redirectNavigation),
+                NavigationState.MAP.isVisible(isLandscape, redirectNavigation));
+        MenuItemViewState search = new MenuItemViewState(NavigationState.SEARCH.isEnable(isLandscape, redirectNavigation),
+                NavigationState.SEARCH.isVisible(isLandscape, redirectNavigation));
+
+        // boolean mustNavigate = navigationChanged(navigationState, newNavigation);
+        MainViewState mainViewState = new MainViewState(redirectNavigation, home, detail, edit, add, map, search);
 
         mainViewStateMediatorLiveData.setValue(mainViewState);
     }
+
 }

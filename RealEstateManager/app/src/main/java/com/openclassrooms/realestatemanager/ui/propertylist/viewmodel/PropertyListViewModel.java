@@ -38,7 +38,7 @@ public class PropertyListViewModel extends ViewModel {
     }
 
     private void configureMediatorLiveData() {
-        Log.d(Tag.TAG, "configureMediatorLiveData() called");
+        Log.d(Tag.TAG, "PropertyListViewModel.configureMediatorLiveData() called");
         LiveData<List<Agent>> agentsLiveData = databaseRepository.getAgentRepository().getAgentsLiveData();
         LiveData<List<Photo>> photosLiveData = databaseRepository.getPhotoRepository().getPhotos();
         LiveData<List<Property>> propertiesLiveData = databaseRepository.getPropertyRepository().getProperties();
@@ -76,7 +76,6 @@ public class PropertyListViewModel extends ViewModel {
             }
         });
 
-
         propertyListViewStateMediatorLiveData.addSource(typesLiveData, new Observer<List<PropertyType>>() {
             @Override
             public void onChanged(List<PropertyType> propertyTypes) {
@@ -90,7 +89,7 @@ public class PropertyListViewModel extends ViewModel {
     }
 
     public void load(){
-        Log.d(Tag.TAG, "load() called");
+        Log.d(Tag.TAG, "PropertyListViewModel.load() called");
         databaseRepository.getAgentRepository().getAgents();
     }
 

@@ -1,12 +1,9 @@
 package com.openclassrooms.realestatemanager.ui.main.viewstate;
 
-import com.openclassrooms.realestatemanager.ui.main.MenuItemViewState;
 import com.openclassrooms.realestatemanager.ui.main.NavigationState;
 
 public class MainViewState {
     private NavigationState navigationState;
-    private boolean landscape;
-    private boolean orientationChanged;
     private MenuItemViewState home;
     private MenuItemViewState detail;
     private MenuItemViewState edit;
@@ -14,10 +11,8 @@ public class MainViewState {
     private MenuItemViewState map;
     private MenuItemViewState search;
 
-    public MainViewState(NavigationState navigationState, boolean landscape, boolean orientationChanged, MenuItemViewState home, MenuItemViewState detail, MenuItemViewState edit, MenuItemViewState add, MenuItemViewState map, MenuItemViewState search) {
+    public MainViewState(NavigationState navigationState, MenuItemViewState home, MenuItemViewState detail, MenuItemViewState edit, MenuItemViewState add, MenuItemViewState map, MenuItemViewState search) {
         this.navigationState = navigationState;
-        this.landscape = landscape;
-        this.orientationChanged = orientationChanged;
         this.home = home;
         this.detail = detail;
         this.edit = edit;
@@ -28,14 +23,6 @@ public class MainViewState {
 
     public NavigationState getNavigationState() {
         return navigationState;
-    }
-
-    public boolean isLandscape() {
-        return landscape;
-    }
-
-    public boolean isOrientationChanged() {
-        return orientationChanged;
     }
 
     public MenuItemViewState getHome() {

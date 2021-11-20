@@ -162,7 +162,7 @@ public class PropertyMapsFragment extends Fragment {
     }
 
     private void drawUserLocation(){
-        Log.d(Tag.TAG, "PropertyDetailFragment.drawUserLocation() (mMap==null)=" + (mMap==null) + " (userLocation==null)=" + (userLocation==null));
+        Log.d(Tag.TAG, "PropertyMapsFragment.drawUserLocation() (mMap==null)=" + (mMap==null) + " (userLocation==null)=" + (userLocation==null));
         if ((mMap !=null) && (userLocation != null)) {
             LatLng latlng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
             mMap.clear();
@@ -177,7 +177,7 @@ public class PropertyMapsFragment extends Fragment {
     }
 
     private void drawPropertyLocations() {
-        Log.d(Tag.TAG, "PropertyDetailFragment.drawPropertieslocation()");
+        Log.d(Tag.TAG, "PropertyMapsFragment.drawPropertieslocation()");
         if ((mMap != null) && (this.propertyMapItems != null)) {
             Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_dark_red, getContext().getTheme()));
             for (PropertyMapItem item : propertyMapItems) {
