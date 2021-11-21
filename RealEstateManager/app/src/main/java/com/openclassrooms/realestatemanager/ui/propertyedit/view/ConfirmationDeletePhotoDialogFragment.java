@@ -24,15 +24,15 @@ public class ConfirmationDeletePhotoDialogFragment extends DialogFragment  {
 
         return new AlertDialog.Builder(requireContext())
             .setTitle(R.string.title_delete_photo)
-            .setMessage(R.string.confirm_delete_photo)
+            .setMessage(R.string.please_confirm_delete_photo)
 
-            .setPositiveButton(R.string.ok, (dialog, which) -> {
+            .setPositiveButton(R.string.confirm_delete_photo, (dialog, which) -> {
                 if (listener != null) {
                     listener.onConfirmDeletePhoto();
                 }
             })
 
-            .setNegativeButton(R.string.no, (dialog, which) -> {
+            .setNegativeButton(R.string.cancel, (dialog, which) -> {
                 if (listener != null) {
                     listener.onCancelDeletePhoto();
                 }
