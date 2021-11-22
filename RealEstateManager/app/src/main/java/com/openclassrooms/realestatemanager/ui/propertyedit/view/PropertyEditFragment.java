@@ -42,6 +42,7 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
+import com.openclassrooms.realestatemanager.ui.main.view.OnBackPressedInterface;
 import com.openclassrooms.realestatemanager.ui.photoList.OnRowPhotoListener;
 import com.openclassrooms.realestatemanager.ui.photoList.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.ui.photoedit.OnPhotoEditListener;
@@ -65,7 +66,8 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
-public class PropertyEditFragment extends Fragment implements ConfirmationDeletePhotoListener {
+public class PropertyEditFragment extends Fragment implements ConfirmationDeletePhotoListener,
+                                                              OnBackPressedInterface  {
 
     // Fields
     private long propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
@@ -104,9 +106,17 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        Log.d(Tag.TAG, "PropertyEditFragment.onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
         // to select photo from gallery
         imageSelectorObserver = new ImageSelectorObserver(requireActivity().getActivityResultRegistry());
         getLifecycle().addObserver(imageSelectorObserver);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        Log.d(Tag.TAG, "PropertyEditFragment.onBackPressed() called. to clearCache.");
+        propertyEditViewModel.clearCache();
+        return true;
     }
 
     @Override
@@ -126,6 +136,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(Tag.TAG, "PropertyEditFragment.onCreateView() called with: inflater = [" + inflater + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_edit, container, false);
 
@@ -208,6 +219,22 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
             @Override
             public void onClick(View v) {
                 cancelForm();
+            }
+        });
+    }
+
+    private void configureImageSelectorObserver(){
+        Log.d(Tag.TAG, "PropertyEditFragment.configureImageSelectorObserver() called");
+        imageSelectorObserver.getMultipleUrisLiveData().observe(getViewLifecycleOwner(), new Observer<List<Uri>>() {
+            @Override
+            public void onChanged(List<Uri> uris) {
+                Log.d(Tag.TAG, "PropertyEditFragment.imageSelectorObserver.observe->onChanged() called with: uris = [" + uris + "]");
+                int i = 1;
+                for (Uri uri : uris) {
+                    //getContext().getContentResolver().takePersistableUriPermission(uri, permissionFlags);
+                    addPhoto(uri, "");
+                    i++;
+                }
             }
         });
     }
@@ -420,7 +447,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
      */
     private void configureViewState(){
         Log.d(Tag.TAG, "PropertyEditFragment.configureViewState() called");
-        propertyEditViewModel.clearFieldsCache();
+        propertyEditViewModel.clearCache();
         propertyEditViewModel.getViewStateLiveData(this.propertyId).observe(getViewLifecycleOwner(), new Observer<PropertyEditViewState>() {
             @Override
             public void onChanged(PropertyEditViewState propertyEditViewState) {
@@ -553,7 +580,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     }
 
     private void cancelForm() {
-        propertyEditViewModel.clearFieldsCache();
+        propertyEditViewModel.clearCache();
         callbackEditProperty.onCancelEditProperty(this.propertyId);
     }
 
@@ -575,6 +602,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
             propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
         }
+        Log.d(Tag.TAG, "PropertyEditFragment.onResume() propertyId=" + propertyId);
     }
 
     @Override
@@ -788,21 +816,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     private void selectPhoto(){
         imageSelectorObserver.openMultipleImages();
-    }
-
-    private void configureImageSelectorObserver(){
-        imageSelectorObserver.getMultipleUrisLiveData().observe(getViewLifecycleOwner(), new Observer<List<Uri>>() {
-            @Override
-            public void onChanged(List<Uri> uris) {
-                Log.d(Tag.TAG, "PropertyEditFragment.imageSelectorObserver.observe->onChanged() called with: uris = [" + uris + "]");
-                int i = 1;
-                for (Uri uri : uris) {
-                    //getContext().getContentResolver().takePersistableUriPermission(uri, permissionFlags);
-                    addPhoto(uri, "");
-                    i++;
-                }
-            }
-        });
     }
 
     private void addPhoto(Uri uri, String caption){

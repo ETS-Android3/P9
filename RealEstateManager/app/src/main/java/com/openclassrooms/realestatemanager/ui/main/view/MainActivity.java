@@ -7,7 +7,6 @@ import android.app.Activity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
 
@@ -20,10 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
-import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -47,7 +46,7 @@ import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnPropertyS
 import com.openclassrooms.realestatemanager.ui.propertymap.listener.OnMapListener;
 import com.openclassrooms.realestatemanager.utils.LandscapeHelper;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnPropertySelectedListener,
                                                                PropertyEditListener,
@@ -82,6 +81,14 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
                 .build();
         NavigationUI.setupWithNavController(toolbar, navController, mAppBarConfiguration);
 
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+                Log.d(Tag.TAG, "MainActivity.onDestinationChanged() called with: controller = [" + controller + "], destination = [" + destination + "], arguments = [" + arguments + "]");
+                findAndCallOnBackPressedInterface();
+            }
+        });
+
         logScreen();
     }
 
@@ -109,10 +116,30 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         Log.d(Tag.TAG, "MainActivity.onStart() called");
     }
 
+    /**
+     * find fragment, if fragment is OnBackPressedInterface call onBackPressed
+     */
+    private void findAndCallOnBackPressedInterface(){
+        Log.d(Tag.TAG, "MainActivity.findAndCallOnBackPressedInterface() called");
+        // to clear cache when leave fragment edit property
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+        if (navHostFragment != null) {
+            List<Fragment> fragmentList = navHostFragment.getChildFragmentManager().getFragments();
+            if (fragmentList.size() > 0) {
+                Fragment fragment = fragmentList.get(0);
+                if ((fragment != null) && (fragment instanceof OnBackPressedInterface)){
+                    ((OnBackPressedInterface) fragment).onBackPressed();
+                }
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         Log.d(Tag.TAG, "MainActivity.onBackPressed() called");
+
+        findAndCallOnBackPressedInterface();
+        super.onBackPressed();
     }
 
     private void logScreen(){

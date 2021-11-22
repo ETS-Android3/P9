@@ -100,10 +100,6 @@ public class CachePropertyEditViewModel {
         return getInvalidePhotoCaptionCount() == 0;
     }
 
-    public void clearFields(){
-        fields.clear();
-    }
-
     public void setValue(FieldKey key, String value){
         fields.setValue(key, value);
     }
@@ -121,7 +117,7 @@ public class CachePropertyEditViewModel {
 
     public String getValue(FieldKey key, String defaultValue){
         String cacheValue = getValue(key);
-        Log.d(Tag.TAG, "cache.getValue() key = [" + key + "] cacheValue + [" + cacheValue + "] defaultValue = [" + debugString(defaultValue) + "]");
+        //Log.d(Tag.TAG, "cache.getValue() key = [" + key + "] cacheValue + [" + cacheValue + "] defaultValue = [" + debugString(defaultValue) + "]");
         String result = (cacheValue == null) ? defaultValue : cacheValue;
         return  result;
     }
@@ -166,5 +162,10 @@ public class CachePropertyEditViewModel {
         else {
             return value.substring(0, MAX_CAR) + "...";
         }
+    }
+
+    public void clear(){
+        fields.clear();
+        pendingPhotos.clear();
     }
 }

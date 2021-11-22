@@ -5,7 +5,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.propertyedit.view.PropertyEditFragment">
+        tools:context=".ui.propertyedit.view.PropertyEditFragment"
+        android:tag="fragment_edit_tag">
 
     <ScrollView
         android:id="@+id/fragment_property_edit_scrollview"

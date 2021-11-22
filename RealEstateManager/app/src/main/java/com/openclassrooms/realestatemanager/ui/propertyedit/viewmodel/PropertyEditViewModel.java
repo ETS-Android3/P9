@@ -655,8 +655,8 @@ public class PropertyEditViewModel extends ViewModel {
         }
     }
 
-    public void clearFieldsCache(){
-        cache.clearFields();
+    public void clearCache(){
+        cache.clear();
     }
 
     public boolean rememberValue(FieldKey key, String value){
