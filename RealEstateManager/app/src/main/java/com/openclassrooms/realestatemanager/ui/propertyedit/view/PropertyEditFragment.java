@@ -1,12 +1,17 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.view;
 
+import android.app.Application;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -58,8 +63,11 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyEditViewState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.StaticMapViewState;
 import com.openclassrooms.realestatemanager.ui.selectimage.ImageSelectorObserver;
+import com.openclassrooms.realestatemanager.utils.FileProviderHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -203,6 +211,14 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
             @Override
             public void onClick(View v) {
                 selectPhoto();
+            }
+        });
+
+        Button buttonTakePicture = view.findViewById(R.id.property_edit_button_take_picture);
+        buttonTakePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePicture();
             }
         });
 
@@ -816,6 +832,26 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     private void selectPhoto(){
         imageSelectorObserver.openMultipleImages();
+    }
+
+    private Uri latestUri = null;
+
+    ActivityResultLauncher<Uri> mGetContent = registerForActivityResult(
+            new ActivityResultContracts.TakePicture(),
+            new ActivityResultCallback<Boolean>() {
+                @Override
+                public void onActivityResult(Boolean result) {
+                    // do what you need with the uri here ...
+                    Log.d("TAG", "onActivityResult() called with: uri = [" + latestUri + "]");
+                    addPhoto(latestUri, "form camera");
+                }
+            });
+
+
+
+    private void takePicture(){
+        latestUri = FileProviderHelper.createFileUri();
+        mGetContent.launch(latestUri);
     }
 
     private void addPhoto(Uri uri, String caption){
