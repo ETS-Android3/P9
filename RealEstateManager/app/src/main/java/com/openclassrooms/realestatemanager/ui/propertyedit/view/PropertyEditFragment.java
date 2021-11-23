@@ -62,7 +62,6 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownVi
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyEditViewState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.StaticMapViewState;
-import com.openclassrooms.realestatemanager.ui.selectimage.ImageSelectorObserver;
 import com.openclassrooms.realestatemanager.utils.FileProviderHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
@@ -83,7 +82,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     private long propertyTypeId = PropertyConst.PROPERTY_TYPE_ID_NOT_INITIALIZED;
     private LatLng propertyLatLng;
     private PropertyEditViewModel propertyEditViewModel;
-    private ImageSelectorObserver imageSelectorObserver;
     // Components
     private TextInputLayout textInputLayoutAddressTitle;
     private TextInputLayout textInputLayoutAddress;
@@ -116,8 +114,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         super.onCreate(savedInstanceState);
         Log.d(Tag.TAG, "PropertyEditFragment.onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
         // to select photo from gallery
-        imageSelectorObserver = new ImageSelectorObserver(requireActivity().getActivityResultRegistry());
-        getLifecycle().addObserver(imageSelectorObserver);
     }
 
     @Override
@@ -149,7 +145,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         View view = inflater.inflate(R.layout.fragment_property_edit, container, false);
 
         configureComponents(view);
-        configureImageSelectorObserver();
         configureRecyclerView(view);
         return view;
     }
@@ -235,22 +230,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
             @Override
             public void onClick(View v) {
                 cancelForm();
-            }
-        });
-    }
-
-    private void configureImageSelectorObserver(){
-        Log.d(Tag.TAG, "PropertyEditFragment.configureImageSelectorObserver() called");
-        imageSelectorObserver.getMultipleUrisLiveData().observe(getViewLifecycleOwner(), new Observer<List<Uri>>() {
-            @Override
-            public void onChanged(List<Uri> uris) {
-                Log.d(Tag.TAG, "PropertyEditFragment.imageSelectorObserver.observe->onChanged() called with: uris = [" + uris + "]");
-                int i = 1;
-                for (Uri uri : uris) {
-                    //getContext().getContentResolver().takePersistableUriPermission(uri, permissionFlags);
-                    addPhoto(uri, "");
-                    i++;
-                }
             }
         });
     }
@@ -830,28 +809,39 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
                 propertyLatLng);
     }
 
+    ActivityResultLauncher<String[]> selectPhotoslauncher = registerForActivityResult(
+            new ActivityResultContracts.OpenMultipleDocuments(),
+            new ActivityResultCallback<List<Uri>>() {
+                @Override
+                public void onActivityResult(List<Uri> result) {
+                    for (Uri uri : result) {
+                        //getContext().getContentResolver().takePersistableUriPermission(uri, permissionFlags);
+                        Log.d(Tag.TAG, "PropertyEditFragment.onActivityResult() called with: result = [" + result + "]");
+                        addPhoto(uri, "photo from galery");
+                    }
+                }
+            });
+
     private void selectPhoto(){
-        imageSelectorObserver.openMultipleImages();
+        selectPhotoslauncher.launch(new String[] {"image/*"});
     }
 
     private Uri latestUri = null;
 
-    ActivityResultLauncher<Uri> mGetContent = registerForActivityResult(
+    ActivityResultLauncher<Uri> takePictureLauncher = registerForActivityResult(
             new ActivityResultContracts.TakePicture(),
             new ActivityResultCallback<Boolean>() {
                 @Override
                 public void onActivityResult(Boolean result) {
                     // do what you need with the uri here ...
-                    Log.d("TAG", "onActivityResult() called with: uri = [" + latestUri + "]");
-                    addPhoto(latestUri, "form camera");
+                    Log.d("TAG", "PropertyEditFragment.onActivityResult() called with: uri = [" + latestUri + "]");
+                    addPhoto(latestUri, "picture form camera");
                 }
             });
 
-
-
     private void takePicture(){
         latestUri = FileProviderHelper.createFileUri();
-        mGetContent.launch(latestUri);
+        takePictureLauncher.launch(latestUri);
     }
 
     private void addPhoto(Uri uri, String caption){
