@@ -54,8 +54,8 @@
     <string name="property_type">Type</string>
     <string name="property_type_value">Apartment</string>
 
-    <string name="property_photo_add">Add photos</string>
-    <string name="property_take_picture">Take picture</string>
+    <string name="property_photo_add">Gallery</string>
+    <string name="property_take_picture">Camera</string>
     <string name="property_photo_legend">Photo legend</string>
     <string name="property_photo_legend_value">Great place</string>
 

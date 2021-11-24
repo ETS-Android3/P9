@@ -300,7 +300,8 @@
                 android:text="@string/property_photo_add"
                 app:icon="@drawable/ic_add"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_agent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/property_edit_button_take_picture"/>
             <Button
                 android:id="@+id/property_edit_button_take_picture"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
@@ -316,7 +317,8 @@
                 app:icon="@drawable/ic_photo_camera"
                 app:layout_constraintTop_toTopOf="@+id/property_edit_button_add_photo"
                 app:layout_constraintBottom_toBottomOf="@+id/property_edit_button_add_photo"
-                app:layout_constraintStart_toEndOf="@+id/property_edit_button_add_photo"/>
+                app:layout_constraintStart_toEndOf="@+id/property_edit_button_add_photo"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/property_edit_recycler_view"

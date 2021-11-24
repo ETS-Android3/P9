@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.view;
 
-import android.app.Application;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.net.Uri;
@@ -11,7 +10,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -37,10 +35,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.openclassrooms.realestatemanager.R;
@@ -65,8 +60,6 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.StaticMapV
 import com.openclassrooms.realestatemanager.utils.FileProviderHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -110,10 +103,8 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         Log.d(Tag.TAG, "PropertyEditFragment.onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
-        // to select photo from gallery
     }
 
     @Override
