@@ -29,13 +29,19 @@ public class AgentContentProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
 
         if (getContext() != null){
-            //long agentId = ContentUris.parseId(uri);
+
             final AgentRepository agentRepository = new AgentRepository(MainApplication.getApplication());
-            // final Cursor cursor = agentRepository.getAgentByIdWithCursor(agentId);
-            //
-            final Cursor cursor = agentRepository.getAgentsWithCursor();
-            cursor.setNotificationUri(getContext().getContentResolver(), uri);
-            return cursor;
+
+            try {
+                long agentId = ContentUris.parseId(uri);
+                final Cursor cursor = agentRepository.getAgentByIdWithCursor(agentId);
+                cursor.setNotificationUri(getContext().getContentResolver(), uri);
+                return cursor;
+            } catch (IllegalArgumentException exception) {
+                final Cursor cursor = agentRepository.getAgentsWithCursor();
+                cursor.setNotificationUri(getContext().getContentResolver(), uri);
+                return cursor;
+            }
         }
 
         throw new IllegalArgumentException("Failed to query row for uri " + uri);

@@ -48,27 +48,56 @@ public class ExampleInstrumentedTest {
         assertEquals("com.openclassrooms.realestatemanager", appContext.getPackageName());
     }
 
-    //
-    @Test
-    public void getAgent(){
-        final Cursor cursor = mContentResolver.query(AgentContentProvider.URI_AGENT,
-                null, null, null, null);
-
-        // for debug
+    private void logAgent(Cursor cursor) {
         if (cursor != null) {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                long id = cursor.getLong(0);
-                String name = cursor.getString(1);
-                Log.d(Tag.TAG, "getAgent.id: " + id + " name = " + name);
-                while (cursor.moveToNext()) {
-                    id = cursor.getLong(0);
-                    name = cursor.getString(1);
-                    Log.d(Tag.TAG, "getAgent.id: " + id + " name = " + name);
-                }
+            long id = cursor.getLong(0);
+            String name = cursor.getString(1);
+            Log.d(Tag.TAG, "getAgent.id: " + id + " name = " + name);
+        }
+    }
+
+    private void logCursor(Cursor cursor){
+        // for debug
+        if (cursor == null) {
+            Log.d(Tag.TAG, "logCursor() called with: cursor = [" + cursor + "]");
+        } else {
+            switch (cursor.getCount()) {
+                case 0:
+                    Log.d(Tag.TAG, "logCursor() called with: cursor count = 0");
+                    return;
+                case 1:
+                    Log.d(Tag.TAG, "logCursor() called with: cursor count = 1");
+                    cursor.moveToFirst();
+                    logAgent(cursor);
+                    return;
+                default:
+                    Log.d(Tag.TAG, "logCursor() called with: cursor count = " + cursor.getCount());
+                    cursor.moveToFirst();
+                    logAgent(cursor);
+                    while (cursor.moveToNext()) {
+                        logAgent(cursor);
+                    }
+                    return;
             }
         }
+    }
 
+
+    @Test
+    public void getAgents(){
+        final Cursor cursor = mContentResolver.query(AgentContentProvider.URI_AGENT,
+                null, null, null, null);
+        logCursor(cursor);
         assertNotNull(cursor);
+    }
+
+    @Test
+    public void getAgentById(){
+        final Cursor cursor = mContentResolver.query(ContentUris.withAppendedId(AgentContentProvider.URI_AGENT, AGENT_ID),
+                null, null, null, null);
+        logCursor(cursor);
+        assertNotNull(cursor);
+        long id = cursor.getLong(0);
+        assertEquals(AGENT_ID, id);
     }
 }
