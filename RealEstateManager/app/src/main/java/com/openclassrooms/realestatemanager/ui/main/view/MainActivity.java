@@ -21,6 +21,7 @@ import android.view.WindowManager;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -43,6 +44,7 @@ import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.P
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnPropertySelectedListener;
+import com.openclassrooms.realestatemanager.ui.propertylist.view.PropertyListFragment;
 import com.openclassrooms.realestatemanager.ui.propertymap.listener.OnMapListener;
 import com.openclassrooms.realestatemanager.utils.LandscapeHelper;
 
@@ -85,6 +87,13 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             @Override
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 Log.d(Tag.TAG, "MainActivity.onDestinationChanged() called with: controller = [" + controller + "], destination = [" + destination + "], arguments = [" + arguments + "]");
+
+                if (destination.getParent().getStartDestination() == R.id.nav_propertyListFragment_portrait)
+                    Log.d(Tag.TAG, "MainActivity.onDestinationChanged() 1");
+
+                if (destination.getId() == R.id.nav_propertyListFragment_portrait)
+                    Log.d(Tag.TAG, "MainActivity.onDestinationChanged() 2");
+
                 findAndCallOnBackPressedInterface();
             }
         });
@@ -137,6 +146,18 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     @Override
     public void onBackPressed() {
         Log.d(Tag.TAG, "MainActivity.onBackPressed() called");
+
+/*        NavController navController = getNavController();
+        NavBackStackEntry previousBackStackEntry = navController.getPreviousBackStackEntry();
+        NavDestination previousNavDestination = previousBackStackEntry.getDestination();
+        int previousId = previousBackStackEntry.getDestination().getId();
+
+        //navController.popBackStack(previousId, true);
+
+        NavBackStackEntry navBackStackEntry = getNavController().getCurrentBackStackEntry();
+        NavDestination navDestination = navBackStackEntry.getDestination();
+
+        String name = navDestination.getLabel().toString();*/
 
         findAndCallOnBackPressedInterface();
         super.onBackPressed();

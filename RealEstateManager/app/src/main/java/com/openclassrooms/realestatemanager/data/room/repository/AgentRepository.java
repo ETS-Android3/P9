@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.data.room.repository;
 
 import android.app.Application;
+import android.database.Cursor;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -53,6 +54,11 @@ public class AgentRepository {
     }
 
     public LiveData<Agent> getAgentById(long id) {return agentDao.getAgentById(id);}
+
+    public Cursor getAgentsWithCursor(){ return agentDao.getAgentsWithCursor(); }
+    public Cursor getAgentByIdWithCursor(long id){
+        return agentDao.getAgentByIdWithCursor(id);
+    }
 
     public void insert(Agent agent) {
         AppDatabase.getExecutor().execute(() -> {
