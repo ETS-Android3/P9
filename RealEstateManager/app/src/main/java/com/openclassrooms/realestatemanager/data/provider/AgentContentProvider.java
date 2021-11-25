@@ -15,7 +15,7 @@ import com.openclassrooms.realestatemanager.data.room.repository.AgentRepository
 
 public class AgentContentProvider extends ContentProvider {
 
-    public static final String AUTHORITY = "com.openclassrooms.realestatemanager.provider";
+    public static final String AUTHORITY = "com.openclassrooms.realestatemanager.provider.agent";
     public static final String TABLE_NAME = Agent.class.getSimpleName();
     public static final Uri URI_AGENT = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
 

@@ -51,8 +51,10 @@ public class ExampleInstrumentedTest {
     //
     @Test
     public void getAgent(){
-        final Cursor cursor = mContentResolver.query(ContentUris.withAppendedId(AgentContentProvider.URI_AGENT, AGENT_ID),
+        final Cursor cursor = mContentResolver.query(AgentContentProvider.URI_AGENT,
                 null, null, null, null);
+
+        // for debug
         if (cursor != null) {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();

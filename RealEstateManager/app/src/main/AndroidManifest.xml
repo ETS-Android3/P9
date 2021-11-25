@@ -51,7 +51,7 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-<!--        <provider
+        <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
@@ -59,11 +59,11 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
-        </provider>-->
+        </provider>
 
         <provider
             android:name="com.openclassrooms.realestatemanager.data.provider.AgentContentProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="com.openclassrooms.realestatemanager.provider.agent"
             android:exported="true" />
     </application>
 
