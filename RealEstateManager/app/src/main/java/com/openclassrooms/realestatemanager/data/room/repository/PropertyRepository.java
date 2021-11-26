@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.data.room.repository;
 
 import android.app.Application;
+import android.database.Cursor;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -84,5 +85,13 @@ public class PropertyRepository {
 
     public LiveData<List<PropertyLocationData>> getPropertiesLocation(){
         return propertyDao.getPropertiesLocation();
+    }
+
+    public Cursor getPropertyByIdWithCursor(long id){
+        return propertyDao.getPropertyByIdWithCursor(id);
+    }
+
+    public Cursor getPropertiesWithCursor(){
+        return propertyDao.getPropertiesWithCursor();
     }
 }

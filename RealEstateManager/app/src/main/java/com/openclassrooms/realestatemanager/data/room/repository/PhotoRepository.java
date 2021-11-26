@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.data.room.repository;
 
 import android.app.Application;
+import android.database.Cursor;
 
 import androidx.lifecycle.LiveData;
 
@@ -37,4 +38,13 @@ public class PhotoRepository {
             photoDao.delete(id);
         });
     }
+
+    public Cursor getPhotoByIdWithCursor(long id){
+        return photoDao.getPhotoByIdWithCursor(id);
+    }
+
+    public Cursor getPhotosWithCursor(){
+        return photoDao.getPhotosWithCursor();
+    }
+
 }

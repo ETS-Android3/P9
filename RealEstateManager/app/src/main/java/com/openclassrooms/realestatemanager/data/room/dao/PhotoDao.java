@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.data.room.dao;
 
+import android.database.Cursor;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -27,4 +29,10 @@ public interface PhotoDao {
 
     @Query("DELETE FROM photo WHERE id = :id")
     int delete(long id);
+
+    @Query("SELECT * FROM photo WHERE property_id = :propertyId ORDER BY id")
+    Cursor getPhotoByIdWithCursor(long propertyId);
+
+    @Query("SELECT * FROM photo ORDER BY id")
+    Cursor getPhotosWithCursor();
 }

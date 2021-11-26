@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.data.room.repository;
 
 import android.app.Application;
+import android.database.Cursor;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -68,5 +69,13 @@ public class PropertyTypeRepository {
         AppDatabase.getExecutor().execute(() -> {
             propertyTypeDao.delete(id);
         });
+    }
+
+    public Cursor getPropertyTypeByIdWithCursor(long id){
+        return propertyTypeDao.getPropertyTypeByIdWithCursor(id);
+    }
+
+    public Cursor getPropertyTypesWithCursor(){
+        return propertyTypeDao.getPropertyTypesWithCursor();
     }
 }

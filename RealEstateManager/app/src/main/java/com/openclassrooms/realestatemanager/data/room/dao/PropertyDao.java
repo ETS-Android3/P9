@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.data.room.dao;
 
+import android.database.Cursor;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -107,4 +109,10 @@ public interface PropertyDao {
             "from property " +
             "where (not ((latitude = 0) and (longitude = 0)))")
     LiveData<List<PropertyLocationData>> getPropertiesLocation();
+
+    @Query("SELECT * FROM property WHERE property.id = :id")
+    Cursor getPropertyByIdWithCursor(Long id);
+
+    @Query("SELECT * FROM property ORDER BY property.id")
+    Cursor getPropertiesWithCursor();
 }

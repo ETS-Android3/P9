@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.data.room.dao;
 
+import android.database.Cursor;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -27,5 +29,13 @@ public interface PropertyTypeDao {
 
     @Query("DELETE FROM property_type WHERE id = :id")
     int delete(long id);
+
+    @Query("SELECT * FROM property_type WHERE id = :id")
+    Cursor getPropertyTypeByIdWithCursor(long id);
+
+    @Query("SELECT * FROM property_type ORDER BY id")
+    Cursor getPropertyTypesWithCursor();
+
+
 }
 
