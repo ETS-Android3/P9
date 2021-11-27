@@ -2,7 +2,6 @@ package com.openclassrooms.realestatemanager;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
@@ -17,7 +16,6 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
-import com.openclassrooms.realestatemanager.data.provider.DataContentProvider;
 import com.openclassrooms.realestatemanager.data.room.database.AppDatabase;
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
@@ -25,7 +23,6 @@ import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.tag.Tag;
 
-import java.util.logging.LogManager;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -36,14 +33,12 @@ import java.util.logging.LogManager;
 public class ContentProviderInstrumentedTest {
 
     private ContentResolver mContentResolver;
-    private static long AGENT_ID = 1;
-    private static long PHOTO_ID = 1;
-    private static long PROPERTY_ID = 1;
-    private static long PROPERTY_TYPE_ID = 1;
+    private final static long AGENT_ID = 1;
+    private final static long PHOTO_ID = 1;
+    private final static long PROPERTY_ID = 1;
+    private final static long PROPERTY_TYPE_ID = 1;
 
     public static final String AUTHORITY = "com.openclassrooms.realestatemanager.provider.data";
-    //public static final String TABLE_NAME = Agent.class.getSimpleName();
-    //public static final Uri URI_AGENT = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
 
     private Uri getUriFromTable(String tableName){
         return Uri.parse("content://" + AUTHORITY + "/" + tableName);
@@ -94,14 +89,6 @@ public class ContentProviderInstrumentedTest {
         mContentResolver = InstrumentationRegistry.getInstrumentation().getContext().getContentResolver();
     }
 
-    @Test
-    public void useAppContext() throws Exception {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-
-        assertEquals("com.openclassrooms.realestatemanager", appContext.getPackageName());
-    }
-
     private void logRow(Cursor cursor) {
         if (cursor != null) {
             int count = cursor.getColumnCount();
@@ -116,7 +103,7 @@ public class ContentProviderInstrumentedTest {
     private void logCursor(Cursor cursor){
         // for debug
         if (cursor == null) {
-            Log.d(Tag.TAG, "logCursor() called with: cursor = [" + cursor + "]");
+            Log.d(Tag.TAG, "logCursor() called with: cursor = null");
         } else {
             switch (cursor.getCount()) {
                 case 0:
@@ -134,7 +121,6 @@ public class ContentProviderInstrumentedTest {
                     while (cursor.moveToNext()) {
                         logRow(cursor);
                     }
-                    return;
             }
         }
     }
