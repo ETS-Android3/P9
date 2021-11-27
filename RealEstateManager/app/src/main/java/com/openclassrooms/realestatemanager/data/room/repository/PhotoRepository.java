@@ -23,20 +23,14 @@ public class PhotoRepository {
     public LiveData<List<Photo>> getPhotosByPropertyId(long id) {return photoDao.getPhotosByPropertyId(id);}
 
     public void insert(Photo photo) {
-        AppDatabase.getExecutor().execute(() -> {
-            photoDao.insert(photo);
-        });
+        AppDatabase.getExecutor().execute(() -> photoDao.insert(photo));
     }
     public void update(Photo photo) {
-        AppDatabase.getExecutor().execute(() -> {
-            photoDao.update(photo);
-        });
+        AppDatabase.getExecutor().execute(() -> photoDao.update(photo));
     }
 
     public void delete(long id) {
-        AppDatabase.getExecutor().execute(() -> {
-            photoDao.delete(id);
-        });
+        AppDatabase.getExecutor().execute(() -> photoDao.delete(id));
     }
 
     public Cursor getPhotoByIdWithCursor(long id){
