@@ -9,9 +9,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.openclassrooms.realestatemanager.MainApplication;
 import com.openclassrooms.realestatemanager.ui.main.NavigationState;
 import com.openclassrooms.realestatemanager.ui.main.viewstate.MainViewState;
 import com.openclassrooms.realestatemanager.ui.main.viewstate.MenuItemViewState;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 public class MainViewModel extends ViewModel {
     private NavigationState currentNavigationState = NavigationState.LIST;
@@ -34,7 +36,6 @@ public class MainViewModel extends ViewModel {
     public MainViewModel() {
         navigationStateMutableLiveData.setValue(NavigationState.HOME);
         configureMediator();
-
     }
 
     private void configureMediator(){
@@ -71,17 +72,19 @@ public class MainViewModel extends ViewModel {
 
         NavigationState redirectNavigation = checkAndRedirectDestination(isLandscape, askedDestination);
 
-        MenuItemViewState home = new MenuItemViewState(NavigationState.HOME.isEnable(isLandscape, redirectNavigation),
+        boolean isWifiEnabled = Utils.isInternetAvailable(MainApplication.getApplication());
+
+        MenuItemViewState home = new MenuItemViewState(NavigationState.HOME.isEnable(isLandscape, redirectNavigation, isWifiEnabled),
                 NavigationState.HOME.isVisible(isLandscape, redirectNavigation));
-        MenuItemViewState detail = new MenuItemViewState(NavigationState.DETAIL.isEnable(isLandscape, redirectNavigation),
+        MenuItemViewState detail = new MenuItemViewState(NavigationState.DETAIL.isEnable(isLandscape, redirectNavigation, isWifiEnabled),
                 NavigationState.DETAIL.isVisible(isLandscape, redirectNavigation));
-        MenuItemViewState edit = new MenuItemViewState(NavigationState.EDIT.isEnable(isLandscape, redirectNavigation),
+        MenuItemViewState edit = new MenuItemViewState(NavigationState.EDIT.isEnable(isLandscape, redirectNavigation, isWifiEnabled),
                 NavigationState.EDIT.isVisible(isLandscape, redirectNavigation));
-        MenuItemViewState add = new MenuItemViewState(NavigationState.ADD.isEnable(isLandscape, redirectNavigation),
+        MenuItemViewState add = new MenuItemViewState(NavigationState.ADD.isEnable(isLandscape, redirectNavigation, isWifiEnabled),
                 NavigationState.ADD.isVisible(isLandscape, redirectNavigation));
-        MenuItemViewState map = new MenuItemViewState(NavigationState.MAP.isEnable(isLandscape, redirectNavigation),
+        MenuItemViewState map = new MenuItemViewState(NavigationState.MAP.isEnable(isLandscape, redirectNavigation, isWifiEnabled),
                 NavigationState.MAP.isVisible(isLandscape, redirectNavigation));
-        MenuItemViewState search = new MenuItemViewState(NavigationState.SEARCH.isEnable(isLandscape, redirectNavigation),
+        MenuItemViewState search = new MenuItemViewState(NavigationState.SEARCH.isEnable(isLandscape, redirectNavigation, isWifiEnabled),
                 NavigationState.SEARCH.isVisible(isLandscape, redirectNavigation));
 
         // boolean mustNavigate = navigationChanged(navigationState, newNavigation);

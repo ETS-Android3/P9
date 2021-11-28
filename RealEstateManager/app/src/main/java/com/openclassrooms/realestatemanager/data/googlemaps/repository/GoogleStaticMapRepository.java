@@ -2,9 +2,11 @@ package com.openclassrooms.realestatemanager.data.googlemaps.repository;
 
 import android.util.Log;
 
+import com.openclassrooms.realestatemanager.MainApplication;
 import com.openclassrooms.realestatemanager.data.googlemaps.api.GoogleGeocodeClient;
 import com.openclassrooms.realestatemanager.data.googlemaps.api.GoogleGeocodeInterface;
 import com.openclassrooms.realestatemanager.tag.Tag;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 public class GoogleStaticMapRepository {
 
@@ -56,6 +58,10 @@ public class GoogleStaticMapRepository {
     }
 
     public String getUrlImage(double latitude, double longitude){
+
+        boolean isWifiEnabled = Utils.isInternetAvailable(MainApplication.getApplication());
+        if (! isWifiEnabled) return null;
+
         Log.d(Tag.TAG, "GoogleStaticMapRepository.getUrlImage() called with: latitude = [" + latitude + "], longitude = [" + longitude + "]");
         if ((latitude == 0) && (longitude == 0)) return "";
 

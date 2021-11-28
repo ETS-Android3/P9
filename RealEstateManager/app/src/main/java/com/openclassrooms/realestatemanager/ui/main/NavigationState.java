@@ -3,7 +3,7 @@ package com.openclassrooms.realestatemanager.ui.main;
 public enum NavigationState {
     HOME {
         @Override
-        public boolean isEnable(boolean isLandscape, NavigationState currentState) {
+        public boolean isEnable(boolean isLandscape, NavigationState currentState, boolean isWifiEnabled) {
             return true;
         }
 
@@ -19,7 +19,7 @@ public enum NavigationState {
     },
     LIST {
         @Override
-        public boolean isEnable(boolean isLandscape, NavigationState currentState) {
+        public boolean isEnable(boolean isLandscape, NavigationState currentState, boolean isWifiEnabled) {
             return true;
         }
 
@@ -35,7 +35,7 @@ public enum NavigationState {
     },
     DETAIL {
         @Override
-        public boolean isEnable(boolean isLandscape, NavigationState currentState) {
+        public boolean isEnable(boolean isLandscape, NavigationState currentState, boolean isWifiEnabled) {
             return true;
         }
 
@@ -51,7 +51,7 @@ public enum NavigationState {
     },
     EDIT {
         @Override
-        public boolean isEnable(boolean isLandscape, NavigationState currentState) {
+        public boolean isEnable(boolean isLandscape, NavigationState currentState, boolean isWifiEnabled) {
             return true;
         }
 
@@ -67,7 +67,7 @@ public enum NavigationState {
     },
     ADD {
         @Override
-        public boolean isEnable(boolean isLandscape, NavigationState currentState) {
+        public boolean isEnable(boolean isLandscape, NavigationState currentState, boolean isWifiEnabled) {
             return true;
         }
 
@@ -83,8 +83,8 @@ public enum NavigationState {
     },
     MAP {
         @Override
-        public boolean isEnable(boolean isLandscape, NavigationState currentState) {
-            return true;
+        public boolean isEnable(boolean isLandscape, NavigationState currentState, boolean isWifiEnabled) {
+            return isWifiEnabled;
         }
 
         @Override
@@ -99,7 +99,7 @@ public enum NavigationState {
     },
     SEARCH {
         @Override
-        public boolean isEnable(boolean isLandscape, NavigationState currentState) {
+        public boolean isEnable(boolean isLandscape, NavigationState currentState, boolean isWifiEnabled) {
             return true;
         }
 
@@ -114,7 +114,7 @@ public enum NavigationState {
         }
     };
 
-    public abstract boolean isEnable(boolean isLandscape, NavigationState currentState);
+    public abstract boolean isEnable(boolean isLandscape, NavigationState currentState, boolean isWifiEnabled);
     public abstract boolean isVisible(boolean isLandscape, NavigationState currentState);
     public abstract NavigationState redirectNavigation(boolean isLandscape, NavigationState currentState);
 }
