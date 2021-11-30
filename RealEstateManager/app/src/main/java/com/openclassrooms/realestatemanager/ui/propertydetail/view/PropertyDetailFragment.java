@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.propertydetail.view;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,24 +12,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.databinding.FragmentPropertyDetailBinding;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.photoList.PhotoListAdapter;
+import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
 import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
-import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.PropertyDetailViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
 
 import java.util.List;
@@ -124,7 +120,7 @@ public class PropertyDetailFragment extends Fragment {
 
     private void configureDetailViewModel(){
         propertyDetailViewModel = new ViewModelProvider(
-                requireActivity(), PropertyDetailViewModelFactory.getInstance())
+                requireActivity(), AppViewModelFactory.getInstance())
                 .get(PropertyDetailViewModel.class);
 
         propertyDetailViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyDetailViewState>() {

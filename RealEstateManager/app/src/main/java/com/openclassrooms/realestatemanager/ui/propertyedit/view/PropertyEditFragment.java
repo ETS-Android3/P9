@@ -51,12 +51,12 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEdi
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.ConfirmationDeletePhotoListener;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEditViewModel;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.FieldKey;
-import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodelfactory.PropertyEditViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyEditViewState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.StaticMapViewState;
+import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
 import com.openclassrooms.realestatemanager.utils.FileProviderHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
@@ -288,7 +288,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     private void configureViewModel() {
         propertyEditViewModel = new ViewModelProvider(
                 requireActivity(),
-                PropertyEditViewModelFactory.getInstance()).get(PropertyEditViewModel.class);
+                AppViewModelFactory.getInstance()).get(PropertyEditViewModel.class);
 
         configureGpsListener();
         configureImageViewGoogleStaticMap();

@@ -30,9 +30,9 @@ import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertymap.listener.OnMapListener;
 import com.openclassrooms.realestatemanager.ui.propertymap.viewmodel.PropertyMapViewModel;
-import com.openclassrooms.realestatemanager.ui.propertymap.viewmodelfactory.PropertyMapViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertymap.viewstate.PropertyMapItem;
 import com.openclassrooms.realestatemanager.ui.propertymap.viewstate.PropertyMapViewState;
+import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
 import com.openclassrooms.realestatemanager.utils.UtilsDrawable;
 
 import java.util.ArrayList;
@@ -144,7 +144,7 @@ public class PropertyMapsFragment extends Fragment {
 
     private void configureViewModel(){
         viewModel = new ViewModelProvider(
-                requireActivity(), PropertyMapViewModelFactory.getInstance())
+                requireActivity(), AppViewModelFactory.getInstance())
                 .get(PropertyMapViewModel.class);
 
         viewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyMapViewState>() {

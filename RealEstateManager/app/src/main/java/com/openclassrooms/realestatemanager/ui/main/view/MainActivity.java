@@ -21,7 +21,6 @@ import android.view.WindowManager;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -40,12 +39,11 @@ import com.openclassrooms.realestatemanager.ui.main.viewmodel.MainViewModel;
 import com.openclassrooms.realestatemanager.ui.main.viewmodelfactory.MainViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.main.viewstate.MainViewState;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
-import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.PropertyDetailViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnPropertySelectedListener;
-import com.openclassrooms.realestatemanager.ui.propertylist.view.PropertyListFragment;
 import com.openclassrooms.realestatemanager.ui.propertymap.listener.OnMapListener;
+import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
 import com.openclassrooms.realestatemanager.utils.LandscapeHelper;
 
 import java.util.List;
@@ -399,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
         // retrieve property id from view model
         PropertyDetailViewModel propertyDetailViewModel = new ViewModelProvider(
-                this, PropertyDetailViewModelFactory.getInstance())
+                this, AppViewModelFactory.getInstance())
                 .get(PropertyDetailViewModel.class);
         long id = propertyDetailViewModel.getCurrentPropertyId();
         getNavController().navigate(R.id.nav_propertyEditFragment_portrait,

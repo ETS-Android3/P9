@@ -11,12 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
-import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodelfactory.PropertyDetailViewModelFactory;
-import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
 import com.openclassrooms.realestatemanager.ui.propertysearch.viewmodel.PropertySearchViewModel;
-import com.openclassrooms.realestatemanager.ui.propertysearch.viewmodelfactory.PropertySearchViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertysearch.viewstate.PropertySearchViewState;
+import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
 
 public class PropertySearchFragment extends Fragment {
 
@@ -38,7 +35,7 @@ public class PropertySearchFragment extends Fragment {
 
     private void configureDetailViewModel() {
         propertySearchViewModel = new ViewModelProvider(
-                requireActivity(), PropertySearchViewModelFactory.getInstance())
+                requireActivity(), AppViewModelFactory.getInstance())
                 .get(PropertySearchViewModel.class);
 
         propertySearchViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertySearchViewState>() {

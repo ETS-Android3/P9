@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,8 +22,8 @@ import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnPropertySelectedListener;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnRowPropertyClickListener;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewmodel.PropertyListViewModel;
-import com.openclassrooms.realestatemanager.ui.propertylist.viewmodelfactory.PropertyListViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewstate.PropertyListViewState;
+import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -114,7 +113,7 @@ public class PropertyListFragment extends Fragment {
 
     private void configureViewModel() {
         propertyListViewModel = new ViewModelProvider(
-                requireActivity(),PropertyListViewModelFactory.getInstance())
+                requireActivity(), AppViewModelFactory.getInstance())
                 .get(PropertyListViewModel.class);
         propertyListViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyListViewState>() {
             @Override
