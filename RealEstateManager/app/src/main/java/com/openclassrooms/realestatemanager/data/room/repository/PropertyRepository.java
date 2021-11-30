@@ -6,14 +6,17 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.openclassrooms.realestatemanager.data.room.dao.PropertyDao;
 import com.openclassrooms.realestatemanager.data.room.database.AppDatabase;
+import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
 import com.openclassrooms.realestatemanager.tag.Tag;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -93,5 +96,31 @@ public class PropertyRepository {
 
     public Cursor getPropertiesWithCursor(){
         return propertyDao.getPropertiesWithCursor();
+    }
+
+    public LiveData<List<Property>> getPropertiesWithFilterLiveData(SimpleSQLiteQuery query) {
+        return propertyDao.getPropertiesWithFilterLiveData(query);
+    };
+
+    public List<Property> getPropertiesWithFilter(SimpleSQLiteQuery query){
+        Callable<List<Property>> callable = new Callable<List<Property>>() {
+            @Override
+            public List<Property> call() throws Exception {
+                return propertyDao.getPropertiesWithFilter(query);
+            }
+        };
+
+        List<Property> properties = new ArrayList<>();
+        Future<List<Property>> future = AppDatabase.getExecutor().submit(callable);
+        try {
+            List<Property> list = future.get();
+            properties.addAll(list);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return properties;
     }
 }

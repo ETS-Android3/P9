@@ -9,6 +9,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.room.Update;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.openclassrooms.realestatemanager.data.room.model.Property;
@@ -52,10 +53,6 @@ public interface PropertyDao {
     @Query("DELETE FROM property WHERE property.id = :id")
     int delete(long id);
 
-    //For Search
-    @RawQuery(observedEntities = Property.class)
-    LiveData<List<Property>> getSearch(SupportSQLiteQuery query);
-
     @Query("select property.*, " +
            "agent.email as agent_email, agent.name as agent_name, agent.phone as agent_phone, " +
            "property_type.name as property_type_name "+
@@ -85,4 +82,10 @@ public interface PropertyDao {
 
     @Query("SELECT * FROM property ORDER BY property.id")
     Cursor getPropertiesWithCursor();
+
+    @RawQuery(observedEntities = Property.class)
+    LiveData<List<Property>> getPropertiesWithFilterLiveData(SimpleSQLiteQuery query);
+
+    @RawQuery(observedEntities = Property.class)
+    List<Property> getPropertiesWithFilter(SimpleSQLiteQuery query);
 }
