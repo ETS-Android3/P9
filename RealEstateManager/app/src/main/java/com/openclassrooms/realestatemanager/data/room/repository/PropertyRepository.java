@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.openclassrooms.realestatemanager.data.room.dao.PropertyDao;
@@ -15,6 +16,7 @@ import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
 import com.openclassrooms.realestatemanager.tag.Tag;
+import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +29,8 @@ public class PropertyRepository {
 
     public PropertyRepository(Application application){
         this.propertyDao = AppDatabase.getInstance(application).propertyDao();
+        setPropertySearchParameters(new PropertySearchParameters());
     }
-
-    public LiveData<List<Property>> getProperties() {return propertyDao.getProperties();}
-    public LiveData<Property> getPropertyById(long id) {return propertyDao.getPropertyById(id);}
-
-    public LiveData<Long> getFirstPropertyIdLiveData() {return propertyDao.getFirstPropertyIdLiveData();}
-    public LiveData<Long> getIsIdExistLiveData(Long id) {return propertyDao.getIsIdExistLiveData(id);}
-    public LiveData<Long> getFirstOrValidIdLiveData(Long id) {return propertyDao.getFirstOrValidIdLiveData(id);}
 
     // return a long. This is the newly generated ID
     public long insert(Property property) throws ExecutionException, InterruptedException {
@@ -123,4 +119,36 @@ public class PropertyRepository {
 
         return properties;
     }
+
+    private MutableLiveData<PropertySearchParameters> propertySearchParametersMutableLiveData = new MutableLiveData<>();
+    public void setPropertySearchParameters(PropertySearchParameters propertySearchParameters) {
+        propertySearchParametersMutableLiveData.setValue(propertySearchParameters);
+    }
+
+    public void resetSearch(){
+        setPropertySearchParameters(new PropertySearchParameters());
+    }
+
+    public LiveData<List<Property>> getProperties() {
+        return Transformations.switchMap(propertySearchParametersMutableLiveData,
+            propertySearchParameters -> {return getPropertiesWithFilterLiveData(propertySearchParameters.getQuery());});
+    }
+
+    public LiveData<Long> getFirstOrValidIdLiveData(Long id) {
+        return Transformations.map(getProperties(),
+                properties -> {
+                    long result = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
+                    if (properties.size() > 0) {
+                        result = properties.get(0).getId();
+                        for (Property property : properties) {
+                            if (property.getId() == id) {
+                                result = id;
+                                break;
+                            }
+                        }
+                    }
+                    return new Long(result);
+                });
+    }
+
 }

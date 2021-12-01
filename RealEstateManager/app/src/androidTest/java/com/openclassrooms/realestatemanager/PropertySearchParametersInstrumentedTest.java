@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import android.util.Log;
 import android.util.Pair;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 import androidx.test.ext.junit.runners.AndroidJUnit4;

@@ -7,6 +7,7 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
+import com.openclassrooms.realestatemanager.data.room.repository.PropertySearchParameters;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertysearch.viewstate.PropertySearchViewState;
 
@@ -31,4 +32,15 @@ public class PropertySearchViewModel extends ViewModel {
     }
 
     private void combine(){}
+
+    public void setSearchValues(String titleAddress, String address){
+        PropertySearchParameters psp = new PropertySearchParameters();
+        psp.setAddressTitle(titleAddress);
+        psp.setAddress(address);
+        databaseRepository.getPropertyRepository().setPropertySearchParameters(psp);
+    }
+
+    public void resetSearch(){
+        databaseRepository.getPropertyRepository().resetSearch();
+    }
 }

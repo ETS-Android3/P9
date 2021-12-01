@@ -43,6 +43,7 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEdi
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnPropertySelectedListener;
 import com.openclassrooms.realestatemanager.ui.propertymap.listener.OnMapListener;
+import com.openclassrooms.realestatemanager.ui.propertysearch.listener.PropertySearchListener;
 import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
 import com.openclassrooms.realestatemanager.utils.LandscapeHelper;
 
@@ -50,7 +51,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnPropertySelectedListener,
                                                                PropertyEditListener,
-                                                               OnMapListener {
+                                                               OnMapListener,
+        PropertySearchListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -326,6 +328,12 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         // close fragment call back
         Log.d(Tag.TAG, "MainActivity.onValidateEditProperty() called with: propertyId = [" + propertyId + "]");
         navToDetail(propertyId);
+    }
+
+    @Override
+    public void onApplySearch() {
+        Log.d(Tag.TAG, "onApplySearch() called");
+        navToHome();
     }
 
     private NavController getNavController() {
