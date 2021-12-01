@@ -306,9 +306,7 @@ public class PropertyEditViewModel extends ViewModel {
     }
 
     private void initDropdownViewstateMediatorLiveData(){
-
-        LiveData<List<Agent>> agentLiveData = databaseRepository.getAgentRepository().getAgentsLiveData();
-        LiveData<List<DropdownItem>> agentItemsLiveData = Transformations.map(agentLiveData,
+        LiveData<List<DropdownItem>> agentItemsLiveData = Transformations.map(databaseRepository.getAgentRepository().getAgentsLiveData(),
                 agents -> {
                     List<DropdownItem> items = new ArrayList<>();
                     for (Agent agent : agents) {
@@ -317,8 +315,7 @@ public class PropertyEditViewModel extends ViewModel {
                     return items;
                 });
 
-        LiveData<List<PropertyType>> propertyTypeLiveData = databaseRepository.getPropertyTypeRepository().getPropertyTypesLiveData();
-        LiveData<List<DropdownItem>> propertyTypeItemsLiveData = Transformations.map(propertyTypeLiveData,
+        LiveData<List<DropdownItem>> propertyTypeItemsLiveData = Transformations.map(databaseRepository.getPropertyTypeRepository().getPropertyTypesLiveData(),
                 propertyTypes -> {
                     List<DropdownItem> items = new ArrayList<>();
                     for (PropertyType propertyType : propertyTypes) {
@@ -327,22 +324,10 @@ public class PropertyEditViewModel extends ViewModel {
                     return items;
                 });
 
-        dropDownViewstateMediatorLiveData.addSource(agentLiveData, new Observer<List<Agent>>() {
-            @Override
-            public void onChanged(List<Agent> agents) {
-            }
-        });
-
         dropDownViewstateMediatorLiveData.addSource(agentItemsLiveData, new Observer<List<DropdownItem>>() {
             @Override
             public void onChanged(List<DropdownItem> items) {
                 conbineDropDown(items, propertyTypeItemsLiveData.getValue());
-            }
-        });
-
-        dropDownViewstateMediatorLiveData.addSource(propertyTypeLiveData, new Observer<List<PropertyType>>() {
-            @Override
-            public void onChanged(List<PropertyType> propertyTypes) {
             }
         });
 
