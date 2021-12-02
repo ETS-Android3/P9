@@ -112,6 +112,8 @@
     <string name="your_position">Your position</string>
     <string name="apply">Apply</string>
     <string name="reset_all">Reset all</string>
+    <string name="all_agents">all agents</string>
+    <string name="all_property_types">all types</string>
 
 
 </resources>
