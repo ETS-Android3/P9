@@ -26,33 +26,15 @@
             app:layout_constraintStart_toStartOf="parent" >
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/fragment_property_search_text_input_layout_address_title"
+                android:id="@+id/fragment_property_search_text_input_layout_fulltext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/My_TextInputLayoutStyle"
                 app:layout_constraintTop_toTopOf="@+id/fragment_property_search_constraintLayout_2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="parent"
-                app:endIconMode="clear_text">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/fragment_property_search_text_input_edit_text_address_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/property_address_title"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/fragment_property_search_text_input_layout_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/My_TextInputLayoutStyle"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_input_layout_address_title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="parent"
-                app:startIconDrawable="@drawable/ic_location"
-                app:startIconContentDescription="@string/property_address"
+                app:startIconDrawable="@drawable/ic_search_text"
+                app:startIconContentDescription="@string/search_full_text"
                 app:endIconMode="clear_text"
                 >
 
@@ -61,7 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="3"
-                    android:hint="@string/property_address"
+                    android:hint="@string/search_full_text"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,7 +51,7 @@
                 android:id="@+id/fragment_property_search_text_input_layout_property_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_input_layout_address"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_input_layout_fulltext"
                 app:layout_constraintStart_toStartOf="parent"
                 app:startIconDrawable="@drawable/ic_location_city"
                 app:startIconContentDescription="@string/property_type"

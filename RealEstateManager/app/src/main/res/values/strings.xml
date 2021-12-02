@@ -110,10 +110,11 @@
     <string name="confirm_delete_photo">Confirm delete</string>
     <string name="image_map_description">map</string>
     <string name="your_position">Your position</string>
+
     <string name="apply">Apply</string>
     <string name="reset_all">Reset all</string>
+    <string name="search_full_text">search in text</string>
     <string name="all_agents">all agents</string>
     <string name="all_property_types">all types</string>
-
 
 </resources>

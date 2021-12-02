@@ -41,8 +41,7 @@ public class PropertySearchFragment extends Fragment {
     private PropertySearchViewModel propertySearchViewModel;
 
     // Components
-    private TextInputLayout textInputLayoutAddressTitle;
-    private TextInputLayout textInputLayoutAddress;
+    private TextInputLayout textInputLayoutFullText;
     private TextInputLayout textInputLayoutAgents;
     private TextInputLayout textInputLayoutPropertyTypes;
 
@@ -79,8 +78,7 @@ public class PropertySearchFragment extends Fragment {
     }
 
     private void configureComponents(View view) {
-        textInputLayoutAddressTitle = view.findViewById(R.id.fragment_property_search_text_input_layout_address_title);
-        textInputLayoutAddress = view.findViewById(R.id.fragment_property_search_text_input_layout_address);
+        textInputLayoutFullText = view.findViewById(R.id.fragment_property_search_text_input_layout_fulltext);
         textInputLayoutAgents = view.findViewById(R.id.fragment_property_search_text_input_layout_agent);
         textInputLayoutPropertyTypes = view.findViewById(R.id.fragment_property_search_text_input_layout_property_type);
 
@@ -168,33 +166,23 @@ public class PropertySearchFragment extends Fragment {
         }
     }
 
-    private void setTitleAddress(String titleAddress){
-        textInputLayoutAddressTitle.getEditText().setText(titleAddress);
+    private void setFullText(String text){
+        textInputLayoutFullText.getEditText().setText(text);
     }
 
-    private String getTitleAddress(){
-        return textInputLayoutAddressTitle.getEditText().getText().toString().trim();
-    }
-
-    private void setAddress(String address){
-        textInputLayoutAddress.getEditText().setText(address);
-    }
-
-    private String getAddress(){
-        return textInputLayoutAddress.getEditText().getText().toString().trim();
+    private String getFullText(){
+        return textInputLayoutFullText.getEditText().getText().toString().trim();
     }
 
     private void resetForm() {
-        setTitleAddress("");
-        setAddress("");
+        setFullText("");
         propertySearchViewModel.resetSearch();
     }
 
     private void validateForm() {
-        String titleAddress = getTitleAddress();
-        String address = getAddress();
+        String fullText = getFullText();
 
-        propertySearchViewModel.setSearchValues(titleAddress, address, this.agentId, this.propertyTypeId);
+        propertySearchViewModel.setSearchValues(fullText, this.agentId, this.propertyTypeId);
         //if (propertySearchListener != null)
         //    propertySearchListener.onApplySearch();
     }

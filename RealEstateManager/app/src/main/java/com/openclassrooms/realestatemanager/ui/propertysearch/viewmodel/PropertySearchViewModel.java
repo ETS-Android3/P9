@@ -134,10 +134,9 @@ public class PropertySearchViewModel extends ViewModel {
         propertySearchViewStateMediatorLiveData.setValue(propertySearchViewState);
     }
 
-    public void setSearchValues(String titleAddress, String address, long agentId, long propertyType){
+    public void setSearchValues(String fullText, long agentId, long propertyType){
         PropertySearchParameters psp = new PropertySearchParameters();
-        psp.setAddressTitle(titleAddress);
-        psp.setAddress(address);
+        psp.setFullText(fullText);
         if (agentId >= 0) psp.setAgentId(agentId);
         if (propertyType >= 0) psp.setPropertyTypeId(propertyType);
 
