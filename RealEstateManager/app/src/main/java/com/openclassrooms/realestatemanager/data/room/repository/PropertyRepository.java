@@ -29,7 +29,6 @@ public class PropertyRepository {
 
     public PropertyRepository(Application application){
         this.propertyDao = AppDatabase.getInstance(application).propertyDao();
-        //setPropertySearchParameters(new PropertySearchParameters());
     }
 
     // return a long. This is the newly generated ID

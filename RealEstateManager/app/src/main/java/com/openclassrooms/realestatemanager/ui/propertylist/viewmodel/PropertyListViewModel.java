@@ -8,6 +8,7 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.openclassrooms.realestatemanager.data.room.repository.PropertySearchParameters;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
@@ -33,6 +34,8 @@ public class PropertyListViewModel extends ViewModel {
     public PropertyListViewModel(DatabaseRepository databaseRepository) {
         Log.d(Tag.TAG, "PropertyListViewModel() called with: databaseRepository = [" + databaseRepository + "]");
         this.databaseRepository = databaseRepository;
+        // no search by default
+        databaseRepository.getPropertyRepository().setPropertySearchParameters(new PropertySearchParameters());
 
         configureMediatorLiveData();
     }
