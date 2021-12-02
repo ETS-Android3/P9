@@ -168,6 +168,21 @@ public class PropertySearchParametersInstrumentedTest {
     }
 
     @Test
+    public void fullTextTest(){
+        testPropertySearchParameters(new PropertySearchParametersTestInterface() {
+            @Override
+            public void onSetValue(PropertySearchParameters psp) {
+                psp.setFullText("park");
+            }
+
+            @Override
+            public void onGetProperties(List<Property> properties) {
+                assertEquals(5, properties.size());
+            }
+        });
+    }
+
+    @Test
     public void priceAndSurfaceTest(){
         testPropertySearchParameters(new PropertySearchParametersTestInterface() {
             @Override
@@ -289,7 +304,7 @@ public class PropertySearchParametersInstrumentedTest {
 
             @Override
             public void onGetProperties(List<Property> properties) {
-                assertEquals(2, properties.size());
+                assertEquals(1, properties.size());
             }
         });
     }

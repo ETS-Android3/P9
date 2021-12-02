@@ -5,6 +5,7 @@ import android.util.Pair;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class PropertySearchParameters {
     private String pointOfInterest;
     private String address;
     private String addressTitle;
+    private String fullText;
     private Pair<Long, Long> entryDate;
     private Pair<Long, Long> saleDate;
     private Long propertyTypeId;
@@ -62,6 +64,10 @@ public class PropertySearchParameters {
         this.addressTitle = addressTitle;
     }
 
+    public void setFullText(String fullText) {
+        this.fullText = fullText;
+    }
+
     public void setEntryDate(Pair<Long, Long> entryDate) {
         this.entryDate = entryDate;
     }
@@ -90,6 +96,7 @@ public class PropertySearchParameters {
         saleDate = null;
         propertyTypeId = null;
         agentId = null;
+        fullText = null;
     }
 
     private boolean containsWhere(StringBuilder query){
@@ -117,6 +124,36 @@ public class PropertySearchParameters {
             query.append(String.format("(%s LIKE ?) ", fieldName));
             // for like statement arg must be surronded by "%"
             args.add("%"+value+"%");
+        }
+    }
+
+    private void addStringInSeveralFields(StringBuilder query, List<Object> args, String value, List<String> fieldNames){
+        if ((value != null) && (!value.trim().isEmpty())){
+            if (containsWhere(query))
+                query.append("AND ");
+            else
+                query.append("WHERE ");
+            for (int i=0; i<fieldNames.size(); i++){
+                String fieldName = fieldNames.get(i);
+                if (i == 0)
+                    query.append(String.format("(", fieldName));
+                if (i == fieldNames.size() - 1 )
+                    query.append(String.format("%s LIKE ?) ", fieldName));
+                else
+                    query.append(String.format("%s LIKE ? OR ", fieldName));
+                // for like statement arg must be surrounded by "%"
+                args.add("%"+value+"%");
+            }
+        }
+    }
+
+    private void addFullText(StringBuilder query, List<Object> args, String value){
+        if ((value != null) && (!value.trim().isEmpty())){
+            List<String> fieldNames = Arrays.asList(FIELD_NAME_ADDRESS_TITLE,
+                FIELD_NAME_ADDRESS,
+                FIELD_NAME_DESCRIPTION,
+                FIELD_NAME_POINT_OF_INTEREST);
+            addStringInSeveralFields(query, args, value, fieldNames);
         }
     }
 
@@ -161,6 +198,7 @@ public class PropertySearchParameters {
         addDate(query, args, saleDate, FIELD_NAME_SALE_DATE);
         addLong(query, args, propertyTypeId, FIELD_NAME_PROPERTY_TYPE_ID);
         addLong(query, args, agentId, FIELD_NAME_AGENT_ID);
+        addFullText(query, args, fullText);
 
         query.append("ORDER BY property.id ");
 
