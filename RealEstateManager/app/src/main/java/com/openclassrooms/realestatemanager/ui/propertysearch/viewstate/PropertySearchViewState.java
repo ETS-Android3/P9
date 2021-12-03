@@ -26,12 +26,14 @@ public class PropertySearchViewState {
     private int agentIndex;
     private List<DropdownItem> propertyTypes;
     private int propertyTypeIndex;
+    private String fullText;
 
-    public PropertySearchViewState(List<DropdownItem> agents, int agentIndex, List<DropdownItem> propertyTypes, int propertyTypeIndex) {
+    public PropertySearchViewState(List<DropdownItem> agents, int agentIndex, List<DropdownItem> propertyTypes, int propertyTypeIndex, String fullText) {
         this.agents = agents;
         this.agentIndex = agentIndex;
         this.propertyTypes = propertyTypes;
         this.propertyTypeIndex = propertyTypeIndex;
+        this.fullText = fullText;
     }
 
     public List<DropdownItem> getAgents() {
@@ -48,5 +50,9 @@ public class PropertySearchViewState {
 
     public int getPropertyTypeIndex() {
         return propertyTypeIndex;
+    }
+
+    public String getFullText() {
+        return fullText;
     }
 }

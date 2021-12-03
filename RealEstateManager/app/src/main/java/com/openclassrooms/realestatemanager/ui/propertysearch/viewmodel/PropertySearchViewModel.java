@@ -22,12 +22,13 @@ import com.openclassrooms.realestatemanager.ui.propertysearch.viewstate.Property
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.LogManager;
 
 public class PropertySearchViewModel extends ViewModel {
     private final DatabaseRepository databaseRepository;
 
     public PropertySearchViewModel(DatabaseRepository databaseRepository) {
-        Log.d(Tag.TAG, "PropertySearchViewModel() called with: databaseRepository = [" + databaseRepository + "]");
+        Log.d(Tag.TAG, "PropertySearch ViewModel() called with: databaseRepository = [" + databaseRepository + "]");
         this.databaseRepository = databaseRepository;
 
         agentIndexMutableLiveData.setValue(0);
@@ -40,6 +41,21 @@ public class PropertySearchViewModel extends ViewModel {
      */
     private final MediatorLiveData<PropertySearchViewState> propertySearchViewStateMediatorLiveData = new MediatorLiveData<>();
     public LiveData<PropertySearchViewState> getViewState() { return propertySearchViewStateMediatorLiveData; }
+
+    private final MutableLiveData<String> fullTextMutableLiveData = new MutableLiveData<>();
+    public void afterFullTextChanged(String text){
+        Log.d(Tag.TAG, "PropertySearch ViewModel setFullText() called with: text = [" + text + "]");
+        if (fullTextMutableLiveData.getValue() == null)
+            fullTextMutableLiveData.setValue(text);
+        else
+            if (! fullTextMutableLiveData.getValue().equals(text))
+                fullTextMutableLiveData.setValue(text);
+    }
+
+    private String getFullText(){
+        Log.d(Tag.TAG, "getFullText: " + fullTextMutableLiveData.getValue());
+        return fullTextMutableLiveData.getValue();
+    }
 
     private final MutableLiveData<Integer> agentIndexMutableLiveData = new MutableLiveData<>();
     public MutableLiveData<Integer> getAgentIndexMutableLiveData() {
@@ -75,36 +91,54 @@ public class PropertySearchViewModel extends ViewModel {
         propertySearchViewStateMediatorLiveData.addSource(agentItemsLiveData, new Observer<List<DropdownItem>>() {
             @Override
             public void onChanged(List<DropdownItem> items) {
-                combine(items, agentIndexMutableLiveData.getValue(), propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue());
+                combine(items, agentIndexMutableLiveData.getValue(),
+                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                        fullTextMutableLiveData.getValue());
             }
         });
 
         propertySearchViewStateMediatorLiveData.addSource(agentIndexMutableLiveData, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                Log.d(Tag.TAG, "PropertySearchViewModel.onChanged() called with: integer = [" + integer + "]");
-                combine(agentItemsLiveData.getValue(), integer, propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue());
+                Log.d(Tag.TAG, "PropertySearch ViewModel configureMediatorLiveData->agentIndexMutableLiveData->onChanged() called with: integer = [" + integer + "]");
+                combine(agentItemsLiveData.getValue(), integer,
+                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                        fullTextMutableLiveData.getValue());
             }
         });
 
         propertySearchViewStateMediatorLiveData.addSource(propertyTypeItemsLiveData, new Observer<List<DropdownItem>>() {
             @Override
             public void onChanged(List<DropdownItem> items) {
-                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(), items, propertyTypeIndexMutableLiveData.getValue());
+                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                        items, propertyTypeIndexMutableLiveData.getValue(),
+                        fullTextMutableLiveData.getValue());
             }
         });
 
         propertySearchViewStateMediatorLiveData.addSource(propertyTypeIndexMutableLiveData, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(), propertyTypeItemsLiveData.getValue(), integer);
+                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                        propertyTypeItemsLiveData.getValue(), integer,
+                        fullTextMutableLiveData.getValue());
             }
         });
 
+        propertySearchViewStateMediatorLiveData.addSource(fullTextMutableLiveData, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                        s);
+
+            }
+        });
     }
 
     private void combine(List<DropdownItem> agents, int agentIndex,
-                         List<DropdownItem> propertyTypes, int propertyTypeIndex){
+                         List<DropdownItem> propertyTypes, int propertyTypeIndex,
+                         String fullText){
 
         if ((agents == null) || (propertyTypes == null))
             return;
@@ -126,22 +160,27 @@ public class PropertySearchViewModel extends ViewModel {
         Date minSaleDate;
         Date maxSaleDate;*/
 
+        Log.d(Tag.TAG, "PropertySearch ViewModel combine() called with: agentIndex = [" + agentIndex + "]");
+        Log.d(Tag.TAG, "PropertySearch ViewModel combine() called with: propertyTypeIndex = [" + propertyTypeIndex + "]");
+        Log.d(Tag.TAG, "PropertySearch ViewModel combine() called with: fullText = [" + fullText + "]");
 
-        Log.d(Tag.TAG, "PropertySearchViewModel.combine() called with: agentIndex = [" + agentIndex + "]");
-        Log.d(Tag.TAG, "PropertySearchViewModel.combine() called with: propertyTypeIndex = [" + propertyTypeIndex + "]");
-        PropertySearchViewState propertySearchViewState = new PropertySearchViewState(agents, agentIndex, propertyTypes, propertyTypeIndex);
+        PropertySearchViewState propertySearchViewState = new PropertySearchViewState(agents, agentIndex, propertyTypes, propertyTypeIndex, fullText);
 
         propertySearchViewStateMediatorLiveData.setValue(propertySearchViewState);
     }
 
-    public void setSearchValues(String fullText, long agentId, long propertyType){
+    public void setSearchValues(long agentId, long propertyType){
+        Log.d(Tag.TAG, "PropertySearch ViewModel setSearchValues() agentIndex = [" + agentIndexMutableLiveData.getValue() + "]");
+        Log.d(Tag.TAG, "PropertySearch ViewModel setSearchValues() propertyTypeIndex = [" + propertyTypeIndexMutableLiveData.getValue() + "]");
+        Log.d(Tag.TAG, "PropertySearch ViewModel setSearchValues() fullText = [" + getFullText() + "]");
+
         PropertySearchParameters psp = new PropertySearchParameters();
-        psp.setFullText(fullText);
+
+        psp.setFullText(getFullText());
+
         if (agentId >= 0) psp.setAgentId(agentId);
         if (propertyType >= 0) psp.setPropertyTypeId(propertyType);
 
-        Log.d(Tag.TAG, "PropertySearchViewModel.setSearchValues() agentIndex = [" + agentIndexMutableLiveData.getValue() + "]");
-        Log.d(Tag.TAG, "PropertySearchViewModel.setSearchValues() agentIndex = [" + agentIndexMutableLiveData.getValue() + "]");
         databaseRepository.getPropertyRepository().setPropertySearchParameters(psp);
     }
 

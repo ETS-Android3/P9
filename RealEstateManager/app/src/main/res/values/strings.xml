@@ -116,5 +116,6 @@
     <string name="search_full_text">search in text</string>
     <string name="all_agents">all agents</string>
     <string name="all_property_types">all types</string>
+    <string name="select_price_range">select price range</string>
 
 </resources>
