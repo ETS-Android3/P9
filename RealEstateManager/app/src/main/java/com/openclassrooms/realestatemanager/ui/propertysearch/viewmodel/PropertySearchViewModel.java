@@ -3,8 +3,6 @@ package com.openclassrooms.realestatemanager.ui.propertysearch.viewmodel;
 import android.util.Log;
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -19,19 +17,14 @@ import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.data.room.repository.PropertySearchParameters;
 import com.openclassrooms.realestatemanager.tag.Tag;
-import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertysearch.viewstate.PropertySearchViewState;
+import com.openclassrooms.realestatemanager.utils.ResourceArrayHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.logging.LogManager;
 
 public class PropertySearchViewModel extends ViewModel {
 
@@ -290,13 +283,25 @@ public class PropertySearchViewModel extends ViewModel {
         databaseRepository.getPropertyRepository().setPropertySearchParameters(psp);
     }
 
+    private float getMaxRangePrice(){
+        return ResourceArrayHelper.getMaxRangeFromArray(R.array.initial_slider_values_search_price);
+    }
+
+    private float getMaxRangeSurface(){
+        return ResourceArrayHelper.getMaxRangeFromArray(R.array.initial_slider_values_search_surface);
+    }
+
+    private float getMaxRangeRooms(){
+        return ResourceArrayHelper.getMaxRangeFromArray(R.array.initial_slider_values_search_rooms);
+    }
+
     public void resetSearch(){
         agentIndexMutableLiveData.setValue(0);
         propertyTypeIndexMutableLiveData.setValue(0);
         fullTextMutableLiveData.setValue("");
-        setPriceRange(Arrays.asList(0f, RANGE_PRICE_MAX));
-        setSurfaceRange(Arrays.asList(0f, RANGE_SURFACE_MAX));
-        setRoomsRange(Arrays.asList(0f, RANGE_ROOMS_MAX));
+        setPriceRange(Arrays.asList(0f, getMaxRangePrice()));
+        setSurfaceRange(Arrays.asList(0f, getMaxRangeSurface()));
+        setRoomsRange(Arrays.asList(0f, getMaxRangeRooms()));
 
         setSearchValues(-1, -1);
     }
