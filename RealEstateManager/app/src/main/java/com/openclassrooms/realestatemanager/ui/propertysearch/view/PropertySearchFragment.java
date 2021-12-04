@@ -211,7 +211,7 @@ public class PropertySearchFragment extends Fragment {
                 return Utils.convertSurfaceToString(surface);
             }
         };
-        rangeSliderPrice.setLabelFormatter(surfaceFormater);
+        rangeSliderSurface.setLabelFormatter(surfaceFormater);
     }
 
     private void configureRoomsComponents(View view) {
@@ -360,7 +360,7 @@ public class PropertySearchFragment extends Fragment {
 
     private void validateForm() {
         propertySearchViewModel.setSearchValues(this.agentId, this.propertyTypeId);
-        //if (propertySearchListener != null)
-        //    propertySearchListener.onApplySearch();
+        if (propertySearchListener != null)
+            propertySearchListener.onApplySearch();
     }
 }
