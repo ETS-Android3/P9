@@ -92,15 +92,6 @@
                 android:text="@string/property_price"
                 style="@style/TextviewStyle.Label"/>
 
-            <TextView
-                android:id="@+id/fragment_property_search_price_range"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@+id/fragment_property_search_range_slider_price"
-                app:layout_constraintStart_toStartOf="parent"
-                android:text="@string/property_price"
-                style="@style/TextviewStyle.Label"/>
-
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/fragment_property_search_range_slider_price"
                 android:layout_width="match_parent"
@@ -109,10 +100,84 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:valueFrom="0.0"
                 android:valueTo="50000.0"
-                android:stepSize="1000.0"
+                android:stepSize="100.0"
                 app:values="@array/initial_slider_values_search_price"
                 android:contentDescription="@string/select_price_range"
-                app:labelBehavior="withinBounds"/>
+                app:labelBehavior="floating"/>
+
+            <TextView
+                android:id="@+id/fragment_property_search_price_range"
+                style="@style/TextviewStyle.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/property_price"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_range_slider_price" />
+
+            <TextView
+                android:id="@+id/fragment_property_search_surface"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_price_range"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/property_surface"
+                style="@style/TextviewStyle.Label"/>
+
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/fragment_property_search_range_slider_surface"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_surface"
+                app:layout_constraintStart_toStartOf="parent"
+                android:valueFrom="0.0"
+                android:valueTo="20000.0"
+                android:stepSize="10.0"
+                app:values="@array/initial_slider_values_search_surface"
+                android:contentDescription="@string/select_price_surface"
+                app:labelBehavior="floating"/>
+
+            <TextView
+                android:id="@+id/fragment_property_search_surface_range"
+                style="@style/TextviewStyle.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/property_surface"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_range_slider_surface" />
+
+            <TextView
+                android:id="@+id/fragment_property_search_rooms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_surface_range"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/property_rooms"
+                style="@style/TextviewStyle.Label"/>
+
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/fragment_property_search_range_slider_rooms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_rooms"
+                app:layout_constraintStart_toStartOf="parent"
+                android:valueFrom="0.0"
+                android:valueTo="50.0"
+                android:stepSize="1.0"
+                app:values="@array/initial_slider_values_search_rooms"
+                android:contentDescription="@string/select_price_rooms"
+                app:labelBehavior="floating"/>
+
+            <TextView
+                android:id="@+id/fragment_property_search_rooms_range"
+                style="@style/TextviewStyle.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/property_rooms"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_range_slider_rooms" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

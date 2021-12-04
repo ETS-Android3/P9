@@ -1,7 +1,10 @@
 package com.openclassrooms.realestatemanager.ui.propertysearch.viewmodel;
 
 import android.util.Log;
+import android.util.Pair;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -16,15 +19,23 @@ import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.data.room.repository.PropertySearchParameters;
 import com.openclassrooms.realestatemanager.tag.Tag;
+import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertysearch.viewstate.PropertySearchViewState;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.logging.LogManager;
 
 public class PropertySearchViewModel extends ViewModel {
+
+    private final float RANGE_PRICE_MAX = 50000f;
     private final DatabaseRepository databaseRepository;
 
     public PropertySearchViewModel(DatabaseRepository databaseRepository) {
@@ -50,6 +61,26 @@ public class PropertySearchViewModel extends ViewModel {
         else
             if (! fullTextMutableLiveData.getValue().equals(text))
                 fullTextMutableLiveData.setValue(text);
+    }
+
+    private MutableLiveData<List<Float>> priceRangeMutableLiveData = new MutableLiveData<>();
+    public LiveData<List<Float>> getPriceRangeLiveData() {
+        return priceRangeMutableLiveData;
+    }
+    public void setPriceRange(List<Float> floats){
+        priceRangeMutableLiveData.setValue(floats);
+    }
+
+    private MutableLiveData<String> priceRangeCaptionMutableLiveData = new MutableLiveData<>();
+    public LiveData<String> getPriceRangeCaptionLiveData() {
+        return Transformations.map(priceRangeMutableLiveData, floats -> {
+            int min = floats.get(0).intValue() * 1000;
+            int max = floats.get(1).intValue() * 1000;
+
+            return String.format("%s to %s",
+                    Utils.convertPriceToString(min),
+                    Utils.convertPriceToString(max));
+        });
     }
 
     private String getFullText(){
@@ -134,6 +165,13 @@ public class PropertySearchViewModel extends ViewModel {
 
             }
         });
+
+/*        propertySearchViewStateMediatorLiveData.addSource(priceRangeMutableLiveData, new Observer<Pair<Integer, Integer>>() {
+            @Override
+            public void onChanged(Pair<Integer, Integer> integerIntegerPair) {
+
+            }
+        });*/
     }
 
     private void combine(List<DropdownItem> agents, int agentIndex,
@@ -181,10 +219,21 @@ public class PropertySearchViewModel extends ViewModel {
         if (agentId >= 0) psp.setAgentId(agentId);
         if (propertyType >= 0) psp.setPropertyTypeId(propertyType);
 
+        // price values are displayed in Kilo $
+        List<Float> floats = priceRangeMutableLiveData.getValue();
+        int min = floats.get(0).intValue() * 1000;
+        int max = floats.get(1).intValue() * 1000;
+        psp.setPrice(new Pair<>(min, max));
+
         databaseRepository.getPropertyRepository().setPropertySearchParameters(psp);
     }
 
     public void resetSearch(){
-        databaseRepository.getPropertyRepository().resetSearch();
+        agentIndexMutableLiveData.setValue(0);
+        propertyTypeIndexMutableLiveData.setValue(0);
+        fullTextMutableLiveData.setValue("");
+        setPriceRange(Arrays.asList(0f, RANGE_PRICE_MAX));
+
+        setSearchValues(-1, -1);
     }
 }

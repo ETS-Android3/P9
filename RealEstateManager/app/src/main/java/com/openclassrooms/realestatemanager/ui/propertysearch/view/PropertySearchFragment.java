@@ -168,26 +168,15 @@ public class PropertySearchFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(@NonNull RangeSlider slider) {
-                Log.d(Tag.TAG, "PropertySearch fragment onStopTrackingTouch() called with: slider = [" + slider + "]");
+                //Log.d(Tag.TAG, "PropertySearch fragment onStopTrackingTouch() called with: slider = [" + slider + "]");
             }
         });
 
         rangeSliderPrice.addOnChangeListener(new RangeSlider.OnChangeListener() {
             @Override
             public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
-                Log.d(Tag.TAG, "PropertySearch fragment onValueChange() called with: slider = [" + slider + "], value = [" + value + "], fromUser = [" + fromUser + "]");
-
-                int min = slider.getValues().get(0).intValue();
-                min = min * 1000;
-                String minPrice = Utils.convertPriceToString(min);
-
-                int max = slider.getValues().get(1).intValue();
-                max = max *1000;
-                String maxPrice = Utils.convertPriceToString(max);
-
-                String label = String.format("%s to %s", minPrice, maxPrice);
-                textViewRangePrice.setText(label);
-
+                Log.d(Tag.TAG, "PropertySearch fragment onValueChange() called with: slider.getValues = [" + slider.getValues().get(0) + " and " + slider.getValues().get(1) );
+                propertySearchViewModel.setPriceRange(slider.getValues());
             }
         });
 
@@ -201,7 +190,6 @@ public class PropertySearchFragment extends Fragment {
             }
         };
         rangeSliderPrice.setLabelFormatter(priceFormater);
-
     }
 
     private void configureViewModel() {
@@ -222,12 +210,21 @@ public class PropertySearchFragment extends Fragment {
             }
         });
 
-/*        propertySearchViewModel.getFullTextLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+        propertySearchViewModel.getPriceRangeLiveData().observe(getViewLifecycleOwner(), new Observer<List<Float>>() {
+            @Override
+            public void onChanged(List<Float> floats) {
+                if ((rangeSliderPrice.getValues().get(0).floatValue() != floats.get(0).floatValue()) ||
+                  (rangeSliderPrice.getValues().get(1).floatValue() != floats.get(1).floatValue()))
+                    rangeSliderPrice.setValues(floats);
+            }
+        });
+
+        propertySearchViewModel.getPriceRangeCaptionLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                setFullText(s);
+                textViewRangePrice.setText(s);
             }
-        });*/
+        });
     }
 
     private void setFullText(String text){
@@ -238,7 +235,6 @@ public class PropertySearchFragment extends Fragment {
             textInputLayoutFullText.getEditText().setSelection(text.length());
         }
     }
-
 
     private void setAgents(List<DropdownItem> agents, int index) {
         Log.d(Tag.TAG, "PropertySearch Fragment setAgents() called with: agents = [" + agents + "], index = [" + index + "]");
