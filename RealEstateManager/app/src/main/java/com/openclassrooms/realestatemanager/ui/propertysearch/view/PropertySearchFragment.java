@@ -57,6 +57,12 @@ public class PropertySearchFragment extends Fragment {
     private TextView textViewRangePrice;
     private RangeSlider rangeSliderPrice;
 
+    private TextView textViewRangeSurface;
+    private RangeSlider rangeSliderSurface;
+
+    private TextView textViewRangeRooms;
+    private RangeSlider rangeSliderRooms;
+
     private Button buttonOk;
     private Button buttonReset;
 
@@ -158,20 +164,14 @@ public class PropertySearchFragment extends Fragment {
             }
         });
 
+        configurePriceComponents(view);
+        configureSurfaceComponents(view);
+        configureRoomsComponents(view);
+    }
+
+    private void configurePriceComponents(View view) {
         textViewRangePrice = view.findViewById(R.id.fragment_property_search_price_range);
         rangeSliderPrice = view.findViewById(R.id.fragment_property_search_range_slider_price);
-        rangeSliderPrice.addOnSliderTouchListener(new RangeSlider.OnSliderTouchListener() {
-            @Override
-            public void onStartTrackingTouch(@NonNull RangeSlider slider) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(@NonNull RangeSlider slider) {
-                //Log.d(Tag.TAG, "PropertySearch fragment onStopTrackingTouch() called with: slider = [" + slider + "]");
-            }
-        });
-
         rangeSliderPrice.addOnChangeListener(new RangeSlider.OnChangeListener() {
             @Override
             public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
@@ -190,6 +190,40 @@ public class PropertySearchFragment extends Fragment {
             }
         };
         rangeSliderPrice.setLabelFormatter(priceFormater);
+    }
+
+    private void configureSurfaceComponents(View view) {
+        textViewRangeSurface = view.findViewById(R.id.fragment_property_search_surface_range);
+        rangeSliderSurface = view.findViewById(R.id.fragment_property_search_range_slider_surface);
+        rangeSliderSurface.addOnChangeListener(new RangeSlider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
+                Log.d(Tag.TAG, "PropertySearch fragment onValueChange() called with: slider.getValues = [" + slider.getValues().get(0) + " and " + slider.getValues().get(1) );
+                propertySearchViewModel.setSurfaceRange(slider.getValues());
+            }
+        });
+
+        LabelFormatter surfaceFormater = new LabelFormatter() {
+            @NonNull
+            @Override
+            public String getFormattedValue(float value) {
+                int surface = (int)value;
+                return Utils.convertSurfaceToString(surface);
+            }
+        };
+        rangeSliderPrice.setLabelFormatter(surfaceFormater);
+    }
+
+    private void configureRoomsComponents(View view) {
+        textViewRangeRooms = view.findViewById(R.id.fragment_property_search_rooms_range);
+        rangeSliderRooms = view.findViewById(R.id.fragment_property_search_range_slider_rooms);
+        rangeSliderRooms.addOnChangeListener(new RangeSlider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
+                Log.d(Tag.TAG, "PropertySearch fragment onValueChange() called with: slider.getValues = [" + slider.getValues().get(0) + " and " + slider.getValues().get(1) );
+                propertySearchViewModel.setRoomsRange(slider.getValues());
+            }
+        });
     }
 
     private void configureViewModel() {
@@ -223,6 +257,38 @@ public class PropertySearchFragment extends Fragment {
             @Override
             public void onChanged(String s) {
                 textViewRangePrice.setText(s);
+            }
+        });
+
+        propertySearchViewModel.getSurfaceRangeLiveData().observe(getViewLifecycleOwner(), new Observer<List<Float>>() {
+            @Override
+            public void onChanged(List<Float> floats) {
+                if ((rangeSliderSurface.getValues().get(0).floatValue() != floats.get(0).floatValue()) ||
+                    (rangeSliderSurface.getValues().get(1).floatValue() != floats.get(1).floatValue()))
+                    rangeSliderSurface.setValues(floats);
+            }
+        });
+
+        propertySearchViewModel.getSurfaceRangeCaptionLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                textViewRangeSurface.setText(s);
+            }
+        });
+
+        propertySearchViewModel.getRoomsRangeLiveData().observe(getViewLifecycleOwner(), new Observer<List<Float>>() {
+            @Override
+            public void onChanged(List<Float> floats) {
+                if ((rangeSliderRooms.getValues().get(0).floatValue() != floats.get(0).floatValue()) ||
+                    (rangeSliderRooms.getValues().get(1).floatValue() != floats.get(1).floatValue()))
+                    rangeSliderRooms.setValues(floats);
+            }
+        });
+
+        propertySearchViewModel.getRoomsRangeCaptionLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                textViewRangeRooms.setText(s);
             }
         });
     }
@@ -289,7 +355,6 @@ public class PropertySearchFragment extends Fragment {
     }
 
     private void resetForm() {
-        setFullText("");
         propertySearchViewModel.resetSearch();
     }
 

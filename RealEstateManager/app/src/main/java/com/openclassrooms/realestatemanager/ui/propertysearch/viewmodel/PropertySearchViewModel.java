@@ -36,6 +36,9 @@ import java.util.logging.LogManager;
 public class PropertySearchViewModel extends ViewModel {
 
     private final float RANGE_PRICE_MAX = 50000f;
+    private final float RANGE_SURFACE_MAX = 20000f;
+    private final float RANGE_ROOMS_MAX = 50f;
+
     private final DatabaseRepository databaseRepository;
 
     public PropertySearchViewModel(DatabaseRepository databaseRepository) {
@@ -77,9 +80,52 @@ public class PropertySearchViewModel extends ViewModel {
             int min = floats.get(0).intValue() * 1000;
             int max = floats.get(1).intValue() * 1000;
 
-            return String.format("%s to %s",
+            return String.format("%s %s %s",
                     Utils.convertPriceToString(min),
+                    MainApplication.getApplication().getString(R.string.to),
                     Utils.convertPriceToString(max));
+        });
+    }
+
+    private MutableLiveData<List<Float>> surfaceRangeMutableLiveData = new MutableLiveData<>();
+    public LiveData<List<Float>> getSurfaceRangeLiveData() {
+        return surfaceRangeMutableLiveData;
+    }
+    public void setSurfaceRange(List<Float> floats){
+        surfaceRangeMutableLiveData.setValue(floats);
+    }
+
+    private MutableLiveData<String> surfaceRangeCaptionMutableLiveData = new MutableLiveData<>();
+    public LiveData<String> getSurfaceRangeCaptionLiveData() {
+        return Transformations.map(surfaceRangeMutableLiveData, floats -> {
+            int min = floats.get(0).intValue();
+            int max = floats.get(1).intValue();
+
+            return String.format("%s %s %s",
+                    Utils.convertSurfaceToString(min),
+                    MainApplication.getApplication().getString(R.string.to),
+                    Utils.convertSurfaceToString(max));
+        });
+    }
+
+    private MutableLiveData<List<Float>> roomsRangeMutableLiveData = new MutableLiveData<>();
+    public LiveData<List<Float>> getRoomsRangeLiveData() {
+        return roomsRangeMutableLiveData;
+    }
+    public void setRoomsRange(List<Float> floats){
+        roomsRangeMutableLiveData.setValue(floats);
+    }
+
+    private MutableLiveData<String> roomsRangeCaptionMutableLiveData = new MutableLiveData<>();
+    public LiveData<String> getRoomsRangeCaptionLiveData() {
+        return Transformations.map(roomsRangeMutableLiveData, floats -> {
+            int min = floats.get(0).intValue();
+            int max = floats.get(1).intValue();
+
+            return String.format("%d %s %d",
+                    min,
+                    MainApplication.getApplication().getString(R.string.to),
+                    max);
         });
     }
 
@@ -220,10 +266,26 @@ public class PropertySearchViewModel extends ViewModel {
         if (propertyType >= 0) psp.setPropertyTypeId(propertyType);
 
         // price values are displayed in Kilo $
-        List<Float> floats = priceRangeMutableLiveData.getValue();
-        int min = floats.get(0).intValue() * 1000;
-        int max = floats.get(1).intValue() * 1000;
-        psp.setPrice(new Pair<>(min, max));
+        List<Float> priceRange = priceRangeMutableLiveData.getValue();
+        if (priceRange != null) {
+            int min = priceRange.get(0).intValue() * 1000;
+            int max = priceRange.get(1).intValue() * 1000;
+            psp.setPrice(new Pair<>(min, max));
+        }
+
+        List<Float> surfaceRange = surfaceRangeMutableLiveData.getValue();
+        if (surfaceRange != null) {
+            int min = surfaceRange.get(0).intValue();
+            int max = surfaceRange.get(1).intValue();
+            psp.setSurface(new Pair<>(min, max));
+        }
+
+        List<Float> roomsRange = roomsRangeMutableLiveData.getValue();
+        if (roomsRange != null) {
+            int min = roomsRange.get(0).intValue();
+            int max = roomsRange.get(1).intValue();
+            psp.setRooms(new Pair<>(min, max));
+        }
 
         databaseRepository.getPropertyRepository().setPropertySearchParameters(psp);
     }
@@ -233,6 +295,8 @@ public class PropertySearchViewModel extends ViewModel {
         propertyTypeIndexMutableLiveData.setValue(0);
         fullTextMutableLiveData.setValue("");
         setPriceRange(Arrays.asList(0f, RANGE_PRICE_MAX));
+        setSurfaceRange(Arrays.asList(0f, RANGE_SURFACE_MAX));
+        setRoomsRange(Arrays.asList(0f, RANGE_ROOMS_MAX));
 
         setSearchValues(-1, -1);
     }

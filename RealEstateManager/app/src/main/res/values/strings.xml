@@ -120,4 +120,6 @@
     <string name="select_price_surface">select surface range</string>
     <string name="select_price_rooms">select rooms range</string>
 
+    <string name="to">to</string>
+
 </resources>
