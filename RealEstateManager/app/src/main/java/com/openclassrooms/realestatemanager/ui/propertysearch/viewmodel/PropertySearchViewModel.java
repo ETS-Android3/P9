@@ -20,6 +20,7 @@ import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertysearch.viewstate.PropertySearchViewState;
 import com.openclassrooms.realestatemanager.utils.ResourceArrayHelper;
+import com.openclassrooms.realestatemanager.utils.UnitLocale;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
@@ -263,6 +264,14 @@ public class PropertySearchViewModel extends ViewModel {
         if (priceRange != null) {
             int min = priceRange.get(0).intValue() * 1000;
             int max = priceRange.get(1).intValue() * 1000;
+
+            // user entered €
+            if (UnitLocale.getDefault() == UnitLocale.Metric)
+            {
+                min = Utils.convertEuroToDollar(min);
+                max = Utils.convertEuroToDollar(max);
+            }
+
             psp.setPrice(new Pair<>(min, max));
         }
 
@@ -270,6 +279,14 @@ public class PropertySearchViewModel extends ViewModel {
         if (surfaceRange != null) {
             int min = surfaceRange.get(0).intValue();
             int max = surfaceRange.get(1).intValue();
+
+            // user entered m²
+            if (UnitLocale.getDefault() == UnitLocale.Metric)
+            {
+                min = Utils.convertSurfaceToImperial(min);
+                max = Utils.convertSurfaceToImperial(max);
+            }
+
             psp.setSurface(new Pair<>(min, max));
         }
 

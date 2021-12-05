@@ -1,7 +1,11 @@
 package com.openclassrooms.realestatemanager.utils;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -58,8 +62,21 @@ public class Utils {
      * @return
      */
     public static Boolean isInternetAvailable(Context context){
-        WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-        return wifi.isWifiEnabled();
+        //WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+        //return wifi.isWifiEnabled();
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            NetworkInfo ni = null;
+            if (cm != null) ni = cm.getActiveNetworkInfo();
+            return ni != null && ni.isConnectedOrConnecting();
+        } else {
+            NetworkCapabilities nc = null;
+            if (cm != null) nc = cm.getNetworkCapabilities(cm.getActiveNetwork());
+            return nc != null && nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        }
     }
 
     /**
@@ -93,6 +110,10 @@ public class Utils {
 
     private static int convertSurfaceToMeter(int surface){
         return (int) Math.round(surface / 3.2808);
+    }
+
+    public static int convertSurfaceToImperial(int surface){
+        return (int) Math.round(surface * 3.2808);
     }
 
     public static String convertSurfaceToString(int surface){
