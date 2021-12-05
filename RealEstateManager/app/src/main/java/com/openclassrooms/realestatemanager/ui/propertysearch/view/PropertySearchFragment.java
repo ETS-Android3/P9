@@ -25,6 +25,7 @@ import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.textfield.TextInputLayout;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyRange;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
@@ -37,6 +38,8 @@ import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFa
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PropertySearchFragment extends Fragment {
@@ -175,7 +178,7 @@ public class PropertySearchFragment extends Fragment {
         rangeSliderPrice.addOnChangeListener(new RangeSlider.OnChangeListener() {
             @Override
             public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
-                Log.d(Tag.TAG, "PropertySearch fragment onValueChange() called with: slider.getValues = [" + slider.getValues().get(0) + " and " + slider.getValues().get(1) );
+                Log.d(Tag.TAG, "PropertySearch fragment price onValueChange() called with: slider.getValues = [" + slider.getValues().get(0) + " and " + slider.getValues().get(1) );
                 propertySearchViewModel.setPriceRange(slider.getValues());
             }
         });
@@ -235,62 +238,57 @@ public class PropertySearchFragment extends Fragment {
         propertySearchViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertySearchViewState>() {
             @Override
             public void onChanged(PropertySearchViewState propertySearchViewState) {
-                Log.d(Tag.TAG, "PropertySearch VM observe -> onChanged() called with: propertySearchViewState = [" + propertySearchViewState + "]");
-                Log.d(Tag.TAG, "PropertySearch VM observe -> onChanged() fullText = [" + propertySearchViewState.getFullText() + "]");
+                Log.d(Tag.TAG, "PropertySearch Fragment observe -> onChanged() called with: propertySearchViewState = [" + propertySearchViewState + "]");
+                Log.d(Tag.TAG, "PropertySearch Fragment observe -> onChanged() fullText = [" + propertySearchViewState.getFullText() + "]");
                 setAgents(propertySearchViewState.getAgents(), propertySearchViewState.getAgentIndex());
                 setPropertyTypes(propertySearchViewState.getPropertyTypes(), propertySearchViewState.getPropertyTypeIndex());
-
                 setFullText(propertySearchViewState.getFullText());
+                setRangeSliderValuesPrice(propertySearchViewState.getMinMaxPrice(), propertySearchViewState.getValuesPrice());
+                setCaptionPrice(propertySearchViewState.getCaptionPrice());
+                setRangeSliderValuesSurface(propertySearchViewState.getMinMaxSurface(), propertySearchViewState.getValuesSurface());
+                setCaptionSurface(propertySearchViewState.getCaptionSurface());
+                setRangeSliderValuesRooms(propertySearchViewState.getMinMaxRooms(), propertySearchViewState.getValuesRooms());
+                setCaptionRooms(propertySearchViewState.getCaptionRooms());
             }
         });
+    }
 
-        propertySearchViewModel.getPriceRangeLiveData().observe(getViewLifecycleOwner(), new Observer<List<Float>>() {
-            @Override
-            public void onChanged(List<Float> floats) {
-                if ((rangeSliderPrice.getValues().get(0).floatValue() != floats.get(0).floatValue()) ||
-                  (rangeSliderPrice.getValues().get(1).floatValue() != floats.get(1).floatValue()))
-                    rangeSliderPrice.setValues(floats);
-            }
-        });
+    private void setCaptionPrice(String text) {
+        textViewRangePrice.setText(text);
+    }
 
-        propertySearchViewModel.getPriceRangeCaptionLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                textViewRangePrice.setText(s);
-            }
-        });
+    private void setCaptionSurface(String text) {
+        textViewRangeSurface.setText(text);
+    }
 
-        propertySearchViewModel.getSurfaceRangeLiveData().observe(getViewLifecycleOwner(), new Observer<List<Float>>() {
-            @Override
-            public void onChanged(List<Float> floats) {
-                if ((rangeSliderSurface.getValues().get(0).floatValue() != floats.get(0).floatValue()) ||
-                    (rangeSliderSurface.getValues().get(1).floatValue() != floats.get(1).floatValue()))
-                    rangeSliderSurface.setValues(floats);
-            }
-        });
+    private void setCaptionRooms(String text) {
+        textViewRangeRooms.setText(text);
+    }
 
-        propertySearchViewModel.getSurfaceRangeCaptionLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                textViewRangeSurface.setText(s);
-            }
-        });
+    private void setRangeSliderFromToValues(RangeSlider rangeSlider, List<Float> range){
+        rangeSlider.setValueFrom(range.get(0));
+        rangeSlider.setValueTo(range.get(1));
+    }
 
-        propertySearchViewModel.getRoomsRangeLiveData().observe(getViewLifecycleOwner(), new Observer<List<Float>>() {
-            @Override
-            public void onChanged(List<Float> floats) {
-                if ((rangeSliderRooms.getValues().get(0).floatValue() != floats.get(0).floatValue()) ||
-                    (rangeSliderRooms.getValues().get(1).floatValue() != floats.get(1).floatValue()))
-                    rangeSliderRooms.setValues(floats);
-            }
-        });
+    private void setRangeSliderValues(RangeSlider rangeSlider, List<Float> floats){
+        if ((rangeSlider.getValues().get(0).floatValue() != floats.get(0).floatValue()) ||
+                (rangeSlider.getValues().get(1).floatValue() != floats.get(1).floatValue()))
+            rangeSlider.setValues(floats);
+    }
 
-        propertySearchViewModel.getRoomsRangeCaptionLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                textViewRangeRooms.setText(s);
-            }
-        });
+    private void setRangeSliderValuesPrice(List<Float> range, List<Float> values) {
+        setRangeSliderFromToValues(rangeSliderPrice, range);
+        setRangeSliderValues(rangeSliderPrice, values);
+    }
+
+    private void setRangeSliderValuesSurface(List<Float> range, List<Float> values) {
+        setRangeSliderFromToValues(rangeSliderSurface, range);
+        setRangeSliderValues(rangeSliderSurface, values);
+    }
+
+    private void setRangeSliderValuesRooms(List<Float> range, List<Float> values) {
+        setRangeSliderFromToValues(rangeSliderRooms, range);
+        setRangeSliderValues(rangeSliderRooms, values);
     }
 
     private void setFullText(String text){

@@ -15,6 +15,7 @@ import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyRange;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 
@@ -150,4 +151,7 @@ public class PropertyRepository {
                 });
     }
 
+    public LiveData<PropertyRange> getPropertiesMinMaxRanges(){
+        return propertyDao.getPropertiesMinMaxRanges();
+    }
 }

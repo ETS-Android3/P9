@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel;
 import com.openclassrooms.realestatemanager.MainApplication;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyRange;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.data.room.repository.PropertySearchParameters;
@@ -20,18 +21,22 @@ import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertysearch.viewstate.PropertySearchViewState;
 import com.openclassrooms.realestatemanager.utils.ResourceArrayHelper;
-import com.openclassrooms.realestatemanager.utils.UnitLocale;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class PropertySearchViewModel extends ViewModel {
 
     private final float RANGE_PRICE_MAX = 50000f;
     private final float RANGE_SURFACE_MAX = 20000f;
     private final float RANGE_ROOMS_MAX = 50f;
+
+    private List<Float> minMaxPrice;
+    private List<Float> minMaxSurface;
+    private List<Float> minMaxRooms;
 
     private final DatabaseRepository databaseRepository;
 
@@ -60,67 +65,19 @@ public class PropertySearchViewModel extends ViewModel {
                 fullTextMutableLiveData.setValue(text);
     }
 
-    private MutableLiveData<List<Float>> priceRangeMutableLiveData = new MutableLiveData<>();
-    public LiveData<List<Float>> getPriceRangeLiveData() {
-        return priceRangeMutableLiveData;
-    }
+    private MutableLiveData<List<Float>> valuesPriceMutableLiveData = new MutableLiveData<>();
     public void setPriceRange(List<Float> floats){
-        priceRangeMutableLiveData.setValue(floats);
+        valuesPriceMutableLiveData.setValue(floats);
     }
 
-    private MutableLiveData<String> priceRangeCaptionMutableLiveData = new MutableLiveData<>();
-    public LiveData<String> getPriceRangeCaptionLiveData() {
-        return Transformations.map(priceRangeMutableLiveData, floats -> {
-            int min = floats.get(0).intValue() * 1000;
-            int max = floats.get(1).intValue() * 1000;
-
-            return String.format("%s %s %s",
-                    Utils.convertPriceToString(min),
-                    MainApplication.getApplication().getString(R.string.to),
-                    Utils.convertPriceToString(max));
-        });
-    }
-
-    private MutableLiveData<List<Float>> surfaceRangeMutableLiveData = new MutableLiveData<>();
-    public LiveData<List<Float>> getSurfaceRangeLiveData() {
-        return surfaceRangeMutableLiveData;
-    }
+    private MutableLiveData<List<Float>> valuesSurfaceMutableLiveData = new MutableLiveData<>();
     public void setSurfaceRange(List<Float> floats){
-        surfaceRangeMutableLiveData.setValue(floats);
+        valuesSurfaceMutableLiveData.setValue(floats);
     }
 
-    private MutableLiveData<String> surfaceRangeCaptionMutableLiveData = new MutableLiveData<>();
-    public LiveData<String> getSurfaceRangeCaptionLiveData() {
-        return Transformations.map(surfaceRangeMutableLiveData, floats -> {
-            int min = floats.get(0).intValue();
-            int max = floats.get(1).intValue();
-
-            return String.format("%s %s %s",
-                    Utils.convertSurfaceToString(min),
-                    MainApplication.getApplication().getString(R.string.to),
-                    Utils.convertSurfaceToString(max));
-        });
-    }
-
-    private MutableLiveData<List<Float>> roomsRangeMutableLiveData = new MutableLiveData<>();
-    public LiveData<List<Float>> getRoomsRangeLiveData() {
-        return roomsRangeMutableLiveData;
-    }
+    private MutableLiveData<List<Float>> valuesRoomsMutableLiveData = new MutableLiveData<>();
     public void setRoomsRange(List<Float> floats){
-        roomsRangeMutableLiveData.setValue(floats);
-    }
-
-    private MutableLiveData<String> roomsRangeCaptionMutableLiveData = new MutableLiveData<>();
-    public LiveData<String> getRoomsRangeCaptionLiveData() {
-        return Transformations.map(roomsRangeMutableLiveData, floats -> {
-            int min = floats.get(0).intValue();
-            int max = floats.get(1).intValue();
-
-            return String.format("%d %s %d",
-                    min,
-                    MainApplication.getApplication().getString(R.string.to),
-                    max);
-        });
+        valuesRoomsMutableLiveData.setValue(floats);
     }
 
     private String getFullText(){
@@ -139,6 +96,8 @@ public class PropertySearchViewModel extends ViewModel {
     }
 
     private void configureMediatorLiveData() {
+        LiveData<PropertyRange> minMaxLiveData = databaseRepository.getPropertyRepository().getPropertiesMinMaxRanges();
+
         LiveData<List<DropdownItem>> agentItemsLiveData = Transformations.map(databaseRepository.getAgentRepository().getAgentsLiveData(),
                 agents -> {
                     List<DropdownItem> items = new ArrayList<>();
@@ -164,7 +123,11 @@ public class PropertySearchViewModel extends ViewModel {
             public void onChanged(List<DropdownItem> items) {
                 combine(items, agentIndexMutableLiveData.getValue(),
                         propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
-                        fullTextMutableLiveData.getValue());
+                        fullTextMutableLiveData.getValue(),
+                        minMaxLiveData.getValue(),
+                        valuesPriceMutableLiveData.getValue(),
+                        valuesSurfaceMutableLiveData.getValue(),
+                        valuesRoomsMutableLiveData.getValue());
             }
         });
 
@@ -174,7 +137,11 @@ public class PropertySearchViewModel extends ViewModel {
                 Log.d(Tag.TAG, "PropertySearch ViewModel configureMediatorLiveData->agentIndexMutableLiveData->onChanged() called with: integer = [" + integer + "]");
                 combine(agentItemsLiveData.getValue(), integer,
                         propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
-                        fullTextMutableLiveData.getValue());
+                        fullTextMutableLiveData.getValue(),
+                        minMaxLiveData.getValue(),
+                        valuesPriceMutableLiveData.getValue(),
+                        valuesSurfaceMutableLiveData.getValue(),
+                        valuesRoomsMutableLiveData.getValue());
             }
         });
 
@@ -183,7 +150,11 @@ public class PropertySearchViewModel extends ViewModel {
             public void onChanged(List<DropdownItem> items) {
                 combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
                         items, propertyTypeIndexMutableLiveData.getValue(),
-                        fullTextMutableLiveData.getValue());
+                        fullTextMutableLiveData.getValue(),
+                        minMaxLiveData.getValue(),
+                        valuesPriceMutableLiveData.getValue(),
+                        valuesSurfaceMutableLiveData.getValue(),
+                        valuesRoomsMutableLiveData.getValue());
             }
         });
 
@@ -192,7 +163,11 @@ public class PropertySearchViewModel extends ViewModel {
             public void onChanged(Integer integer) {
                 combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
                         propertyTypeItemsLiveData.getValue(), integer,
-                        fullTextMutableLiveData.getValue());
+                        fullTextMutableLiveData.getValue(),
+                        minMaxLiveData.getValue(),
+                        valuesPriceMutableLiveData.getValue(),
+                        valuesSurfaceMutableLiveData.getValue(),
+                        valuesRoomsMutableLiveData.getValue());
             }
         });
 
@@ -201,48 +176,182 @@ public class PropertySearchViewModel extends ViewModel {
             public void onChanged(String s) {
                 combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
                         propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
-                        s);
-
+                        s,
+                        minMaxLiveData.getValue(),
+                        valuesPriceMutableLiveData.getValue(),
+                        valuesSurfaceMutableLiveData.getValue(),
+                        valuesRoomsMutableLiveData.getValue());
             }
         });
 
-/*        propertySearchViewStateMediatorLiveData.addSource(priceRangeMutableLiveData, new Observer<Pair<Integer, Integer>>() {
+        propertySearchViewStateMediatorLiveData.addSource(minMaxLiveData, new Observer<PropertyRange>() {
             @Override
-            public void onChanged(Pair<Integer, Integer> integerIntegerPair) {
-
+            public void onChanged(PropertyRange propertyRange) {
+                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                        fullTextMutableLiveData.getValue(),
+                        propertyRange,
+                        valuesPriceMutableLiveData.getValue(),
+                        valuesSurfaceMutableLiveData.getValue(),
+                        valuesRoomsMutableLiveData.getValue());
             }
-        });*/
+        });
+
+        propertySearchViewStateMediatorLiveData.addSource(valuesPriceMutableLiveData, new Observer<List<Float>>() {
+            @Override
+            public void onChanged(List<Float> floats) {
+                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                        fullTextMutableLiveData.getValue(),
+                        minMaxLiveData.getValue(),
+                        floats,
+                        valuesSurfaceMutableLiveData.getValue(),
+                        valuesRoomsMutableLiveData.getValue());
+            }
+        });
+
+        propertySearchViewStateMediatorLiveData.addSource(valuesSurfaceMutableLiveData, new Observer<List<Float>>() {
+            @Override
+            public void onChanged(List<Float> floats) {
+                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                        fullTextMutableLiveData.getValue(),
+                        minMaxLiveData.getValue(),
+                        valuesPriceMutableLiveData.getValue(),
+                        floats,
+                        valuesRoomsMutableLiveData.getValue());
+            }
+        });
+
+        propertySearchViewStateMediatorLiveData.addSource(valuesRoomsMutableLiveData, new Observer<List<Float>>() {
+            @Override
+            public void onChanged(List<Float> floats) {
+                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                        fullTextMutableLiveData.getValue(),
+                        minMaxLiveData.getValue(),
+                        valuesPriceMutableLiveData.getValue(),
+                        valuesSurfaceMutableLiveData.getValue(),
+                        floats);
+            }
+        });
+    }
+
+    private List<Float> minMaxToListFloats(int min, int max){
+        List<Float> floats = new ArrayList<>();
+        floats.add((float) min);
+        floats.add((float) max);
+
+        return  floats;
+    }
+
+    private List<Float> propertyRangeToMinMaxPrice(PropertyRange propertyRange){
+
+        int min = propertyRange.getMinPrice();
+        // truncate (lower round)
+        min = (int) (min / 1000);
+        int max = propertyRange.getMaxPrice();
+        max = Math.round(max / 1000);
+
+        return  minMaxToListFloats(min, max);
+    }
+
+    public List<Float> propertyRangeToMinMaxSurface(PropertyRange propertyRange){
+
+        int min = propertyRange.getMinSurface();
+        int max = propertyRange.getMaxSurface();
+
+        return  minMaxToListFloats(min, max);
+    }
+
+    public List<Float> propertyRangeToMinMaxRooms(PropertyRange propertyRange){
+
+        int min = propertyRange.getMinRooms();
+        int max = propertyRange.getMaxRooms();
+
+        return  minMaxToListFloats(min, max);
+    }
+
+    private List<Float> createValuesFromMinMax(List<Float> minMax){
+        return new ArrayList<>(minMax);
+    }
+
+    private List<Float> checkValues(List<Float> minMax, List<Float> values){
+        if (values == null) {
+            return createValuesFromMinMax(minMax);
+        }
+        else {
+            if ((values.get(0) < minMax.get(0)) || (values.get(0) > minMax.get(1)))
+                // put min value in min range
+                values.set(0, minMax.get(0));
+            if ((values.get(1) < minMax.get(0)) || (values.get(1) > minMax.get(1)))
+                // put max value in max range
+                values.set(1, minMax.get(1));
+            return values;
+        }
+    };
+
+    public String getCaptionPrice(List<Float> floats) {
+        int min = floats.get(0).intValue() * 1000;
+        int max = floats.get(1).intValue() * 1000;
+
+        return String.format("%s %s %s",
+                Utils.convertPriceToString(min),
+                MainApplication.getApplication().getString(R.string.to),
+                Utils.convertPriceToString(max));
+    }
+
+    public String getCaptionSurface(List<Float> floats) {
+        int min = floats.get(0).intValue();
+        int max = floats.get(1).intValue();
+
+        return String.format("%s %s %s",
+                Utils.convertSurfaceToString(min),
+                MainApplication.getApplication().getString(R.string.to),
+                Utils.convertSurfaceToString(max));
+    }
+
+    public String getCaptionRooms(List<Float> floats) {
+        int min = floats.get(0).intValue();
+        int max = floats.get(1).intValue();
+
+        return String.format(Locale.getDefault(), "%d %s %d",
+                min,
+                MainApplication.getApplication().getString(R.string.to),
+                max);
     }
 
     private void combine(List<DropdownItem> agents, int agentIndex,
                          List<DropdownItem> propertyTypes, int propertyTypeIndex,
-                         String fullText){
+                         String fullText,
+                         PropertyRange propertyRange,
+                         List<Float> valuesPrice, List<Float> valuesSurface, List<Float> valuesRooms){
 
-        if ((agents == null) || (propertyTypes == null))
+        if ((agents == null) || (propertyTypes == null) || (propertyRange == null))
             return;
-
-/*        String addressTitle;
-        String address;
-        String description;
-        String pointOfInterest;
-        Long agentId;
-        Long propertyTypeId;
-        int minPrice;
-        int maxPrice;
-        int minSurface;
-        int maxSurface;
-        int minRooms;
-        int maxRooms;
-        Date minEntryDate;
-        Date maxEntryDate;
-        Date minSaleDate;
-        Date maxSaleDate;*/
 
         Log.d(Tag.TAG, "PropertySearch ViewModel combine() called with: agentIndex = [" + agentIndex + "]");
         Log.d(Tag.TAG, "PropertySearch ViewModel combine() called with: propertyTypeIndex = [" + propertyTypeIndex + "]");
         Log.d(Tag.TAG, "PropertySearch ViewModel combine() called with: fullText = [" + fullText + "]");
 
-        PropertySearchViewState propertySearchViewState = new PropertySearchViewState(agents, agentIndex, propertyTypes, propertyTypeIndex, fullText);
+        minMaxPrice = propertyRangeToMinMaxPrice(propertyRange);
+        minMaxSurface = propertyRangeToMinMaxSurface(propertyRange);
+        minMaxRooms = propertyRangeToMinMaxRooms(propertyRange);
+
+        valuesPrice = checkValues(minMaxPrice, valuesPrice);
+        valuesSurface = checkValues(minMaxSurface, valuesSurface);
+        valuesRooms = checkValues(minMaxRooms, valuesRooms);
+
+        String captionPrice = getCaptionPrice(valuesPrice);
+        String captionSurface = getCaptionSurface(valuesSurface);
+        String captionRooms = getCaptionRooms(valuesRooms);
+
+        PropertySearchViewState propertySearchViewState = new PropertySearchViewState(agents, agentIndex,
+                propertyTypes, propertyTypeIndex,
+                fullText,
+                minMaxPrice, valuesPrice, captionPrice,
+                minMaxSurface, valuesSurface, captionSurface,
+                minMaxRooms, valuesRooms, captionRooms);
 
         propertySearchViewStateMediatorLiveData.setValue(propertySearchViewState);
     }
@@ -260,7 +369,7 @@ public class PropertySearchViewModel extends ViewModel {
         if (propertyType >= 0) psp.setPropertyTypeId(propertyType);
 
         // price values are displayed in Kilo $
-        List<Float> priceRange = priceRangeMutableLiveData.getValue();
+        List<Float> priceRange = valuesPriceMutableLiveData.getValue();
         if (priceRange != null) {
             int min = priceRange.get(0).intValue() * 1000;
             int max = priceRange.get(1).intValue() * 1000;
@@ -268,7 +377,7 @@ public class PropertySearchViewModel extends ViewModel {
             psp.setPrice(new Pair<>(min, max));
         }
 
-        List<Float> surfaceRange = surfaceRangeMutableLiveData.getValue();
+        List<Float> surfaceRange = valuesSurfaceMutableLiveData.getValue();
         if (surfaceRange != null) {
             int min = surfaceRange.get(0).intValue();
             int max = surfaceRange.get(1).intValue();
@@ -276,7 +385,7 @@ public class PropertySearchViewModel extends ViewModel {
             psp.setSurface(new Pair<>(min, max));
         }
 
-        List<Float> roomsRange = roomsRangeMutableLiveData.getValue();
+        List<Float> roomsRange = valuesRoomsMutableLiveData.getValue();
         if (roomsRange != null) {
             int min = roomsRange.get(0).intValue();
             int max = roomsRange.get(1).intValue();
@@ -302,9 +411,9 @@ public class PropertySearchViewModel extends ViewModel {
         agentIndexMutableLiveData.setValue(0);
         propertyTypeIndexMutableLiveData.setValue(0);
         fullTextMutableLiveData.setValue("");
-        setPriceRange(Arrays.asList(0f, getMaxRangePrice()));
-        setSurfaceRange(Arrays.asList(0f, getMaxRangeSurface()));
-        setRoomsRange(Arrays.asList(0f, getMaxRangeRooms()));
+        setPriceRange(minMaxPrice);
+        setSurfaceRange(minMaxSurface);
+        setRoomsRange(minMaxRooms);
 
         setSearchValues(-1, -1);
     }

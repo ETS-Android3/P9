@@ -98,10 +98,6 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_price"
                 app:layout_constraintStart_toStartOf="parent"
-                android:valueFrom="0.0"
-                android:valueTo="50000.0"
-                android:stepSize="100.0"
-                app:values="@array/initial_slider_values_search_price"
                 android:contentDescription="@string/select_price_range"
                 app:labelBehavior="floating"/>
 
@@ -130,10 +126,6 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_surface"
                 app:layout_constraintStart_toStartOf="parent"
-                android:valueFrom="0.0"
-                android:valueTo="20000.0"
-                android:stepSize="10.0"
-                app:values="@array/initial_slider_values_search_surface"
                 android:contentDescription="@string/select_price_surface"
                 app:labelBehavior="floating"/>
 

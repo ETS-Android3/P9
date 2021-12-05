@@ -15,6 +15,7 @@ import androidx.sqlite.db.SupportSQLiteQuery;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
+import com.openclassrooms.realestatemanager.data.room.model.PropertyRange;
 
 import java.util.List;
 
@@ -88,4 +89,10 @@ public interface PropertyDao {
 
     @RawQuery(observedEntities = Property.class)
     List<Property> getPropertiesWithFilter(SimpleSQLiteQuery query);
+
+    @Query("select min(price) as min_price, max(price) as max_price, " +
+            "min(surface) as min_surface, max(surface) as max_surface, " +
+            "min(rooms) as min_rooms, max(rooms) as max_rooms " +
+            "from property")
+    LiveData<PropertyRange> getPropertiesMinMaxRanges();
 }
