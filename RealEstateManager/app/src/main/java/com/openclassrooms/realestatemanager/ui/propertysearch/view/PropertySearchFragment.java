@@ -306,9 +306,10 @@ public class PropertySearchFragment extends Fragment {
             public void onChanged(PropertySearchViewState propertySearchViewState) {
                 Log.d(Tag.TAG, "PropertySearch Fragment observe -> onChanged() called with: propertySearchViewState = [" + propertySearchViewState + "]");
                 Log.d(Tag.TAG, "PropertySearch Fragment observe -> onChanged() fullText = [" + propertySearchViewState.getFullText() + "]");
+                setFullText(propertySearchViewState.getFullText());
                 setAgents(propertySearchViewState.getAgents(), propertySearchViewState.getAgentIndex());
                 setPropertyTypes(propertySearchViewState.getPropertyTypes(), propertySearchViewState.getPropertyTypeIndex());
-                setFullText(propertySearchViewState.getFullText());
+
                 setRangeSliderValuesPrice(propertySearchViewState.getMinMaxPrice(), propertySearchViewState.getValuesPrice());
                 setCaptionPrice(propertySearchViewState.getCaptionPrice());
                 setRangeSliderValuesSurface(propertySearchViewState.getMinMaxSurface(), propertySearchViewState.getValuesSurface());
@@ -376,7 +377,10 @@ public class PropertySearchFragment extends Fragment {
             if ((index >= 0) && (index <= arrayAdapter.getCount())) {
                 DropdownItem item = (DropdownItem) arrayAdapter.getItem(index);
                 this.agentId = item.getId();
-                autoCompleteTextView.setText(item.getName());
+                // set adapter to null to avoid autoComplete dropdown appearing when text is set
+                autoCompleteTextView.setAdapter(null);
+                if (!autoCompleteTextView.getText().toString().equals(item.getName()))
+                    autoCompleteTextView.setText(item.getName());
             }
 
             autoCompleteTextView.setAdapter(arrayAdapter);
@@ -402,7 +406,10 @@ public class PropertySearchFragment extends Fragment {
             if ((index >= 0) && (index <= arrayAdapter.getCount())) {
                 DropdownItem item = (DropdownItem) arrayAdapter.getItem(index);
                 this.propertyTypeId = item.getId();
-                autoCompleteTextView.setText(item.getName());
+                // set adapter to null to avoid autoComplete dropdown appearing when text is set
+                autoCompleteTextView.setAdapter(null);
+                if (!autoCompleteTextView.getText().toString().equals(item.getName()))
+                    autoCompleteTextView.setText(item.getName());
             }
             autoCompleteTextView.setAdapter(arrayAdapter);
             autoCompleteTextView.setListSelection (index);

@@ -83,20 +83,11 @@
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <View
-                android:id="@+id/fragment_property_search_view_top_price"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/default_margin"
-                android:layout_marginBottom="@dimen/default_margin"
-                android:background="?android:attr/listDivider"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_input_layout_agent" />
-
             <TextView
                 android:id="@+id/fragment_property_search_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_view_top_price"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_input_layout_agent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/property_price"
                 style="@style/TextviewStyle.Label"/>
@@ -121,20 +112,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_range_slider_price" />
 
-            <View
-                android:id="@+id/fragment_property_search_view_top_surface"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/default_margin"
-                android:layout_marginBottom="@dimen/default_margin"
-                android:background="?android:attr/listDivider"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_price_range" />
-
             <TextView
                 android:id="@+id/fragment_property_search_surface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_view_top_surface"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_price_range"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/property_surface"
                 style="@style/TextviewStyle.Label"/>
@@ -158,19 +140,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_range_slider_surface" />
 
-            <View
-                android:id="@+id/fragment_property_search_view_top_rooms"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/default_margin"
-                android:layout_marginBottom="@dimen/default_margin"
-                android:background="?android:attr/listDivider"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_surface_range" />
             <TextView
                 android:id="@+id/fragment_property_search_rooms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_view_top_rooms"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_surface_range"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/property_rooms"
                 style="@style/TextviewStyle.Label"/>
