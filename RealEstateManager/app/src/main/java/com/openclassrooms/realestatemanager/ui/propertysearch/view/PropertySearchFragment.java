@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.propertysearch.view;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -18,6 +19,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.material.slider.BasicLabelFormatter;
@@ -40,6 +43,9 @@ import com.openclassrooms.realestatemanager.utils.Utils;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class PropertySearchFragment extends Fragment {
@@ -68,6 +74,9 @@ public class PropertySearchFragment extends Fragment {
 
     private Button buttonOk;
     private Button buttonReset;
+
+    TextView textViewEntryDateRange;
+    TextView textViewSaleDateRange;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -167,9 +176,66 @@ public class PropertySearchFragment extends Fragment {
             }
         });
 
+        textViewEntryDateRange = view.findViewById(R.id.fragment_property_search_entry_date_range);
+        textViewSaleDateRange = view.findViewById(R.id.fragment_property_search_sale_date_range);
+
         configurePriceComponents(view);
         configureSurfaceComponents(view);
         configureRoomsComponents(view);
+        configureDateComponents(view);
+    }
+
+    private void configureDateComponents(View view) {
+        Button buttonSelectEntryDate = view.findViewById(R.id.fragment_property_search_button_select_entry_date);
+        buttonSelectEntryDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectDate(textViewEntryDateRange);
+            }
+        });
+
+        Button buttonResetEntryDate = view.findViewById(R.id.fragment_property_search_button_reset_entry_date);
+        buttonResetEntryDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetDate(textViewEntryDateRange);
+            }
+        });
+
+        Button buttonSelectSaleDate = view.findViewById(R.id.fragment_property_search_button_select_sale_date);
+        buttonSelectSaleDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectDate(textViewSaleDateRange);
+            }
+        });
+
+        Button buttonResetSaleDate = view.findViewById(R.id.fragment_property_search_button_reset_sale_date);
+        buttonResetSaleDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetDate(textViewSaleDateRange);
+            }
+        });
+    }
+
+    private void selectDate(TextView textView){
+        final Calendar cldr = Calendar.getInstance();
+        int day = cldr.get(Calendar.DAY_OF_MONTH);
+        int month = cldr.get(Calendar.MONTH);
+        int year = cldr.get(Calendar.YEAR);
+        DatePickerDialog picker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                Date date = new GregorianCalendar(year, month, dayOfMonth).getTime();
+                textView.setText(Utils.convertDateToLocalFormat(date));
+            }
+        }, year, month, day);
+        picker.show();
+    }
+
+    private void resetDate(TextView textView){
+        textView.setText(getResources().getString(R.string.no_date_range_selected));
     }
 
     private void configurePriceComponents(View view) {

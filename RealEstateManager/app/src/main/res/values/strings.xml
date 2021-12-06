@@ -120,6 +120,13 @@
     <string name="select_price_surface">select surface range</string>
     <string name="select_price_rooms">select rooms range</string>
 
+    <string name="select_entry_date">select date</string>
+    <string name="reset_entry_date">reset date</string>
+
+    <string name="select_sale_date">select date</string>
+    <string name="reset_sale_date">reset date</string>
+    <string name="no_date_range_selected">no date range selected</string>
+
     <string name="to">to</string>
 
 </resources>
