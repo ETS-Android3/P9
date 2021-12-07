@@ -6,22 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 public class PropertySearchViewState {
-/*    private String addressTitle;
-    private String address;
-    private String description;
-    private String pointOfInterest;
-    private Long agentId;
-    private Long propertyTypeId;
-    private int minPrice;
-    private int maxPrice;
-    private int minSurface;
-    private int maxSurface;
-    private int minRooms;
-    private int maxRooms;
-    private Date minEntryDate;
-    private Date maxEntryDate;
-    private Date minSaleDate;
-    private Date maxSaleDate;*/
     private List<DropdownItem> agents;
     private int agentIndex;
     private List<DropdownItem> propertyTypes;
@@ -36,8 +20,10 @@ public class PropertySearchViewState {
     private List<Float> minMaxRooms;
     private List<Float> valuesRooms;
     private String captionRooms;
+    private String captionEntryDate;
+    private String captionSaleDate;
 
-    public PropertySearchViewState(List<DropdownItem> agents, int agentIndex, List<DropdownItem> propertyTypes, int propertyTypeIndex, String fullText, List<Float> minMaxPrice, List<Float> valuesPrice, String captionPrice, List<Float> minMaxSurface, List<Float> valuesSurface, String captionSurface, List<Float> minMaxRooms, List<Float> valuesRooms, String captionRooms) {
+    public PropertySearchViewState(List<DropdownItem> agents, int agentIndex, List<DropdownItem> propertyTypes, int propertyTypeIndex, String fullText, List<Float> minMaxPrice, List<Float> valuesPrice, String captionPrice, List<Float> minMaxSurface, List<Float> valuesSurface, String captionSurface, List<Float> minMaxRooms, List<Float> valuesRooms, String captionRooms, String captionEntryDate, String captionSaleDate) {
         this.agents = agents;
         this.agentIndex = agentIndex;
         this.propertyTypes = propertyTypes;
@@ -52,6 +38,8 @@ public class PropertySearchViewState {
         this.minMaxRooms = minMaxRooms;
         this.valuesRooms = valuesRooms;
         this.captionRooms = captionRooms;
+        this.captionEntryDate = captionEntryDate;
+        this.captionSaleDate = captionSaleDate;
     }
 
     public List<DropdownItem> getAgents() {
@@ -108,5 +96,13 @@ public class PropertySearchViewState {
 
     public String getCaptionRooms() {
         return captionRooms;
+    }
+
+    public String getCaptionEntryDate() {
+        return captionEntryDate;
+    }
+
+    public String getCaptionSaleDate() {
+        return captionSaleDate;
     }
 }

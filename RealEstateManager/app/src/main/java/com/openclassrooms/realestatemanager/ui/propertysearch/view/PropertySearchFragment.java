@@ -1,10 +1,10 @@
 package com.openclassrooms.realestatemanager.ui.propertysearch.view;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,33 +19,23 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.material.slider.BasicLabelFormatter;
 import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.textfield.TextInputLayout;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.room.model.PropertyRange;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
-import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
-import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.FieldKey;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertysearch.listener.PropertySearchListener;
 import com.openclassrooms.realestatemanager.ui.propertysearch.viewmodel.PropertySearchViewModel;
 import com.openclassrooms.realestatemanager.ui.propertysearch.viewstate.PropertySearchViewState;
 import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
+import com.openclassrooms.realestatemanager.utils.DateRangePickedHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class PropertySearchFragment extends Fragment {
@@ -190,7 +180,7 @@ public class PropertySearchFragment extends Fragment {
         buttonSelectEntryDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectDate(textViewEntryDateRange);
+                selectEntryDate();
             }
         });
 
@@ -206,7 +196,7 @@ public class PropertySearchFragment extends Fragment {
         buttonSelectSaleDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectDate(textViewSaleDateRange);
+                selectSaleDate();
             }
         });
 
@@ -219,19 +209,22 @@ public class PropertySearchFragment extends Fragment {
         });
     }
 
-    private void selectDate(TextView textView){
-        final Calendar cldr = Calendar.getInstance();
-        int day = cldr.get(Calendar.DAY_OF_MONTH);
-        int month = cldr.get(Calendar.MONTH);
-        int year = cldr.get(Calendar.YEAR);
-        DatePickerDialog picker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+    private void selectEntryDate(){
+        DateRangePickedHelper.Show(getChildFragmentManager(), new DateRangePickedHelper.DateRangePickerHelperInterface() {
             @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                Date date = new GregorianCalendar(year, month, dayOfMonth).getTime();
-                textView.setText(Utils.convertDateToLocalFormat(date));
+            public void onValidate(Object selection) {
+                propertySearchViewModel.setValueEntryDate(selection);
             }
-        }, year, month, day);
-        picker.show();
+        });
+    }
+
+    private void selectSaleDate(){
+        DateRangePickedHelper.Show(getChildFragmentManager(), new DateRangePickedHelper.DateRangePickerHelperInterface() {
+            @Override
+            public void onValidate(Object selection) {
+                propertySearchViewModel.setValueSaleDate(selection);
+            }
+        });
     }
 
     private void resetDate(TextView textView){
@@ -316,6 +309,9 @@ public class PropertySearchFragment extends Fragment {
                 setCaptionSurface(propertySearchViewState.getCaptionSurface());
                 setRangeSliderValuesRooms(propertySearchViewState.getMinMaxRooms(), propertySearchViewState.getValuesRooms());
                 setCaptionRooms(propertySearchViewState.getCaptionRooms());
+
+                setCaptionEntryDate(propertySearchViewState.getCaptionEntryDate());
+                setCaptionSaleDate(propertySearchViewState.getCaptionSaleDate());
             }
         });
     }
@@ -330,6 +326,12 @@ public class PropertySearchFragment extends Fragment {
 
     private void setCaptionRooms(String text) {
         textViewRangeRooms.setText(text);
+    }
+
+    private void setCaptionEntryDate(String text) { textViewEntryDateRange.setText(text); }
+
+    private void setCaptionSaleDate(String text) {
+        textViewSaleDateRange.setText(text);
     }
 
     private void setRangeSliderFromToValues(RangeSlider rangeSlider, List<Float> range){

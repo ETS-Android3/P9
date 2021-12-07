@@ -25,6 +25,7 @@ import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,6 +38,9 @@ public class PropertySearchViewModel extends ViewModel {
     private List<Float> minMaxPrice;
     private List<Float> minMaxSurface;
     private List<Float> minMaxRooms;
+
+    private Pair<Long, Long> valuesEntryDate;
+    private Pair<Long, Long> valuesSaleDate;
 
     private final DatabaseRepository databaseRepository;
 
@@ -95,6 +99,16 @@ public class PropertySearchViewModel extends ViewModel {
         return propertyTypeIndexMutableLiveData;
     }
 
+    private final MutableLiveData<Object> valueEntryDateMutableLiveData = new MutableLiveData<>();
+    public void setValueEntryDate(Object selection){
+        valueEntryDateMutableLiveData.setValue(selection);
+    }
+
+    private final MutableLiveData<Object> valueSaleDateMutableLiveData = new MutableLiveData<>();
+    public void setValueSaleDate(Object selection){
+        valueSaleDateMutableLiveData.setValue(selection);
+    }
+
     private void configureMediatorLiveData() {
         LiveData<PropertyRange> minMaxLiveData = databaseRepository.getPropertyRepository().getPropertiesMinMaxRanges();
 
@@ -127,7 +141,9 @@ public class PropertySearchViewModel extends ViewModel {
                         minMaxLiveData.getValue(),
                         valuesPriceMutableLiveData.getValue(),
                         valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue());
+                        valuesRoomsMutableLiveData.getValue(),
+                        valueEntryDateMutableLiveData.getValue(),
+                        valueSaleDateMutableLiveData.getValue());
             }
         });
 
@@ -141,7 +157,9 @@ public class PropertySearchViewModel extends ViewModel {
                         minMaxLiveData.getValue(),
                         valuesPriceMutableLiveData.getValue(),
                         valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue());
+                        valuesRoomsMutableLiveData.getValue(),
+                        valueEntryDateMutableLiveData.getValue(),
+                        valueSaleDateMutableLiveData.getValue());
             }
         });
 
@@ -154,7 +172,9 @@ public class PropertySearchViewModel extends ViewModel {
                         minMaxLiveData.getValue(),
                         valuesPriceMutableLiveData.getValue(),
                         valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue());
+                        valuesRoomsMutableLiveData.getValue(),
+                        valueEntryDateMutableLiveData.getValue(),
+                        valueSaleDateMutableLiveData.getValue());
             }
         });
 
@@ -167,7 +187,9 @@ public class PropertySearchViewModel extends ViewModel {
                         minMaxLiveData.getValue(),
                         valuesPriceMutableLiveData.getValue(),
                         valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue());
+                        valuesRoomsMutableLiveData.getValue(),
+                        valueEntryDateMutableLiveData.getValue(),
+                        valueSaleDateMutableLiveData.getValue());
             }
         });
 
@@ -180,7 +202,9 @@ public class PropertySearchViewModel extends ViewModel {
                         minMaxLiveData.getValue(),
                         valuesPriceMutableLiveData.getValue(),
                         valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue());
+                        valuesRoomsMutableLiveData.getValue(),
+                        valueEntryDateMutableLiveData.getValue(),
+                        valueSaleDateMutableLiveData.getValue());
             }
         });
 
@@ -193,7 +217,9 @@ public class PropertySearchViewModel extends ViewModel {
                         propertyRange,
                         valuesPriceMutableLiveData.getValue(),
                         valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue());
+                        valuesRoomsMutableLiveData.getValue(),
+                        valueEntryDateMutableLiveData.getValue(),
+                        valueSaleDateMutableLiveData.getValue());
             }
         });
 
@@ -206,7 +232,9 @@ public class PropertySearchViewModel extends ViewModel {
                         minMaxLiveData.getValue(),
                         floats,
                         valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue());
+                        valuesRoomsMutableLiveData.getValue(),
+                        valueEntryDateMutableLiveData.getValue(),
+                        valueSaleDateMutableLiveData.getValue());
             }
         });
 
@@ -219,7 +247,9 @@ public class PropertySearchViewModel extends ViewModel {
                         minMaxLiveData.getValue(),
                         valuesPriceMutableLiveData.getValue(),
                         floats,
-                        valuesRoomsMutableLiveData.getValue());
+                        valuesRoomsMutableLiveData.getValue(),
+                        valueEntryDateMutableLiveData.getValue(),
+                        valueSaleDateMutableLiveData.getValue());
             }
         });
 
@@ -232,7 +262,39 @@ public class PropertySearchViewModel extends ViewModel {
                         minMaxLiveData.getValue(),
                         valuesPriceMutableLiveData.getValue(),
                         valuesSurfaceMutableLiveData.getValue(),
-                        floats);
+                        floats,
+                        valueEntryDateMutableLiveData.getValue(),
+                        valueSaleDateMutableLiveData.getValue());
+            }
+        });
+
+        propertySearchViewStateMediatorLiveData.addSource(valueEntryDateMutableLiveData, new Observer<Object>() {
+            @Override
+            public void onChanged(Object o) {
+                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                        fullTextMutableLiveData.getValue(),
+                        minMaxLiveData.getValue(),
+                        valuesPriceMutableLiveData.getValue(),
+                        valuesSurfaceMutableLiveData.getValue(),
+                        valuesRoomsMutableLiveData.getValue(),
+                        o,
+                        valueSaleDateMutableLiveData.getValue());
+            }
+        });
+
+        propertySearchViewStateMediatorLiveData.addSource(valueSaleDateMutableLiveData, new Observer<Object>() {
+            @Override
+            public void onChanged(Object o) {
+                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                        fullTextMutableLiveData.getValue(),
+                        minMaxLiveData.getValue(),
+                        valuesPriceMutableLiveData.getValue(),
+                        valuesSurfaceMutableLiveData.getValue(),
+                        valuesRoomsMutableLiveData.getValue(),
+                        valueEntryDateMutableLiveData.getValue(),
+                        o);
             }
         });
     }
@@ -291,7 +353,7 @@ public class PropertySearchViewModel extends ViewModel {
         }
     };
 
-    public String getCaptionPrice(List<Float> floats) {
+    private String getCaptionPrice(List<Float> floats) {
         int min = floats.get(0).intValue() * 1000;
         int max = floats.get(1).intValue() * 1000;
 
@@ -301,7 +363,7 @@ public class PropertySearchViewModel extends ViewModel {
                 Utils.convertPriceToString(max));
     }
 
-    public String getCaptionSurface(List<Float> floats) {
+    private String getCaptionSurface(List<Float> floats) {
         int min = floats.get(0).intValue();
         int max = floats.get(1).intValue();
 
@@ -311,7 +373,7 @@ public class PropertySearchViewModel extends ViewModel {
                 Utils.convertSurfaceToString(max));
     }
 
-    public String getCaptionRooms(List<Float> floats) {
+    private String getCaptionRooms(List<Float> floats) {
         int min = floats.get(0).intValue();
         int max = floats.get(1).intValue();
 
@@ -321,11 +383,32 @@ public class PropertySearchViewModel extends ViewModel {
                 max);
     }
 
+    private String getCaptionDate(Pair<Long, Long> range){
+        return (range == null) ?
+                MainApplication.getApplication().getString(R.string.no_date_range_selected) :
+                String.format("%s %s %s",
+                        Utils.convertDateToString(new Date(range.first)),
+                        MainApplication.getApplication().getString(R.string.to),
+                        Utils.convertDateToString(new Date(range.second)));
+    }
+
+
+    private Pair<Long, Long> convertPair(Object range){
+        // rangePicker provide range in Object who is androidx.core.util.Pair
+        // convert to android.util.Pair to be compatible with PropertySearchParameters
+        if (range == null) return null;
+
+        androidx.core.util.Pair<Long, Long> coreUtilPair = (androidx.core.util.Pair<Long, Long>) range;
+        android.util.Pair<Long, Long> convertedPair = new android.util.Pair<Long, Long>(coreUtilPair.first, coreUtilPair.second);
+        return convertedPair;
+    }
+
     private void combine(List<DropdownItem> agents, int agentIndex,
                          List<DropdownItem> propertyTypes, int propertyTypeIndex,
                          String fullText,
                          PropertyRange propertyRange,
-                         List<Float> valuesPrice, List<Float> valuesSurface, List<Float> valuesRooms){
+                         List<Float> valuesPrice, List<Float> valuesSurface, List<Float> valuesRooms,
+                         Object selectionEntryDate, Object selectionSaleDate){
 
         if ((agents == null) || (propertyTypes == null) || (propertyRange == null))
             return;
@@ -346,12 +429,19 @@ public class PropertySearchViewModel extends ViewModel {
         String captionSurface = getCaptionSurface(valuesSurface);
         String captionRooms = getCaptionRooms(valuesRooms);
 
+        valuesEntryDate = convertPair(selectionEntryDate);
+        String captionEntryDate = getCaptionDate(valuesEntryDate);
+
+        valuesSaleDate = convertPair(selectionSaleDate);
+        String captionSaleDate = getCaptionDate(valuesSaleDate);
+
         PropertySearchViewState propertySearchViewState = new PropertySearchViewState(agents, agentIndex,
                 propertyTypes, propertyTypeIndex,
                 fullText,
                 minMaxPrice, valuesPrice, captionPrice,
                 minMaxSurface, valuesSurface, captionSurface,
-                minMaxRooms, valuesRooms, captionRooms);
+                minMaxRooms, valuesRooms, captionRooms,
+                captionEntryDate, captionSaleDate);
 
         propertySearchViewStateMediatorLiveData.setValue(propertySearchViewState);
     }
@@ -392,6 +482,14 @@ public class PropertySearchViewModel extends ViewModel {
             psp.setRooms(new Pair<>(min, max));
         }
 
+        if (valuesEntryDate != null) {
+            psp.setEntryDate(valuesEntryDate);
+        }
+
+        if (valuesSaleDate != null) {
+            psp.setSaleDate(valuesSaleDate);
+        }
+
         databaseRepository.getPropertyRepository().setPropertySearchParameters(psp);
     }
 
@@ -414,6 +512,8 @@ public class PropertySearchViewModel extends ViewModel {
         setPriceRange(minMaxPrice);
         setSurfaceRange(minMaxSurface);
         setRoomsRange(minMaxRooms);
+        setValueEntryDate(null);
+        setValueSaleDate(null);
 
         setSearchValues(-1, -1);
     }
