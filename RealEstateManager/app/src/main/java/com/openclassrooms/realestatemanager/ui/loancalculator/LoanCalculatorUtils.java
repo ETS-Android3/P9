@@ -1,7 +1,10 @@
 package com.openclassrooms.realestatemanager.ui.loancalculator;
 
+import android.util.Log;
+
 import com.openclassrooms.realestatemanager.MainApplication;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 public class LoanCalculatorUtils {
