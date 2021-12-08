@@ -25,12 +25,21 @@
             app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_scrollview"
             app:layout_constraintStart_toStartOf="parent" >
 
+            <TextView
+                android:id="@+id/fragment_property_search_text_view_fulltext"
+                style="@style/TextviewStyle.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/fragment_property_search_constraintLayout_2"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/search_full_text" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/fragment_property_search_text_input_layout_fulltext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/My_TextInputLayoutStyle"
-                app:layout_constraintTop_toTopOf="@+id/fragment_property_search_constraintLayout_2"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_view_fulltext"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="parent"
                 app:startIconDrawable="@drawable/ic_search_text"
@@ -47,11 +56,29 @@
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <View
+                android:id="@+id/fragment_property_search_view_top_property_type"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/default_large_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_input_layout_fulltext" />
+
+            <TextView
+                android:id="@+id/fragment_property_search_text_view_property_type"
+                style="@style/TextviewStyle.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_view_top_property_type"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/property_type" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/fragment_property_search_text_input_layout_property_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_input_layout_fulltext"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_view_property_type"
                 app:layout_constraintStart_toStartOf="parent"
                 app:startIconDrawable="@drawable/ic_location_city"
                 app:startIconContentDescription="@string/property_type"
@@ -65,11 +92,29 @@
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <View
+                android:id="@+id/fragment_property_search_view_top_agent"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/default_large_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_input_layout_property_type" />
+
+            <TextView
+                android:id="@+id/fragment_property_search_text_view_agent"
+                style="@style/TextviewStyle.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_view_top_agent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/property_agent" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/fragment_property_search_text_input_layout_agent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_input_layout_property_type"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_view_agent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:startIconDrawable="@drawable/ic_real_estate_agent_24"
                 app:startIconContentDescription="@string/property_agent_name"
@@ -83,14 +128,23 @@
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <View
+                android:id="@+id/fragment_property_search_view_top_price"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/default_large_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_input_layout_agent" />
+
             <TextView
                 android:id="@+id/fragment_property_search_price"
+                style="@style/TextviewStyle.Label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_text_input_layout_agent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_view_top_price"
                 app:layout_constraintStart_toStartOf="parent"
-                android:text="@string/property_price"
-                style="@style/TextviewStyle.Label"/>
+                android:text="@string/property_price" />
 
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/fragment_property_search_range_slider_price"
@@ -104,7 +158,7 @@
 
             <TextView
                 android:id="@+id/fragment_property_search_price_range"
-                style="@style/TextviewStyle.Label"
+                style="@style/TextviewStyle.Value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/property_price"
@@ -112,11 +166,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_range_slider_price" />
 
+            <View
+                android:id="@+id/fragment_property_search_view_top_surface"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/default_large_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_price_range" />
+
             <TextView
                 android:id="@+id/fragment_property_search_surface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_price_range"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_view_top_surface"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/property_surface"
                 style="@style/TextviewStyle.Label"/>
@@ -132,7 +195,7 @@
 
             <TextView
                 android:id="@+id/fragment_property_search_surface_range"
-                style="@style/TextviewStyle.Label"
+                style="@style/TextviewStyle.Value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/property_surface"
@@ -140,11 +203,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_range_slider_surface" />
 
+            <View
+                android:id="@+id/fragment_property_search_view_top_rooms"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/default_large_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_surface_range" />
+
             <TextView
                 android:id="@+id/fragment_property_search_rooms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_surface_range"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_view_top_rooms"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/property_rooms"
                 style="@style/TextviewStyle.Label"/>
@@ -164,7 +236,7 @@
 
             <TextView
                 android:id="@+id/fragment_property_search_rooms_range"
-                style="@style/TextviewStyle.Label"
+                style="@style/TextviewStyle.Value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/property_rooms"
@@ -176,8 +248,8 @@
                 android:id="@+id/fragment_property_search_view_top_entry_date"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/default_margin"
-                android:layout_marginBottom="@dimen/default_margin"
+                android:layout_marginTop="@dimen/default_large_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
                 android:background="?android:attr/listDivider"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_rooms_range" />
 
@@ -215,31 +287,31 @@
 
             <TextView
                 android:id="@+id/fragment_property_search_entry_date_range"
+                style="@style/TextviewStyle.Value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_button_select_entry_date"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/no_date_range_selected"
-                android:textAlignment="textEnd"
-                style="@style/TextviewStyle.Label"/>
+                android:textAlignment="textEnd" />
 
             <View
                 android:id="@+id/fragment_property_search_view_top_sale_date"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/default_margin"
-                android:layout_marginBottom="@dimen/default_margin"
+                android:layout_marginTop="@dimen/default_large_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
                 android:background="?android:attr/listDivider"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_entry_date_range" />
 
             <TextView
                 android:id="@+id/fragment_property_search_sale_date"
+                style="@style/TextviewStyle.Label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_view_top_sale_date"
                 app:layout_constraintStart_toStartOf="parent"
-                android:text="@string/property_sale_date"
-                style="@style/TextviewStyle.Label"/>
+                android:text="@string/property_sale_date" />
 
             <Button
                 android:id="@+id/fragment_property_search_button_select_sale_date"
@@ -263,12 +335,12 @@
                 android:drawableLeft="@drawable/ic_menu_cancel"/>
             <TextView
                 android:id="@+id/fragment_property_search_sale_date_range"
+                style="@style/TextviewStyle.Value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_button_select_sale_date"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/no_date_range_selected"
-                style="@style/TextviewStyle.Label"
                 android:textAlignment="textEnd"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

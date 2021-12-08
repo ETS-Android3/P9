@@ -128,5 +128,6 @@
     <string name="no_date_range_selected">no date range selected</string>
 
     <string name="to">to</string>
+    <string name="property_agent">agent</string>
 
 </resources>
