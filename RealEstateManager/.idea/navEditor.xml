@@ -283,6 +283,18 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
+                  <entry key="loanCalculatorFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="30" />
+                            <option name="y" value="-520" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="nav_propertyDetailFragment_portrait">
                     <value>
                       <LayoutPositions>
