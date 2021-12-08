@@ -63,7 +63,7 @@
                 android:text="@string/loan_amount" />
 
             <com.google.android.material.slider.Slider
-                android:id="@+id/fragment_loan_range_slider_amount"
+                android:id="@+id/fragment_loan_slider_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_loan_text_view_amount_caption"
@@ -83,7 +83,7 @@
                 android:text="@string/loan_amount"
                 android:textAlignment="textEnd"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_range_slider_amount" />
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_slider_amount" />
 
             <View
                 android:id="@+id/fragment_loan_view_top_rate"
@@ -103,8 +103,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/interest_rate" />
 
-            <com.google.android.material.slider.RangeSlider
-                android:id="@+id/fragment_loan_range_slider_rate"
+            <com.google.android.material.slider.Slider
+                android:id="@+id/fragment_loan_slider_rate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_loan_text_view_rate_caption"
@@ -123,7 +123,7 @@
                 android:text="@string/interest_rate"
                 android:textAlignment="textEnd"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_range_slider_rate" />
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_slider_rate" />
 
             <View
                 android:id="@+id/fragment_loan_view_top_duration"
@@ -143,8 +143,8 @@
                 android:text="@string/loan_duration"
                 style="@style/TextviewStyle.Label"/>
 
-            <com.google.android.material.slider.RangeSlider
-                android:id="@+id/fragment_loan_range_slider_duration"
+            <com.google.android.material.slider.Slider
+                android:id="@+id/fragment_loan_slider_duration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_loan_text_view_duration"
@@ -163,7 +163,7 @@
                 android:text="@string/loan_duration"
                 android:textAlignment="textEnd"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_range_slider_duration" />
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_slider_duration" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

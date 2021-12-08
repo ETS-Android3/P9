@@ -90,6 +90,10 @@ public class Utils {
             price = convertDollarToEuro(price);
         }
 
+        return formatPrice(price);
+    }
+
+    public static String formatPrice(int price){
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         // Suppress decimal places
         formatter.setMaximumFractionDigits(0);

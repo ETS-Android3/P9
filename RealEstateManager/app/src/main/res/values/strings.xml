@@ -136,4 +136,9 @@
     <string name="monthly_payment">monthly payment</string>
     <string name="loan_calculator">loan calculator</string>
 
+    <plurals name="month">
+        <item quantity="zero">month</item>
+        <item quantity="one">month</item>
+        <item quantity="other">months</item>
+    </plurals>
 </resources>
