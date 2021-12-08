@@ -12,6 +12,7 @@ import com.openclassrooms.realestatemanager.data.location.LocationRepository;
 import com.openclassrooms.realestatemanager.data.permission_checker.PermissionChecker;
 import com.openclassrooms.realestatemanager.data.room.injection.InjectionDao;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
+import com.openclassrooms.realestatemanager.ui.loancalculator.LoanCalculatorViewModel;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEditViewModel;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewmodel.PropertyListViewModel;
@@ -84,6 +85,12 @@ public class AppViewModelFactory implements ViewModelProvider.Factory {
         //search
         if (modelClass.isAssignableFrom(PropertySearchViewModel.class)) {
             return (T) new PropertySearchViewModel(databaseRepository);
+        }
+
+        //loan calculator
+        //search
+        if (modelClass.isAssignableFrom(LoanCalculatorViewModel.class)) {
+            return (T) new LoanCalculatorViewModel();
         }
 
         throw new IllegalArgumentException("Unknown ViewModel class : " + modelClass);
