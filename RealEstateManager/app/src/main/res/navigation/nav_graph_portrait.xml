@@ -49,5 +49,9 @@
         android:name="com.openclassrooms.realestatemanager.ui.propertysearch.view.PropertySearchFragment"
         android:label="@string/search"
         tools:layout="@layout/fragment_property_search"/>
+    <fragment
+        android:id="@+id/nav_loanCalculatorFragment_portrait"
+        android:name="com.openclassrooms.realestatemanager.ui.loancalculator.LoanCalculatorFragment"
+        android:label="@string/loan_calculator" />
 
 </navigation>

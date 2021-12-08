@@ -277,6 +277,8 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             case R.id.menu_item_toolbar_search:
                 mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.SEARCH);
                 return true;
+            case R.id.menu_item_toolbar_loan_calculator:
+                mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.LOAN_CALCULATOR);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -367,6 +369,9 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             case SEARCH:
                 navToSearch();
                 return;
+            case LOAN_CALCULATOR:
+                navToLoanCalculator();
+                return;
         }
     }
 
@@ -420,6 +425,11 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     private void navToSearch() {
         Log.d(Tag.TAG, "navToSearch() called");
         getNavController().navigate(R.id.nav_propertySearchFragment_portrait);
+    }
+
+    private void navToLoanCalculator(){
+        Log.d(Tag.TAG, "navToLoanCalculator() called");
+        getNavController().navigate(R.id.nav_loanCalculatorFragment_portrait);
     }
 
     @Override

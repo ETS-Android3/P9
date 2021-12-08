@@ -130,4 +130,10 @@
     <string name="to">to</string>
     <string name="property_agent">agent</string>
 
+    <string name="loan_amount">loan amount</string>
+    <string name="interest_rate">interest rate</string>
+    <string name="loan_duration">loan duration</string>
+    <string name="monthly_payment">monthly payment</string>
+    <string name="loan_calculator">loan calculator</string>
+
 </resources>

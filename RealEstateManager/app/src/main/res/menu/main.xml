@@ -31,5 +31,10 @@
         android:icon="@drawable/ic_menu_search"
         android:title="@string/search"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_item_toolbar_loan_calculator"
+        android:icon="@drawable/ic_menu_loan_calculator"
+        android:title="@string/loan_calculator"
+        app:showAsAction="ifRoom" />
 
 </menu>

@@ -112,6 +112,22 @@ public enum NavigationState {
         public NavigationState redirectNavigation(boolean isLandscape, NavigationState currentState) {
             return currentState;
         }
+    },
+    LOAN_CALCULATOR {
+        @Override
+        public boolean isEnable(boolean isLandscape, NavigationState currentState, boolean isWifiEnabled) {
+            return true;
+        }
+
+        @Override
+        public boolean isVisible(boolean isLandscape, NavigationState currentState) {
+            return true;
+        }
+
+        @Override
+        public NavigationState redirectNavigation(boolean isLandscape, NavigationState currentState) {
+            return currentState;
+        }
     };
 
     public abstract boolean isEnable(boolean isLandscape, NavigationState currentState, boolean isWifiEnabled);

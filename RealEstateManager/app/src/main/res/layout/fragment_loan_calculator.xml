@@ -1,14 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.loancalculator.LoanCalculatorFragment">
-
+    tools:context=".ui.propertysearch.view.PropertySearchFragment">
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+    <ScrollView
+        android:id="@+id/fragment_property_search_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:padding="@dimen/default_padding">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fragment_property_search_constraintLayout_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@+id/fragment_property_edit_scrollview"
+            app:layout_constraintStart_toStartOf="parent" >
+
+            <TextView
+                android:id="@+id/fragment_loan_text_view_payment"
+                style="@style/TextviewStyle.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/fragment_property_search_constraintLayout_2"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/monthly_payment"
+                />
+
+            <TextView
+                android:id="@+id/fragment_loan_text_view_payment_value"
+                style="@style/TextviewStyle.Value.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/monthly_payment"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_text_view_payment" />
+            <View
+                android:id="@+id/fragment_loan_view_top_amount"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="@dimen/default_extra_large_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_text_view_payment_value" />
+
+            <TextView
+                android:id="@+id/fragment_loan_text_view_amount_caption"
+                style="@style/TextviewStyle.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_view_top_amount"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/loan_amount" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/fragment_loan_range_slider_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_text_view_amount_caption"
+                app:layout_constraintStart_toStartOf="parent"
+                android:contentDescription="@string/select_price_range"
+                app:labelBehavior="floating"
+                android:valueFrom="0.0"
+                android:valueTo="10000000.0"
+                android:stepSize="10000.0"
+                />
+
+            <TextView
+                android:id="@+id/fragment_loan_text_view_amount_value"
+                style="@style/TextviewStyle.Value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/loan_amount"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_range_slider_amount" />
+
+            <View
+                android:id="@+id/fragment_loan_view_top_rate"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/default_large_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_text_view_amount_value" />
+
+            <TextView
+                android:id="@+id/fragment_loan_text_view_rate_caption"
+                style="@style/TextviewStyle.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_view_top_rate"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/interest_rate" />
+
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/fragment_loan_range_slider_rate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_text_view_rate_caption"
+                app:layout_constraintStart_toStartOf="parent"
+                android:contentDescription="@string/select_price_surface"
+                app:labelBehavior="floating"
+                android:valueFrom="0.0"
+                android:valueTo="5.0"
+                android:stepSize="0.01"/>
+
+            <TextView
+                android:id="@+id/fragment_loan_text_view_rate_value"
+                style="@style/TextviewStyle.Value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/interest_rate"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_range_slider_rate" />
+
+            <View
+                android:id="@+id/fragment_loan_view_top_duration"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/default_large_margin"
+                android:layout_marginBottom="@dimen/default_large_margin"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_text_view_rate_value" />
+
+            <TextView
+                android:id="@+id/fragment_loan_text_view_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_view_top_duration"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/loan_duration"
+                style="@style/TextviewStyle.Label"/>
+
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/fragment_loan_range_slider_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_text_view_duration"
+                app:layout_constraintStart_toStartOf="parent"
+                android:valueFrom="1.0"
+                android:valueTo="360.0"
+                android:stepSize="1.0"
+                 android:contentDescription="@string/select_price_rooms"
+                app:labelBehavior="floating"/>
+
+            <TextView
+                android:id="@+id/fragment_loan_text_view_duration_value"
+                style="@style/TextviewStyle.Value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/loan_duration"
+                android:textAlignment="textEnd"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_loan_range_slider_duration" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

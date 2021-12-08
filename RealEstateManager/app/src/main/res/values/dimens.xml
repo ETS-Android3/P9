@@ -11,6 +11,9 @@
 
     <dimen name="default_large_margin">20dip</dimen>
     <dimen name="default_margin">10dip</dimen>
+    <dimen name="default_extra_large_margin">30dip</dimen>
+
+
     <dimen name="default_small_margin">2dip</dimen>
     <dimen name="default_minimun_margin">1dip</dimen>
     <dimen name="defaut_min_width">300dp</dimen>
