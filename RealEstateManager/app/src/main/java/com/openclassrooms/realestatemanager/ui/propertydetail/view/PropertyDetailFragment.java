@@ -133,7 +133,7 @@ public class PropertyDetailFragment extends Fragment {
                 setAddressTitle(propertyDetailViewState.getPropertyDetailData().getAddressTitle());
                 setAddress(propertyDetailViewState.getPropertyDetailData().getAddress());
                 setPointOfInterest(propertyDetailViewState.getPropertyDetailData().getPointsOfInterest());
-                setState(propertyDetailViewState.getPropertyState());
+                setState(propertyDetailViewState.getPropertyStateResId());
                 setEntryDate(propertyDetailViewState.getEntryDate());
                 setSaleDate(propertyDetailViewState.getSaleDate());
                 setAgentName(propertyDetailViewState.getPropertyDetailData().getAgentName());
@@ -184,8 +184,8 @@ public class PropertyDetailFragment extends Fragment {
         binding.propertyDetailPointOfInterestValue.setText(pointOfInterest);
     }
 
-    private void setState(String available){
-        binding.propertyDetailStateValue.setText(available);
+    private void setState(int resId){
+        binding.propertyDetailStateValue.setText(getString(resId));
     }
 
     private void setEntryDate(String entryDate) {

@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.googlemaps.repository.GoogleStaticMapRepository;
 import com.openclassrooms.realestatemanager.data.location.LocationRepository;
 import com.openclassrooms.realestatemanager.data.permission_checker.PermissionChecker;
@@ -85,12 +86,12 @@ public class PropertyDetailViewModel extends ViewModel {
         }
         Log.d(Tag.TAG, "PropertyDetailViewModel.combine() called");
 
-        String propertyState;
+        int propertyStateResId;
 
         if (propertyDetailData.getSaleDate() == null) {
-            propertyState = "For sal";
+            propertyStateResId = R.string.for_sal;
         } else {
-            propertyState = "Sold";
+            propertyStateResId = R.string.sold;
         }
 
         String entryDate = Utils.convertDateToString(propertyDetailData.getEntryDate());
@@ -101,7 +102,7 @@ public class PropertyDetailViewModel extends ViewModel {
 
         // ViewModel emit ViewState
         propertyDetailViewStateMediatorLiveData.setValue(new PropertyDetailViewState(propertyDetailData,
-                photos, propertyState, entryDate, saleDate, googleStaticMapUrl));
+                photos, propertyStateResId, entryDate, saleDate, googleStaticMapUrl));
     }
 }
 

@@ -1,30 +1,20 @@
 <resources>
     <string name="app_name">Real Estate Manager</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="property_list_title">Properties list</string>
     <string name="property_detail_title">Property detail</string>
-    <string name="title_activity_main2">MainActivity2</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-
-    <string name="property_square_feet">SqFt</string>
     <string name="property_price">Sales Price</string>
     <string name="property_price_value">$79,000,000</string>
     <string name="property_surface">Surface</string>
     <string name="property_surface_value">8,000 SqFt</string>
     <string name="property_rooms">Rooms</string>
-    <string name="property_rooms_value">Unknow</string>
+    <string name="property_rooms_value">10</string>
     <string name="property_description">Description</string>
-    <string name="property_description_value">Live your dream lifestyle in this ultimate modern home designed by Foster + Partners. Residence 15 consists of the full private floor featuring 11 ft ceilings throughout the over 8000 sqft residence. The surrounding floor to ceiling windows maximize the light and sweeping 360-degree views</string>
+    <string name="property_description_value">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus nec viverra urna. Nunc eu arcu aliquam, venenatis justo sed, sodales dolor. Sed pulvinar elit non dolor mattis tincidunt. Curabitur porta nec mi id fringilla.</string>
     <string name="property_address_title">Title address</string>
-    <string name="property_address_title_value">NEW YORK</string>
+    <string name="property_address_title_value">New York</string>
 
     <string name="property_address">Address</string>
     <string name="property_address_value">8829 183rd St, Jamaica, NY 11423</string>
@@ -38,6 +28,8 @@
     <string name="property_entry_date_value">1/1/2021</string>
     <string name="property_sale_date">Sale date</string>
     <string name="property_sale_date_value">no sale date</string>
+    <string name="sold">Sold</string>
+    <string name="for_sal">For sal</string>
 
     <string name="property_agent_name">Agent name</string>
     <string name="property_agent_name_value">John Smith</string>
@@ -45,11 +37,6 @@
     <string name="property_agent_email_value">john.smith@realestate.com</string>
     <string name="property_agent_phone">Agent phone</string>
     <string name="property_agent_phone_value">00 1 212 7584941</string>
-
-    <string name="property_category">Sale/rent</string>
-    <string name="property_category_for_sale">For sale</string>
-    <string name="property_category_for_rent">For rent</string>
-    <string name="property_category_value">For sale or for rent</string>
 
     <string name="property_type">Type</string>
     <string name="property_type_value">Apartment</string>
@@ -72,15 +59,6 @@
     <string name="search">Search</string>
     <string name="map">Map</string>
 
-    <string name="title_activity_main">MainActivity</string>
-
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
@@ -91,7 +69,7 @@
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
     <string name="sell">Sell</string>
-    <string name="title_activity_permission">PermissionActivity</string>
+    <string name="title_activity_permission">Permission</string>
 
     <string name="permission_request">Permission Request</string>
     <string name="permission_message">Application needs permission to access device location to provide required services. Please allow the permission.</string>
