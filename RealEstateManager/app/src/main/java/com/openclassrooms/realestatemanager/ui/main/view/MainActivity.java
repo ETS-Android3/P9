@@ -18,6 +18,7 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -329,6 +330,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     public void onValidateEditProperty(long propertyId) {
         // close fragment call back
         Log.d(Tag.TAG, "MainActivity.onValidateEditProperty() called with: propertyId = [" + propertyId + "]");
+        Toast.makeText(this, R.string.property_created, Toast.LENGTH_LONG).show();
         navToDetail(propertyId);
     }
 
