@@ -137,6 +137,7 @@
     <string name="loan_calculator">loan calculator</string>
 
     <string name="property_created">Property created.</string>
+    <string name="no_property_to_display">No property to display</string>
 
 
     <plurals name="month">

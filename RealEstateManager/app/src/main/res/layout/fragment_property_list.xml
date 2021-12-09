@@ -8,6 +8,17 @@
         tools:context=".ui.propertylist.view.PropertyListFragment">
     <!-- TODO: Update blank fragment layout -->
 
+    <TextView
+        android:id="@+id/fragment_property_list_text_view_warning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/no_property_to_display"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_property_list_recyclerview"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
@@ -19,4 +30,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
     </androidx.recyclerview.widget.RecyclerView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

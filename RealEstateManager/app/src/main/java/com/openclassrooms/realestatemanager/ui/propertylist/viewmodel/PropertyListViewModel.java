@@ -140,6 +140,7 @@ public class PropertyListViewModel extends ViewModel {
         }
 
         // ViewModel emit ViewState
-        propertyListViewStateMediatorLiveData.setValue(new PropertyListViewState(rowPropertyViewStates));
+        boolean showWarning = (rowPropertyViewStates.size() == 0);
+        propertyListViewStateMediatorLiveData.setValue(new PropertyListViewState(showWarning, rowPropertyViewStates));
     }
 }

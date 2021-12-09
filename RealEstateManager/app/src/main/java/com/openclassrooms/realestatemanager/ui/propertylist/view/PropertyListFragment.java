@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
@@ -32,6 +33,7 @@ import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFa
  */
 public class PropertyListFragment extends Fragment {
 
+    private TextView textViewWarning;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     PropertyListAdapter propertyListAdapter;
@@ -78,6 +80,7 @@ public class PropertyListFragment extends Fragment {
         Log.d(Tag.TAG, "PropertyListFragment.onCreateView() called with: container = [" + container + "]");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_list, container, false);
+        textViewWarning = view.findViewById(R.id.fragment_property_list_text_view_warning);
         configureRecyclerView(view);
         return view;
     }
@@ -118,11 +121,20 @@ public class PropertyListFragment extends Fragment {
         propertyListViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyListViewState>() {
             @Override
             public void onChanged(PropertyListViewState propertyListViewState) {
+                showWarning(propertyListViewState.isShowWarning());
                 ((PropertyListAdapter)recyclerView.getAdapter()).updateData(propertyListViewState.getRowPropertyViewStates());
             }
         });
         propertyListViewModel.load();
     }
 
-
+    private void showWarning(boolean showWarning) {
+        if (showWarning) {
+            textViewWarning.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            textViewWarning.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
 }
