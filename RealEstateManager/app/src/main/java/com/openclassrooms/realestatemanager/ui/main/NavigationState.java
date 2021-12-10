@@ -52,6 +52,10 @@ public enum NavigationState {
     EDIT {
         @Override
         public boolean isEnable(boolean isLandscape, NavigationState currentState, boolean isWifiEnabled) {
+            if (currentState == NavigationState.ADD)
+                return false;
+            if ((! isLandscape) && (currentState == NavigationState.LIST))
+                return false;
             return true;
         }
 

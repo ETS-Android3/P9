@@ -13,6 +13,7 @@ import com.openclassrooms.realestatemanager.data.permission_checker.PermissionCh
 import com.openclassrooms.realestatemanager.data.room.injection.InjectionDao;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.ui.loancalculator.LoanCalculatorViewModel;
+import com.openclassrooms.realestatemanager.ui.main.viewmodel.MainViewModel;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEditViewModel;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewmodel.PropertyListViewModel;
@@ -61,6 +62,11 @@ public class AppViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+
+        // main
+        if (modelClass.isAssignableFrom(MainViewModel.class)) {
+            return (T) new MainViewModel(databaseRepository);
+        }
 
         // list
         if (modelClass.isAssignableFrom(PropertyListViewModel.class)) {

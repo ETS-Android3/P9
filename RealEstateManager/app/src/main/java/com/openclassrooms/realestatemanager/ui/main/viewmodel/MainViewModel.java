@@ -10,12 +10,16 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.MainApplication;
+import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.ui.main.NavigationState;
 import com.openclassrooms.realestatemanager.ui.main.viewstate.MainViewState;
 import com.openclassrooms.realestatemanager.ui.main.viewstate.MenuItemViewState;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 public class MainViewModel extends ViewModel {
+
+    private final DatabaseRepository databaseRepository;
+
     private NavigationState currentNavigationState = NavigationState.LIST;
 
     private final MutableLiveData<Boolean> isLandscapeMutableLiveData = new MutableLiveData<>();
@@ -33,7 +37,8 @@ public class MainViewModel extends ViewModel {
         return mainViewStateMediatorLiveData;
     }
 
-    public MainViewModel() {
+    public MainViewModel(DatabaseRepository databaseRepository) {
+        this.databaseRepository = databaseRepository;
         navigationStateMutableLiveData.setValue(NavigationState.HOME);
         configureMediator();
     }

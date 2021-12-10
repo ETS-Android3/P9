@@ -37,7 +37,6 @@ import com.openclassrooms.realestatemanager.ui.bundle.PropertyBundle;
 import com.openclassrooms.realestatemanager.ui.main.viewstate.MenuItemViewState;
 import com.openclassrooms.realestatemanager.ui.main.NavigationState;
 import com.openclassrooms.realestatemanager.ui.main.viewmodel.MainViewModel;
-import com.openclassrooms.realestatemanager.ui.main.viewmodelfactory.MainViewModelFactory;
 import com.openclassrooms.realestatemanager.ui.main.viewstate.MainViewState;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
 import com.openclassrooms.realestatemanager.ui.propertyedit.listener.PropertyEditListener;
@@ -203,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     }
 
     private void configureViewModel(){
-        mainViewModel = new ViewModelProvider(this, MainViewModelFactory.getInstance())
+        mainViewModel = new ViewModelProvider(this, AppViewModelFactory.getInstance())
                 .get(MainViewModel.class);
         mainViewModel.getMainViewStateLiveData().observe(this, new Observer<MainViewState>() {
             @Override
