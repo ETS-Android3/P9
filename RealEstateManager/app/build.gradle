@@ -32,23 +32,32 @@ android {
 
         buildConfigField("String", "GOOGLE_PLACES_KEY_P9", "${GOOGLE_API_KEY_P9}")
         resValue "string", "google_places_key_p9", "${GOOGLE_API_KEY_P9}"
-
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     buildFeatures {
         viewBinding true
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 }
 
@@ -98,4 +107,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.4.0-rc01'
+
+    testImplementation 'org.robolectric:robolectric:4.6'
 }

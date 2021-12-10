@@ -12,6 +12,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created by Philippe on 21/02/2018.
@@ -64,19 +65,11 @@ public class Utils {
     public static Boolean isInternetAvailable(Context context){
         //WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
         //return wifi.isWifiEnabled();
-        ConnectivityManager cm =
+        ConnectivityManager connectivityManager =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            NetworkInfo ni = null;
-            if (cm != null) ni = cm.getActiveNetworkInfo();
-            return ni != null && ni.isConnectedOrConnecting();
-        } else {
-            NetworkCapabilities nc = null;
-            if (cm != null) nc = cm.getNetworkCapabilities(cm.getActiveNetwork());
-            return nc != null && nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
-        }
+        NetworkInfo networkInfo = Objects.requireNonNull(connectivityManager).getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
     }
 
     /**
