@@ -28,8 +28,8 @@ public class MainViewModel extends ViewModel {
     }
 
     private final MutableLiveData<NavigationState> navigationStateMutableLiveData = new MutableLiveData<>();
-    public MutableLiveData<NavigationState> getNavigationStateMutableLiveData() {
-        return navigationStateMutableLiveData;
+    public void setNavigationState(NavigationState navigationState) {
+        navigationStateMutableLiveData.setValue(navigationState);
     }
 
     private final MediatorLiveData<MainViewState> mainViewStateMediatorLiveData = new MediatorLiveData<>();

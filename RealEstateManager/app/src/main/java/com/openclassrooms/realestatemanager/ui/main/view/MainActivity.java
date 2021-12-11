@@ -147,18 +147,6 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     public void onBackPressed() {
         Log.d(Tag.TAG, "MainActivity.onBackPressed() called");
 
-/*        NavController navController = getNavController();
-        NavBackStackEntry previousBackStackEntry = navController.getPreviousBackStackEntry();
-        NavDestination previousNavDestination = previousBackStackEntry.getDestination();
-        int previousId = previousBackStackEntry.getDestination().getId();
-
-        //navController.popBackStack(previousId, true);
-
-        NavBackStackEntry navBackStackEntry = getNavController().getCurrentBackStackEntry();
-        NavDestination navDestination = navBackStackEntry.getDestination();
-
-        String name = navDestination.getLabel().toString();*/
-
         findAndCallOnBackPressedInterface();
         super.onBackPressed();
     }
@@ -260,25 +248,25 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_item_toolbar_home:
-                mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.HOME);
+                mainViewModel.setNavigationState(NavigationState.HOME);
                 return true;
             case R.id.menu_item_toolbar_detail:
-                mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.DETAIL);
+                mainViewModel.setNavigationState(NavigationState.DETAIL);
                 return true;
             case R.id.menu_item_toolbar_edit:
-                mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.EDIT);
+                mainViewModel.setNavigationState(NavigationState.EDIT);
                 return true;
             case R.id.menu_item_toolbar_add:
-                mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.ADD);
+                mainViewModel.setNavigationState(NavigationState.ADD);
                 return true;
             case R.id.menu_item_toolbar_map:
-                mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.MAP);
+                mainViewModel.setNavigationState(NavigationState.MAP);
                 return true;
             case R.id.menu_item_toolbar_search:
-                mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.SEARCH);
+                mainViewModel.setNavigationState(NavigationState.SEARCH);
                 return true;
             case R.id.menu_item_toolbar_loan_calculator:
-                mainViewModel.getNavigationStateMutableLiveData().setValue(NavigationState.LOAN_CALCULATOR);
+                mainViewModel.setNavigationState(NavigationState.LOAN_CALCULATOR);
         }
         return super.onOptionsItemSelected(item);
     }
