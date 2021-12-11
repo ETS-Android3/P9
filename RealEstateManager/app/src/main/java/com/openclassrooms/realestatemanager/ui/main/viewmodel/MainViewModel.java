@@ -7,10 +7,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.MainApplication;
+import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
+import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.main.NavigationState;
 import com.openclassrooms.realestatemanager.ui.main.viewstate.MainViewState;
 import com.openclassrooms.realestatemanager.ui.main.viewstate.MenuItemViewState;
@@ -28,8 +31,53 @@ public class MainViewModel extends ViewModel {
     }
 
     private final MutableLiveData<NavigationState> navigationStateMutableLiveData = new MutableLiveData<>();
-    public void setNavigationState(NavigationState navigationState) {
+    private void setNavigationState(NavigationState navigationState) {
         navigationStateMutableLiveData.setValue(navigationState);
+    }
+
+    private final MutableLiveData<Long> propertyIdMutableLiveData = new MutableLiveData<>();
+    private void setPropertyId(long propertyId){
+        propertyIdMutableLiveData.setValue(propertyId);
+    }
+
+    private final LiveData<Long> getValidPropertyId(){
+        return Transformations.switchMap(propertyIdMutableLiveData,
+                propertyId -> {return databaseRepository.getPropertyRepository().getFirstOrValidIdLiveData(propertyId);});
+    }
+
+    public void navigateToHome(){
+        setNavigationState(NavigationState.HOME);
+    }
+
+    public void navigateToDetail(){
+        setPropertyId(PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
+        setNavigationState(NavigationState.DETAIL);
+    }
+
+    public void navigateToDetail(long propertyId){
+        setPropertyId(propertyId);
+        setNavigationState(NavigationState.DETAIL);
+    }
+
+    public void navigateToEdit(long propertyId){
+        setPropertyId(propertyId);
+        setNavigationState(NavigationState.EDIT);
+    }
+
+    public void navigateToAdd(){
+        setNavigationState(NavigationState.ADD);
+    }
+
+    public void navigateToMap(){
+        setNavigationState(NavigationState.MAP);
+    }
+
+    public void navigateToSearch(){
+        setNavigationState(NavigationState.SEARCH);
+    }
+
+    public void navigateToLoanCalculator(){
+        setNavigationState(NavigationState.LOAN_CALCULATOR);
     }
 
     private final MediatorLiveData<MainViewState> mainViewStateMediatorLiveData = new MediatorLiveData<>();
@@ -47,14 +95,21 @@ public class MainViewModel extends ViewModel {
         mainViewStateMediatorLiveData.addSource(isLandscapeMutableLiveData, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                combine(aBoolean, navigationStateMutableLiveData.getValue());
+                combine(aBoolean, navigationStateMutableLiveData.getValue(), getValidPropertyId().getValue());
             }
         });
 
         mainViewStateMediatorLiveData.addSource(navigationStateMutableLiveData, new Observer<NavigationState>() {
             @Override
             public void onChanged(NavigationState navigationState) {
-                combine(isLandscapeMutableLiveData.getValue(), navigationState);
+                combine(isLandscapeMutableLiveData.getValue(), navigationState, getValidPropertyId().getValue());
+            }
+        });
+
+        mainViewStateMediatorLiveData.addSource(getValidPropertyId(), new Observer<Long>() {
+            @Override
+            public void onChanged(Long aLong) {
+                combine(isLandscapeMutableLiveData.getValue(), navigationStateMutableLiveData.getValue(), aLong);
             }
         });
     }
@@ -70,12 +125,21 @@ public class MainViewModel extends ViewModel {
         }
     }
 
-    private void combine(Boolean isLandscape, NavigationState askedDestination){
+    private void combine(Boolean isLandscape, NavigationState askedDestination, Long propertyId){
 
         if ((isLandscape == null) || (askedDestination == null))
             return;
 
         NavigationState redirectNavigation = checkAndRedirectDestination(isLandscape, askedDestination);
+
+        if ((redirectNavigation == NavigationState.DETAIL) && (propertyId == null)){
+            if (askedDestination != NavigationState.HOME)
+                return;
+        }
+
+        if ((redirectNavigation == NavigationState.EDIT) && (propertyId == null))
+            return;
+
 
         boolean isWifiEnabled = Utils.isInternetAvailable(MainApplication.getApplication());
 
@@ -92,8 +156,11 @@ public class MainViewModel extends ViewModel {
         MenuItemViewState search = new MenuItemViewState(NavigationState.SEARCH.isEnable(isLandscape, redirectNavigation, isWifiEnabled),
                 NavigationState.SEARCH.isVisible(isLandscape, redirectNavigation));
 
+        long id = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
+        if (propertyId != null) id = propertyId;
+
         // boolean mustNavigate = navigationChanged(navigationState, newNavigation);
-        MainViewState mainViewState = new MainViewState(redirectNavigation, home, detail, edit, add, map, search);
+        MainViewState mainViewState = new MainViewState(redirectNavigation, id, home, detail, edit, add, map, search);
 
         mainViewStateMediatorLiveData.setValue(mainViewState);
     }

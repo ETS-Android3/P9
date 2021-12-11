@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
     private void setMainViewState(MainViewState mainViewState) {
         Log.d(Tag.TAG, "MainActivity.setMainViewState() called with: mainViewState = [" + mainViewState + "]");
-        navigateTo(mainViewState.getNavigationState());
+        navigateTo(mainViewState.getNavigationState(), mainViewState.getPropertyId());
         setMenuItemHome(mainViewState.getHome());
         setMenuItemDetail(mainViewState.getDetail());
         setMenuItemEdit(mainViewState.getEdit());
@@ -248,25 +248,30 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_item_toolbar_home:
-                mainViewModel.setNavigationState(NavigationState.HOME);
+                mainViewModel.navigateToHome();
                 return true;
             case R.id.menu_item_toolbar_detail:
-                mainViewModel.setNavigationState(NavigationState.DETAIL);
+                mainViewModel.navigateToDetail();
                 return true;
             case R.id.menu_item_toolbar_edit:
-                mainViewModel.setNavigationState(NavigationState.EDIT);
+                // retrieve property id from view model
+                PropertyDetailViewModel propertyDetailViewModel = new ViewModelProvider(
+                        this, AppViewModelFactory.getInstance())
+                        .get(PropertyDetailViewModel.class);
+                long id = propertyDetailViewModel.getCurrentPropertyId();
+                mainViewModel.navigateToEdit(id);
                 return true;
             case R.id.menu_item_toolbar_add:
-                mainViewModel.setNavigationState(NavigationState.ADD);
+                mainViewModel.navigateToAdd();
                 return true;
             case R.id.menu_item_toolbar_map:
-                mainViewModel.setNavigationState(NavigationState.MAP);
+                mainViewModel.navigateToMap();
                 return true;
             case R.id.menu_item_toolbar_search:
-                mainViewModel.setNavigationState(NavigationState.SEARCH);
+                mainViewModel.navigateToSearch();
                 return true;
             case R.id.menu_item_toolbar_loan_calculator:
-                mainViewModel.setNavigationState(NavigationState.LOAN_CALCULATOR);
+                mainViewModel.navigateToLoanCalculator();;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -290,13 +295,13 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     @Override
     public void onPropertySelectedClicked(long propertyId) {
         Log.d(Tag.TAG, "MainActivity.onPropertySelectedClicked() called with: propertyId = [" + propertyId + "] isLandscape = [" + LandscapeHelper.isLandscape() + "]");
-        navToDetail(propertyId);
+        mainViewModel.navigateToDetail(propertyId);
     }
 
     @Override
     public void OnMapClicked(long propertyId) {
         Log.d(Tag.TAG, "MainActivity.OnMapClicked() called with: propertyId = [" + propertyId + "]");
-        navToDetail(propertyId);
+        mainViewModel.navigateToDetail(propertyId);
     }
 
     /**
@@ -306,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     @Override
     public void onCancelEditProperty(long propertyId) {
         Log.d(Tag.TAG, "MainActivity.onCancelEditProperty() called with: propertyId = [" + propertyId + "]");
-        navToDetail(propertyId);
+        mainViewModel.navigateToDetail(propertyId);
     }
 
     /**
@@ -318,13 +323,13 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         // close fragment call back
         Log.d(Tag.TAG, "MainActivity.onValidateEditProperty() called with: propertyId = [" + propertyId + "]");
         Toast.makeText(this, R.string.property_created, Toast.LENGTH_LONG).show();
-        navToDetail(propertyId);
+        mainViewModel.navigateToDetail(propertyId);
     }
 
     @Override
     public void onApplySearch() {
         Log.d(Tag.TAG, "onApplySearch() called");
-        navToHome();
+        mainViewModel.navigateToHome();
     }
 
     private NavController getNavController() {
@@ -334,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     // to remove backStack
     // use navController.popBackStack(R.id.fragment_apps, true);
     // or setPopUpTo(int, boolean) with the id of the NavController's graph and set inclusive to true.
-    public void navigateTo(NavigationState destination){
+    public void navigateTo(NavigationState destination, long propertyId){
         Log.d(Tag.TAG, "navigateTo() called with: destination = [" + destination + "]");
         switch (destination){
             case HOME:
@@ -344,13 +349,13 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
                 navToList();
                 return;
             case DETAIL:
-                navToDetail();
+                navToDetail(propertyId);
                 return;
             case ADD:
                 navToAdd();
                 return;
             case EDIT:
-                navToEdit();
+                navToEdit(propertyId);
                 return;
             case MAP:
                 navToMap();
@@ -367,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     private void navToHome(){
         Log.d(Tag.TAG, "navToHome() called");
         if (LandscapeHelper.isLandscape()) {
-            navToDetail();
+            mainViewModel.navigateToDetail();
         } else {
             navToList();
         }
@@ -376,11 +381,6 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     private void navToList(){
         Log.d(Tag.TAG, "navToList() called");
         getNavController().navigate(R.id.nav_propertyListFragment_portrait);
-    }
-
-    private void navToDetail(){
-        Log.d(Tag.TAG, "navToDetail() called");
-        navToDetail(PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
     }
 
     private void navToDetail(long propertyId){
@@ -394,16 +394,10 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
                 PropertyBundle.createEditBundle(PropertyConst.PROPERTY_ID_NOT_INITIALIZED));
     }
 
-    private void navToEdit(){
-        Log.d(Tag.TAG, "navToEdit() called");
-
-        // retrieve property id from view model
-        PropertyDetailViewModel propertyDetailViewModel = new ViewModelProvider(
-                this, AppViewModelFactory.getInstance())
-                .get(PropertyDetailViewModel.class);
-        long id = propertyDetailViewModel.getCurrentPropertyId();
+    private void navToEdit(long propertyId){
+        Log.d(Tag.TAG, "navToEdit() called with: propertyId = [" + propertyId + "]");
         getNavController().navigate(R.id.nav_propertyEditFragment_portrait,
-                PropertyBundle.createEditBundle(id));
+                PropertyBundle.createEditBundle(propertyId));
     }
 
     private void navToMap(){
