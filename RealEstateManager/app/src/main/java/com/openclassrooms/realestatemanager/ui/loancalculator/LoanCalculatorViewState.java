@@ -1,13 +1,13 @@
 package com.openclassrooms.realestatemanager.ui.loancalculator;
 
 public class LoanCalculatorViewState {
-    private String strMonthlyPayment;
-    private String strAmount;
-    private String strRate;
-    private String strDuration;
-    private float amount;
-    private float rate;
-    private float duration;
+    private final String strMonthlyPayment;
+    private final String strAmount;
+    private final String strRate;
+    private final String strDuration;
+    private final float amount;
+    private final float rate;
+    private final float duration;
 
     public LoanCalculatorViewState(String strMonthlyPayment, String strAmount, String strRate, String strDuration, float amount, float rate, float duration) {
         this.strMonthlyPayment = strMonthlyPayment;
