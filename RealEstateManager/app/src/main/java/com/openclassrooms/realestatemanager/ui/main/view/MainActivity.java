@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.ui.main.view;
 
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import androidx.annotation.Nullable;
@@ -20,10 +21,8 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -54,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
                                                                OnMapListener,
         PropertySearchListener {
 
-    private AppBarConfiguration mAppBarConfiguration;
-    private ActivityMainBinding binding;
     MenuItem menuItemHome;
     MenuItem menuItemDetail;
     MenuItem menuItemEdit;
@@ -69,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(Tag.TAG, "MainActivity.onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Configure tool bar to display title
@@ -78,24 +76,15 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         setSupportActionBar(toolbar);
         // Configure tool bar to display title
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+        assert navHostFragment != null;
         NavController navController = navHostFragment.getNavController();
-        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_propertyListFragment_portrait)
+        AppBarConfiguration mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_propertyListFragment_portrait)
                 .build();
         NavigationUI.setupWithNavController(toolbar, navController, mAppBarConfiguration);
 
-        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
-            @Override
-            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
-                Log.d(Tag.TAG, "MainActivity.onDestinationChanged() called with: controller = [" + controller + "], destination = [" + destination + "], arguments = [" + arguments + "]");
-
-                if (destination.getParent().getStartDestination() == R.id.nav_propertyListFragment_portrait)
-                    Log.d(Tag.TAG, "MainActivity.onDestinationChanged() 1");
-
-                if (destination.getId() == R.id.nav_propertyListFragment_portrait)
-                    Log.d(Tag.TAG, "MainActivity.onDestinationChanged() 2");
-
-                findAndCallOnBackPressedInterface();
-            }
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            Log.d(Tag.TAG, "MainActivity.onDestinationChanged() called with: controller = [" + controller + "], destination = [" + destination + "], arguments = [" + arguments + "]");
+            findAndCallOnBackPressedInterface();
         });
 
         logScreen();
@@ -136,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             List<Fragment> fragmentList = navHostFragment.getChildFragmentManager().getFragments();
             if (fragmentList.size() > 0) {
                 Fragment fragment = fragmentList.get(0);
-                if ((fragment != null) && (fragment instanceof OnBackPressedInterface)){
+                if (fragment instanceof OnBackPressedInterface){
                     ((OnBackPressedInterface) fragment).onBackPressed();
                 }
             }
@@ -192,12 +181,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
     private void configureViewModel(){
         mainViewModel = new ViewModelProvider(this, AppViewModelFactory.getInstance())
                 .get(MainViewModel.class);
-        mainViewModel.getMainViewStateLiveData().observe(this, new Observer<MainViewState>() {
-            @Override
-            public void onChanged(MainViewState mainViewState) {
-                setMainViewState(mainViewState);
-            }
-        });
+        mainViewModel.getMainViewStateLiveData().observe(this, this::setMainViewState);
 
         // When device rotate activity was recreated.
         // inform the ViewModel orientation changed.
@@ -244,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
         setMenuItemState(menuItemSearch, menuItemViewState);
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -271,24 +256,16 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
                 mainViewModel.navigateToSearch();
                 return true;
             case R.id.menu_item_toolbar_loan_calculator:
-                mainViewModel.navigateToLoanCalculator();;
+                mainViewModel.navigateToLoanCalculator();
         }
         return super.onOptionsItemSelected(item);
     }
 
     /**
      * burger menu can open drawer
-     * @return
      */
     @Override
     public boolean onSupportNavigateUp() {
-/*
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        // back button in tool bar call onBackPressed;
-        onBackPressed();
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
-*/
         return false;
     }
 
@@ -306,7 +283,6 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
     /**
      * Cancel edit property
-     * @param propertyId
      */
     @Override
     public void onCancelEditProperty(long propertyId) {
@@ -316,7 +292,6 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
 
     /**
      * Validate edit property
-     * @param propertyId
      */
     @Override
     public void onValidateEditProperty(long propertyId) {
@@ -366,6 +341,7 @@ public class MainActivity extends AppCompatActivity implements OnPropertySelecte
             case LOAN_CALCULATOR:
                 navToLoanCalculator();
                 return;
+            default:
         }
     }
 
