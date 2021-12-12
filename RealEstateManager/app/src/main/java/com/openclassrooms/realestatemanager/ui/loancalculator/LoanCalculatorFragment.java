@@ -2,9 +2,7 @@ package com.openclassrooms.realestatemanager.ui.loancalculator;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -14,11 +12,8 @@ import android.widget.TextView;
 
 import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.Slider;
-import com.openclassrooms.realestatemanager.MainApplication;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
 import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
-import com.openclassrooms.realestatemanager.utils.Utils;
 
 public class LoanCalculatorFragment extends Fragment {
 
@@ -69,73 +64,43 @@ public class LoanCalculatorFragment extends Fragment {
     }
 
     private void configureSliderAmount(){
-        LabelFormatter formatter = new LabelFormatter() {
-            @NonNull
-            @Override
-            public String getFormattedValue(float value) {
-                return LoanCalculatorUtils.formatAmount(value);
-            }
-        };
+        LabelFormatter formatter = LoanCalculatorUtils::formatAmount;
 
         sliderAmount.setLabelFormatter(formatter);
-        sliderAmount.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                if (viewModel != null) viewModel.setAmount(value);
-            }
+        sliderAmount.addOnChangeListener((slider, value, fromUser) -> {
+            if (viewModel != null) viewModel.setAmount(value);
         });
     }
 
     private void configureSliderRate(){
-        LabelFormatter formatter = new LabelFormatter() {
-            @NonNull
-            @Override
-            public String getFormattedValue(float value) {
-                return LoanCalculatorUtils.formatRate(value);
-            }
-        };
+        LabelFormatter formatter = LoanCalculatorUtils::formatRate;
 
         sliderRate.setLabelFormatter(formatter);
-        sliderRate.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                if (viewModel != null) viewModel.setRate(value);
-            }
+        sliderRate.addOnChangeListener((slider, value, fromUser) -> {
+            if (viewModel != null) viewModel.setRate(value);
         });
     }
 
     private void configureSliderDuration(){
-        LabelFormatter formatter = new LabelFormatter() {
-            @NonNull
-            @Override
-            public String getFormattedValue(float value) {
-                return LoanCalculatorUtils.formatDuration(value);
-            }
-        };
+        LabelFormatter formatter = LoanCalculatorUtils::formatDuration;
 
         sliderDuration.setLabelFormatter(formatter);
-        sliderDuration.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                if (viewModel != null) viewModel.setDuration(value);
-            }
+        sliderDuration.addOnChangeListener((slider, value, fromUser) -> {
+            if (viewModel != null) viewModel.setDuration(value);
         });
     }
 
     private void configureViewModel() {
         viewModel = new ViewModelProvider(requireActivity(), AppViewModelFactory.getInstance())
                 .get(LoanCalculatorViewModel.class);
-        viewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), new Observer<LoanCalculatorViewState>() {
-            @Override
-            public void onChanged(LoanCalculatorViewState loanCalculatorViewState) {
-                setStrMonthlyPayment(loanCalculatorViewState.getStrMonthlyPayment());
-                setStrAmount(loanCalculatorViewState.getStrAmount());
-                setStrRate(loanCalculatorViewState.getStrRate());
-                setStrDuration(loanCalculatorViewState.getStrDuration());
-                setAmount(loanCalculatorViewState.getAmount());
-                setRate(loanCalculatorViewState.getRate());
-                setDuration(loanCalculatorViewState.getDuration());
-            }
+        viewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), loanCalculatorViewState -> {
+            setStrMonthlyPayment(loanCalculatorViewState.getStrMonthlyPayment());
+            setStrAmount(loanCalculatorViewState.getStrAmount());
+            setStrRate(loanCalculatorViewState.getStrRate());
+            setStrDuration(loanCalculatorViewState.getStrDuration());
+            setAmount(loanCalculatorViewState.getAmount());
+            setRate(loanCalculatorViewState.getRate());
+            setDuration(loanCalculatorViewState.getDuration());
         });
     }
 
