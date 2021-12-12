@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.data.provider;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -23,10 +22,6 @@ import com.openclassrooms.realestatemanager.data.room.repository.PropertyTypeRep
 import java.util.List;
 
 public class DataContentProvider extends ContentProvider {
-
-/*    public static final String AUTHORITY = "com.openclassrooms.realestatemanager.provider.data";
-    public static final String TABLE_NAME = Agent.class.getSimpleName();
-    public static final Uri URI_AGENT = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);*/
 
     @Override
     public boolean onCreate() {
@@ -101,7 +96,7 @@ public class DataContentProvider extends ContentProvider {
                 // get by id
                 id = ContentUris.parseId(uri);
                 withId = true;
-            } catch (IllegalArgumentException exception) {
+            } catch (IllegalArgumentException ignored) {
             }
 
             List<String> pathSegments = uri.getPathSegments();
