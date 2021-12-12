@@ -3,14 +3,14 @@ package com.openclassrooms.realestatemanager.ui.main.viewstate;
 import com.openclassrooms.realestatemanager.ui.main.NavigationState;
 
 public class MainViewState {
-    private NavigationState navigationState;
-    private long propertyId;
-    private MenuItemViewState home;
-    private MenuItemViewState detail;
-    private MenuItemViewState edit;
-    private MenuItemViewState add;
-    private MenuItemViewState map;
-    private MenuItemViewState search;
+    private final NavigationState navigationState;
+    private final long propertyId;
+    private final MenuItemViewState home;
+    private final MenuItemViewState detail;
+    private final MenuItemViewState edit;
+    private final MenuItemViewState add;
+    private final MenuItemViewState map;
+    private final MenuItemViewState search;
 
     public MainViewState(NavigationState navigationState, long propertyId, MenuItemViewState home, MenuItemViewState detail, MenuItemViewState edit, MenuItemViewState add, MenuItemViewState map, MenuItemViewState search) {
         this.navigationState = navigationState;
