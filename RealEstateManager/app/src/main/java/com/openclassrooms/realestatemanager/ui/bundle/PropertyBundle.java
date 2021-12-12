@@ -27,8 +27,4 @@ public class PropertyBundle {
     public static Bundle createEditBundle(long propertyId){
         return createBundle(propertyId, true);
     }
-
-    public static Bundle createDetailBundle(long propertyId){
-        return createBundle(propertyId, false);
-    }
 }

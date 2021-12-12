@@ -17,6 +17,4 @@ public class PropertyConst {
     public static final int AGENT_ID_NOT_INITIALIZED = 0;
     public static final int PROPERTY_TYPE_ID_NOT_INITIALIZED = 0;
     public static final int PHOTO_ID_NOT_INITIALIZED = 0;
-
-    public static final int IMAGE_CHOOSER = 1;
 }
