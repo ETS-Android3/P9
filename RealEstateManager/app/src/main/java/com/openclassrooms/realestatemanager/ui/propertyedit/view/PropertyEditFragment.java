@@ -108,10 +108,9 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     }
 
     @Override
-    public boolean onBackPressed() {
+    public void onBackPressed() {
         Log.d(Tag.TAG, "PropertyEditFragment.onBackPressed() called. to clearCache.");
         propertyEditViewModel.clearCache();
-        return true;
     }
 
     @Override
