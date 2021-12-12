@@ -1,17 +1,12 @@
 package com.openclassrooms.realestatemanager.ui.main.viewmodel;
 
-import android.content.res.Configuration;
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.MainApplication;
-import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.main.NavigationState;
@@ -22,8 +17,6 @@ import com.openclassrooms.realestatemanager.utils.Utils;
 public class MainViewModel extends ViewModel {
 
     private final DatabaseRepository databaseRepository;
-
-    private NavigationState currentNavigationState = NavigationState.LIST;
 
     private final MutableLiveData<Boolean> isLandscapeMutableLiveData = new MutableLiveData<>();
     public MutableLiveData<Boolean> getIsLandscapeMutableLiveData() {
@@ -40,9 +33,9 @@ public class MainViewModel extends ViewModel {
         propertyIdMutableLiveData.setValue(propertyId);
     }
 
-    private final LiveData<Long> getValidPropertyId(){
+    private LiveData<Long> getValidPropertyId(){
         return Transformations.switchMap(propertyIdMutableLiveData,
-                propertyId -> {return databaseRepository.getPropertyRepository().getFirstOrValidIdLiveData(propertyId);});
+                propertyId -> databaseRepository.getPropertyRepository().getFirstOrValidIdLiveData(propertyId));
     }
 
     public void navigateToHome(){
@@ -92,26 +85,11 @@ public class MainViewModel extends ViewModel {
     }
 
     private void configureMediator(){
-        mainViewStateMediatorLiveData.addSource(isLandscapeMutableLiveData, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                combine(aBoolean, navigationStateMutableLiveData.getValue(), getValidPropertyId().getValue());
-            }
-        });
+        mainViewStateMediatorLiveData.addSource(isLandscapeMutableLiveData, aBoolean -> combine(aBoolean, navigationStateMutableLiveData.getValue(), getValidPropertyId().getValue()));
 
-        mainViewStateMediatorLiveData.addSource(navigationStateMutableLiveData, new Observer<NavigationState>() {
-            @Override
-            public void onChanged(NavigationState navigationState) {
-                combine(isLandscapeMutableLiveData.getValue(), navigationState, getValidPropertyId().getValue());
-            }
-        });
+        mainViewStateMediatorLiveData.addSource(navigationStateMutableLiveData, navigationState -> combine(isLandscapeMutableLiveData.getValue(), navigationState, getValidPropertyId().getValue()));
 
-        mainViewStateMediatorLiveData.addSource(getValidPropertyId(), new Observer<Long>() {
-            @Override
-            public void onChanged(Long aLong) {
-                combine(isLandscapeMutableLiveData.getValue(), navigationStateMutableLiveData.getValue(), aLong);
-            }
-        });
+        mainViewStateMediatorLiveData.addSource(getValidPropertyId(), aLong -> combine(isLandscapeMutableLiveData.getValue(), navigationStateMutableLiveData.getValue(), aLong));
     }
 
     private NavigationState checkAndRedirectDestination(boolean isLandScape, NavigationState askedDestination) {
