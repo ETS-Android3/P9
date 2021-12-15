@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.photoedit;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,28 +16,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.textfield.TextInputLayout;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
-import com.openclassrooms.realestatemanager.ui.propertyedit.view.PropertyEditFragment;
+
+import java.util.Objects;
 
 public class PhotoEditDialogFragment extends DialogFragment {
 
-    private String title;
     private long id;
     private int order;
     private String uri;
-    private String caption;
     private long propertyId;
 
     private TextView textViewTitle;
     private ImageView imageViewPhoto;
     private TextInputLayout textInputLayoutCaption;
     private Button buttonOk;
-    private Button buttonCancel;
 
     private OnPhotoEditListener photoEditListener;
 
@@ -65,6 +60,7 @@ public class PhotoEditDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        String title;
         if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PHOTO_TITLE))){
             title = getArguments().getString(PropertyConst.ARG_PHOTO_TITLE, "");
         } else {
@@ -89,6 +85,7 @@ public class PhotoEditDialogFragment extends DialogFragment {
             uri = "";
         }
 
+        String caption;
         if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PHOTO_CAPTION))){
             caption = getArguments().getString(PropertyConst.ARG_PHOTO_CAPTION, "");
         } else {
@@ -116,36 +113,25 @@ public class PhotoEditDialogFragment extends DialogFragment {
         imageViewPhoto = view.findViewById(R.id.photo_edit_dialogue_fragment_imageViewPhoto);
         textInputLayoutCaption = view.findViewById(R.id.photo_edit_dialogue_fragment_text_input_layout_caption);
         buttonOk = view.findViewById(R.id.photo_edit_dialogue_fragment_button_ok);
-        buttonCancel = view.findViewById(R.id.photo_edit_dialogue_fragment_button_cancel);
+        Button buttonCancel = view.findViewById(R.id.photo_edit_dialogue_fragment_button_cancel);
 
         if (photoEditListener == null) {
             buttonOk.setEnabled(false);
             textInputLayoutCaption.setEnabled(false);
-            buttonCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                }
-            });
+            buttonCancel.setOnClickListener(v -> dismiss());
         } else {
-            buttonOk.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(Tag.TAG, "PhotoEditDialogFragment.onClick() called with: v = [" + v + "]");
-                    dismiss();
-                    photoEditListener.onPhotoEditOk(id, order, uri, getCaption(), propertyId);
-                }
+            buttonOk.setOnClickListener(v -> {
+                Log.d(Tag.TAG, "PhotoEditDialogFragment.onClick() called with: v = [" + v + "]");
+                dismiss();
+                photoEditListener.onPhotoEditOk(id, order, uri, getCaption(), propertyId);
             });
-            buttonCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                    photoEditListener.onPhotoEditCancel();
-                }
+            buttonCancel.setOnClickListener(v -> {
+                dismiss();
+                photoEditListener.onPhotoEditCancel();
             });
         }
 
-        textInputLayoutCaption.getEditText().addTextChangedListener(new TextWatcher() {
+        Objects.requireNonNull(textInputLayoutCaption.getEditText()).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -194,10 +180,10 @@ public class PhotoEditDialogFragment extends DialogFragment {
     }
 
     private void setCaption(String caption) {
-        textInputLayoutCaption.getEditText().setText(caption);
+        Objects.requireNonNull(textInputLayoutCaption.getEditText()).setText(caption);
     }
 
     private String getCaption(){
-        return textInputLayoutCaption.getEditText().getText().toString().trim();
+        return Objects.requireNonNull(textInputLayoutCaption.getEditText()).getText().toString().trim();
     }
 }
