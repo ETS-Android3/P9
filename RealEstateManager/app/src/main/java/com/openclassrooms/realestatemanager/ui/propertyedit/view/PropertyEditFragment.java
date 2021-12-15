@@ -230,7 +230,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        photoListAdapter = new PhotoListAdapter(getContext(), new OnRowPhotoListener() {
+        photoListAdapter = new PhotoListAdapter(new OnRowPhotoListener() {
             @Override
             public void onClickRowPhoto(Photo photo) {
                 Log.d(Tag.TAG, "onClickRowPhoto() called with: photo = [" + photo + "]");

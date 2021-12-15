@@ -1,20 +1,17 @@
 package com.openclassrooms.realestatemanager.ui.photoList;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.tag.Tag;
@@ -24,12 +21,10 @@ import java.util.List;
 
 public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListViewHolder> {
 
-    private Context context;
-    private List<Photo> data;
-    private OnRowPhotoListener onRowPhotoListener;
+    private final List<Photo> data;
+    private final OnRowPhotoListener onRowPhotoListener;
 
-    public PhotoListAdapter(Context context, OnRowPhotoListener onRowPhotoListener) {
-        this.context = context;
+    public PhotoListAdapter(OnRowPhotoListener onRowPhotoListener) {
         this.onRowPhotoListener = onRowPhotoListener;
         this.data = new ArrayList<>();
     }
@@ -41,25 +36,19 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListViewHolder> 
         PhotoListViewHolder photoListViewHolder = new PhotoListViewHolder(view);
 
         if (onRowPhotoListener != null) {
-            photoListViewHolder.image.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    int position = photoListViewHolder.getAbsoluteAdapterPosition();
-                    Photo photo = data.get(position);
-                    onRowPhotoListener.onClickRowPhoto(photo);
-                }
+            photoListViewHolder.image.setOnClickListener(v -> {
+                int position = photoListViewHolder.getAbsoluteAdapterPosition();
+                Photo photo = data.get(position);
+                onRowPhotoListener.onClickRowPhoto(photo);
             });
-            photoListViewHolder.image.setOnLongClickListener(new View.OnLongClickListener(){
-                @Override
-                public boolean onLongClick(View v) {
-                    Log.d(Tag.TAG, "PhotoListViewHolder.onLongClick() called with: v = [" + v + "]");
-                    int position = photoListViewHolder.getAbsoluteAdapterPosition();
-                    Photo photo = data.get(position);
-                    onRowPhotoListener.onLongClickRowPhoto(v, photo);
-                    // return true do not display menu
-                    // return false will display menu with onCreateContextMenu
-                    return false;
-                }
+            photoListViewHolder.image.setOnLongClickListener(v -> {
+                Log.d(Tag.TAG, "PhotoListViewHolder.onLongClick() called with: v = [" + v + "]");
+                int position = photoListViewHolder.getAbsoluteAdapterPosition();
+                Photo photo = data.get(position);
+                onRowPhotoListener.onLongClickRowPhoto(v, photo);
+                // return true do not display menu
+                // return false will display menu with onCreateContextMenu
+                return false;
             });
         }
 
@@ -99,6 +88,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListViewHolder> 
         return data.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void updateData(List<Photo> photos){
         data.clear();
         data.addAll(photos);

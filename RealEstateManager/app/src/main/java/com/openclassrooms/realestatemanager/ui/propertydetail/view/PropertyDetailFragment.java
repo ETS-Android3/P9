@@ -110,7 +110,7 @@ public class PropertyDetailFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
         binding.propertyDetailRecyclerView.setLayoutManager(layoutManager);
 
-        PhotoListAdapter photoListAdapter = new PhotoListAdapter(getContext(), null);
+        PhotoListAdapter photoListAdapter = new PhotoListAdapter(null);
         binding.propertyDetailRecyclerView.setAdapter(photoListAdapter);
     }
 
