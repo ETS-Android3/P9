@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.photoList;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,31 +54,49 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListViewHolder> 
         return photoListViewHolder;
     }
 
+    private void setCaptionRequired(@NonNull PhotoListViewHolder holder){
+        holder.textView.setText(R.string.caption_required);
+        holder.textView.setTextColor(Color.RED);
+    }
+
+    private void setDefaultPicture(@NonNull PhotoListViewHolder holder){
+        // Clear picture
+        Glide.with(holder.image.getContext())
+                .load("")
+                .placeholder(R.drawable.ic_house)
+                .into(holder.image);
+    }
+
+    private void setPicture(@NonNull PhotoListViewHolder holder, String url) {
+        if ((url == null) || (url.trim().isEmpty())){
+            setDefaultPicture(holder);
+        } else {
+            //load picture
+            Glide.with(holder.image.getContext())
+                    .load(url)
+                    .centerCrop()
+                    .into(holder.image);
+        }
+    }
+
+    private void setPhotoLegend(@NonNull PhotoListViewHolder holder, String caption){
+        if ((caption == null) || (caption.trim().isEmpty())){
+            setCaptionRequired(holder);
+        } else {
+            holder.textView.setText(caption);
+            holder.textView.setTextColor(holder.textView.getResources().getColor(R.color.primaryColor));
+        }
+    }
+
     @Override
     public void onBindViewHolder(@NonNull PhotoListViewHolder holder, int position) {
         Photo photo = data.get(position);
-        if (photo != null) {
-            if (photo.getLegend().isEmpty()) {
-                holder.textView.setText(R.string.caption_required);
-                holder.textView.setTextColor(Color.RED);
-            } else {
-                holder.textView.setText(photo.getLegend());
-                holder.textView.setTextColor(holder.textView.getResources().getColor(R.color.primaryColor));
-            }
-        }
-
-        if ((photo.getUrl() == null) || (photo.getUrl().trim().isEmpty())) {
-            // Clear picture
-            Glide.with(holder.image.getContext())
-                    .load("")
-                    .placeholder(R.drawable.ic_house)
-                     .into(holder.image);
+        if (photo == null) {
+            setCaptionRequired(holder);
+            setDefaultPicture(holder);
         } else {
-            //load restaurant picture
-            Glide.with(holder.image.getContext())
-                    .load(photo.getUrl())
-                    .centerCrop()
-                    .into(holder.image);
+            setPhotoLegend(holder, photo.getLegend());
+            setPicture(holder, photo.getUrl());
         }
     }
 
