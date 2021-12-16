@@ -2,7 +2,6 @@ package com.openclassrooms.realestatemanager.data.room.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import java.util.Date;
@@ -116,10 +115,6 @@ public class PropertyDetailData {
 
     public void setPointsOfInterest(String pointsOfInterest) {
         this.pointsOfInterest = pointsOfInterest;
-    }
-
-    public boolean isAvailable() {
-        return (getSaleDate() != null);
     }
 
     public Date getEntryDate() {

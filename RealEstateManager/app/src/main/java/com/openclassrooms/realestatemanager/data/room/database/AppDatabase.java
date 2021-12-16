@@ -33,9 +33,7 @@ import java.util.concurrent.Executors;
                     Photo.class,
                     PropertyType.class,
                     Property.class},
-                    version = 7,
-                    exportSchema = true
-                    )
+                    version = 7 )
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "RealEstate.db";
 
@@ -61,7 +59,6 @@ public abstract class AppDatabase extends RoomDatabase {
         if (instance == null) {
             synchronized (AppDatabase.class) {
                 if (instance == null) {
-                    int d = Log.d(Tag.TAG, "RealEstateDatabase.getInstance()");
                     instance = create(application);
                 }
             }

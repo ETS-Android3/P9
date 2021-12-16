@@ -25,7 +25,6 @@ public class GoogleGeocodeClient {
                 .client(okHttpClient.build())
                 .build();
 
-        GoogleGeocodeInterface api = retrofit.create(GoogleGeocodeInterface.class);
-        return api;
+        return retrofit.create(GoogleGeocodeInterface.class);
     }
 }

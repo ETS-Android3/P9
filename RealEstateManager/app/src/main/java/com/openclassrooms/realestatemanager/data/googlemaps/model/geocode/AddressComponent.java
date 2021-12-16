@@ -27,12 +27,6 @@ public class AddressComponent implements Serializable
     public AddressComponent() {
     }
 
-    /**
-     *
-     * @param types
-     * @param shortName
-     * @param longName
-     */
     public AddressComponent(String longName, String shortName, List<String> types) {
         super();
         this.longName = longName;

@@ -3,10 +3,10 @@ package com.openclassrooms.realestatemanager.data.googlemaps.repository;
 import android.util.Log;
 
 import com.openclassrooms.realestatemanager.MainApplication;
-import com.openclassrooms.realestatemanager.data.googlemaps.api.GoogleGeocodeClient;
-import com.openclassrooms.realestatemanager.data.googlemaps.api.GoogleGeocodeInterface;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.utils.Utils;
+
+import java.util.Locale;
 
 public class GoogleStaticMapRepository {
 
@@ -47,12 +47,12 @@ public class GoogleStaticMapRepository {
     }
 
     private String formatCenterParam(double latitude, double longitude){
-        String centerValue = String.format("%f,%f", latitude, longitude);
+        String centerValue = String.format(Locale.getDefault(),"%f,%f", latitude, longitude);
         return formatParamValue("center", centerValue);
     }
 
     private String formatMarkerParam(double latitude, double longitude){
-        String centerValue = String.format("%f,%f", latitude, longitude);
+        String centerValue = String.format(Locale.getDefault(), "%f,%f", latitude, longitude);
         String markerValue = String.format("color:red|%s", centerValue);
         return formatParamValue("markers", markerValue);
     }

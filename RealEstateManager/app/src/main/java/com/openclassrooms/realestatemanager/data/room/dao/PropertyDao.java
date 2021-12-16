@@ -10,7 +10,6 @@ import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.room.Update;
 import androidx.sqlite.db.SimpleSQLiteQuery;
-import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
@@ -21,29 +20,6 @@ import java.util.List;
 
 @Dao
 public interface PropertyDao {
-    @Query("SELECT * FROM property ORDER BY property.id")
-    LiveData<List<Property>> getProperties();
-
-    @Query("SELECT * FROM property WHERE property.id = :id")
-    LiveData<Property> getPropertyById(Long id);
-
-    @Query("SELECT property.id FROM property ORDER BY property.id LIMIT 1")
-    LiveData<Long> getFirstPropertyIdLiveData();
-
-/*  use this query to retrieve first id or valid id.
-    if is valid id
-        return id
-    else return
-*/
-    @Query("SELECT property.id FROM property " +
-           "WHERE (property.id = :id) or " +
-           "      (property.id = (SELECT MIN(property.id) FROM property)) " +
-           "ORDER BY property.id DESC " +
-           "LIMIT 1")
-    LiveData<Long> getFirstOrValidIdLiveData(Long id);
-
-    @Query("SELECT property.id FROM property WHERE property.id = :id")
-    LiveData<Long> getIsIdExistLiveData(Long id);
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     long insert(Property property);

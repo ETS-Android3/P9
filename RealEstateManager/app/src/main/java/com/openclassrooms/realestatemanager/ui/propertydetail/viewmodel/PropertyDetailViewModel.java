@@ -1,7 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel;
 
-import android.annotation.SuppressLint;
-import android.location.Location;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,11 +10,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.googlemaps.repository.GoogleStaticMapRepository;
-import com.openclassrooms.realestatemanager.data.location.LocationRepository;
-import com.openclassrooms.realestatemanager.data.permission_checker.PermissionChecker;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyDetailData;
-import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
