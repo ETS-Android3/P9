@@ -46,13 +46,13 @@ public class PropertyEditViewModel extends ViewModel {
     @NonNull
     private final GoogleStaticMapRepository googleStaticMapRepository;
 
-    private final MutableLiveData<String> errorMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<String> errorMutableLiveData = new MutableLiveData<>();
     public LiveData<String> getErrorLiveData() { return errorMutableLiveData; }
 
     /**
      * cache
      */
-    private final CachePropertyEditViewModel cache;
+    private CachePropertyEditViewModel cache;
 
     /**
      * constructor
@@ -87,12 +87,12 @@ public class PropertyEditViewModel extends ViewModel {
         configureGoogleStaticMapUrlLiveData();
     }
 
-    private final MutableLiveData<String> addressMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<String> addressMutableLiveData = new MutableLiveData<>();
     public MutableLiveData<String> getAddressMutableLiveData() {
         return addressMutableLiveData;
     }
 
-    private final MediatorLiveData<StaticMapViewState> googleStaticMapViewStateMediatorLiveData = new MediatorLiveData<>();
+    private MediatorLiveData<StaticMapViewState> googleStaticMapViewStateMediatorLiveData = new MediatorLiveData<>();
     public LiveData<StaticMapViewState> getGoogleStaticMapViewState() {
         return googleStaticMapViewStateMediatorLiveData;
     }
@@ -399,7 +399,7 @@ public class PropertyEditViewModel extends ViewModel {
         }
     }
 
-    private final MutableLiveData<FieldState> onCheckAddressTitleValueMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<FieldState> onCheckAddressTitleValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckAddressTitleValueLiveData() { return onCheckAddressTitleValueMutableLiveData; }
     public boolean checkAddressTitleValue(String value){
         boolean valueOk = !PropertyEditViewModel.emptyString(value);
@@ -407,7 +407,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private final MutableLiveData<FieldState> onCheckAddressValueMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<FieldState> onCheckAddressValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckAddressValueLiveData() { return onCheckAddressValueMutableLiveData; }
     public boolean checkAddressValue(String value){
         boolean valueOk = !PropertyEditViewModel.emptyString(value);
@@ -415,7 +415,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private final MutableLiveData<FieldState> onCheckDescriptionValueMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<FieldState> onCheckDescriptionValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckDescriptionValueLiveData() { return onCheckDescriptionValueMutableLiveData; }
     public boolean checkDescriptionValue(String value){
         boolean valueOk =!PropertyEditViewModel.emptyString(value);
@@ -423,7 +423,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private final MutableLiveData<FieldState> onCheckPointOfInterestValueMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<FieldState> onCheckPointOfInterestValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckPointOfInterestValueLiveData() { return onCheckPointOfInterestValueMutableLiveData; }
     public boolean checkPointOfInterestValue(String value){
         boolean valueOk = !PropertyEditViewModel.emptyString(value);
@@ -431,7 +431,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private final MutableLiveData<FieldState> onCheckPriceValueMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<FieldState> onCheckPriceValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckPriceValueLiveData() { return onCheckPriceValueMutableLiveData; }
     public boolean checkPriceValue(String value){
         boolean valueOk = checkIsInt(value);
@@ -439,7 +439,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private final MutableLiveData<FieldState> onCheckSurfaceValueMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<FieldState> onCheckSurfaceValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckSurfaceValueLiveData() { return onCheckSurfaceValueMutableLiveData; }
     public boolean checkSurfaceValue(String value){
         boolean valueOk = checkIsInt(value);
@@ -447,7 +447,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private final MutableLiveData<FieldState> onCheckRoomsValueMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<FieldState> onCheckRoomsValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckRoomsValueLiveData() { return onCheckRoomsValueMutableLiveData; }
     public boolean checkRoomsValue(String value){
         boolean valueOk = checkIsInt(value);
@@ -455,7 +455,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private final MutableLiveData<FieldState> onCheckEntryDateValueMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<FieldState> onCheckEntryDateValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckEntryDateValueLiveData() { return onCheckEntryDateValueMutableLiveData; }
     public boolean checkEntryDateValue(String value){
         boolean valueOk = PropertyEditViewModel.validDate(value);
@@ -463,7 +463,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private final MutableLiveData<FieldState> onCheckSaleDateValueMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<FieldState> onCheckSaleDateValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckSaleDateValueLiveData() { return onCheckSaleDateValueMutableLiveData; }
     public boolean checkSaleDateValue(String value){
         boolean valueOk = PropertyEditViewModel.validOrNullDate(value);
@@ -471,7 +471,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private final MutableLiveData<FieldState> onCheckAgentIdValueMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<FieldState> onCheckAgentIdValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckAgentIdValueLiveData() { return onCheckAgentIdValueMutableLiveData; }
     public boolean checkAgentIdValue(long id){
         boolean valueOk = (findAgentById(id) != null);
@@ -479,7 +479,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private final MutableLiveData<FieldState> onCheckPropertyTypeIdValueMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<FieldState> onCheckPropertyTypeIdValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckPropertyTypeIdValueLiveData() { return onCheckPropertyTypeIdValueMutableLiveData; }
     public boolean checkPropertyTypeIdValue(long id){
         boolean valueOk = (findPropertyTypeById(id) != null);
@@ -581,7 +581,7 @@ public class PropertyEditViewModel extends ViewModel {
         }
     }
 
-    private final MutableLiveData<Boolean> onCheckAllValuesMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> onCheckAllValuesMutableLiveData = new MutableLiveData<>();
     public MutableLiveData<Boolean> getOnCheckAllValuesLiveData() {return onCheckAllValuesMutableLiveData;}
     public boolean checkAllValues(String price,
                                   String surface,

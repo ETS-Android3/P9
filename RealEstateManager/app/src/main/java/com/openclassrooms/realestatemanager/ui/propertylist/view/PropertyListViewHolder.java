@@ -12,11 +12,11 @@ import com.openclassrooms.realestatemanager.R;
 
 public class PropertyListViewHolder extends RecyclerView.ViewHolder {
 
-    final CardView cardView;
-    final ImageView image;
-    final TextView textViewType;
-    final TextView textViewAddress;
-    final TextView textViewPrice;
+    CardView cardView;
+    ImageView image;
+    TextView textViewType;
+    TextView textViewAddress;
+    TextView textViewPrice;
 
     public PropertyListViewHolder(@NonNull View itemView) {
         super(itemView);

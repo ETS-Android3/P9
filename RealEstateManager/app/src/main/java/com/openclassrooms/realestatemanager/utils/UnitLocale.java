@@ -3,8 +3,8 @@ package com.openclassrooms.realestatemanager.utils;
 import java.util.Locale;
 
 public class UnitLocale {
-    public static final UnitLocale Imperial = new UnitLocale();
-    public static final UnitLocale Metric = new UnitLocale();
+    public static UnitLocale Imperial = new UnitLocale();
+    public static UnitLocale Metric = new UnitLocale();
 
     public static UnitLocale getDefault() {
         return getFrom(Locale.getDefault());

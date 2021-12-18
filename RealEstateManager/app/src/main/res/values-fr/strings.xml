@@ -10,6 +10,7 @@
     <string name="property_address_title">Titre</string>
     <string name="property_address">Adresse</string>
     <string name="property_point_of_interest">Points d\'intérêts</string>
+    <string name="property_available_value">Oui</string>
     <string name="property_entry_date">Date de mise en vente</string>
     <string name="property_sale_date">Date de vente</string>
     <string name="property_sale_date_value">Pas de date de vente</string>
@@ -20,6 +21,10 @@
     <string name="property_type_value">Appartement</string>
     <string name="property_photo_add">Galerie</string>
     <string name="property_take_picture">Appareil photo</string>
+    <string name="property_photo_legend">Légende</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="no_date">Pas de date</string>
     <string name="property_edit_title_create">Ajouter une nouvelle propriété</string>
     <string name="property_edit_title_modify">Modifier la properiété</string>
     <string name="menu_add_property">Ajouter une propriété</string>
@@ -28,8 +33,12 @@
     <string name="search">Chercher</string>
     <string name="map">Carte</string>
     <string name="menu_home">Accueil</string>
+    <string name="menu_gallery">Galerie</string>
+    <string name="menu_slideshow">Diaporama</string>
     <string name="row_property_list_picture_description">Image d\'une propriété</string>
+    <string name="ok">Ok</string>
     <string name="cancel">Annuler</string>
+    <string name="sell">Vendre</string>
     <string name="permission_message">L\'application a besoin d\'une autorisation pour accéder à l\'emplacement de l\'appareil afin de fournir les services requis. Veuillez accorder la permission.</string>
     <string name="permission_request">"Demande d'autorisation "</string>
     <string name="discard_permission">Ignorer l\'autorisation</string>
@@ -78,10 +87,12 @@
     <string name="property_point_of_interest_value">Central Park, High schools, Public transport</string>
     <string name="property_state">Etat</string>
     <string name="property_state_value">A vendre</string>
+    <string name="property_available">Disponible</string>
     <string name="property_entry_date_value">01/01/2021</string>
     <string name="property_agent_name_value">John Smith</string>
     <string name="property_agent_email_value">john.smith@realestate.com</string>
     <string name="property_agent_phone_value">00 1 212 7584941</string>
+    <string name="property_photo_legend_value">Great place</string>
     <string name="title_activity_permission">Autorisation</string>
     <string name="sold">Vendu</string>
     <string name="for_sal">A vendre</string>

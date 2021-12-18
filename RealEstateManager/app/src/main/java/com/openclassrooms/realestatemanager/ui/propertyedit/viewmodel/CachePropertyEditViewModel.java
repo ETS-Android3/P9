@@ -18,7 +18,7 @@ public class CachePropertyEditViewModel {
     private List<Agent> agents;
     private List<PropertyType> propertyTypes;
     private List<Photo> pendingPhotos;
-    private final FieldList fields;
+    private FieldList fields;
 
     public CachePropertyEditViewModel() {
         agents = new ArrayList<>();
@@ -50,7 +50,7 @@ public class CachePropertyEditViewModel {
         pendingPhotosMutableLiveData.setValue(pendingPhotos);
     }
 
-    private final MutableLiveData<List<Photo>> pendingPhotosMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Photo>> pendingPhotosMutableLiveData = new MutableLiveData<>();
     public LiveData<List<Photo>> getPendingPhotosLiveData(){ return pendingPhotosMutableLiveData; }
 
     private int indexOfPhoto(Photo photo){

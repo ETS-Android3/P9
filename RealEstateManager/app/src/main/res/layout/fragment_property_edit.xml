@@ -36,6 +36,7 @@
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_address_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_address_title"
@@ -106,6 +107,7 @@
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_price"
@@ -126,6 +128,7 @@
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_surface"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_surface"
@@ -146,6 +149,7 @@
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_rooms"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_rooms"
@@ -166,6 +170,7 @@
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_description"
@@ -184,6 +189,7 @@
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_point_of_interest"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_point_of_interest"
@@ -203,6 +209,7 @@
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_entry_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_entry_date"
@@ -234,6 +241,7 @@
                 style="@style/My_TextInputLayoutStyle">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_sale_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_sale_date"
@@ -301,8 +309,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/default_large_padding"
-                android:layout_marginStart="@dimen/default_large_margin"
-                android:layout_marginEnd="@dimen/default_margin"
+                android:layout_marginLeft="@dimen/default_large_margin"
+                android:layout_marginRight="@dimen/default_margin"
                 android:layout_marginTop="@dimen/default_large_margin"
                 android:layout_marginBottom="@dimen/default_large_margin"
 

@@ -6,17 +6,17 @@ import androidx.room.Entity;
 @Entity
 public class PropertyRange {
     @ColumnInfo(name = "min_price")
-    private final int minPrice;
+    private int minPrice;
     @ColumnInfo(name = "max_price")
-    private final int maxPrice;
+    private int maxPrice;
     @ColumnInfo(name = "min_surface")
-    private final int minSurface;
+    private int minSurface;
     @ColumnInfo(name = "max_surface")
-    private final int maxSurface;
+    private int maxSurface;
     @ColumnInfo(name = "min_rooms")
-    private final int minRooms;
+    private int minRooms;
     @ColumnInfo(name = "max_rooms")
-    private final int maxRooms;
+    private int maxRooms;
 
     public PropertyRange(int minPrice, int maxPrice, int minSurface, int maxSurface, int minRooms, int maxRooms) {
         this.minPrice = minPrice;

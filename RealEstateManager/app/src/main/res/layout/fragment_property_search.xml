@@ -9,6 +9,7 @@
     <!-- TODO: Update blank fragment layout -->
 
     <ScrollView
+        android:id="@+id/fragment_property_search_scrollview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -47,6 +48,7 @@
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_search_text_input_edit_text_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="3"
@@ -269,7 +271,7 @@
                 android:text="@string/select_entry_date"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_entry_date"
                 app:layout_constraintStart_toStartOf="parent"
-                app:icon="@drawable/ic_edit_calendar" />
+                android:drawableLeft="@drawable/ic_edit_calendar"/>
 
             <Button
                 android:id="@+id/fragment_property_search_button_reset_entry_date"
@@ -280,7 +282,7 @@
                 android:text="@string/reset_entry_date"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_entry_date"
                 app:layout_constraintStart_toEndOf="@+id/fragment_property_search_button_select_entry_date"
-                app:icon="@drawable/ic_menu_cancel"
+                android:drawableLeft="@drawable/ic_menu_cancel"
                 />
 
             <TextView
@@ -320,7 +322,7 @@
                 android:text="@string/select_sale_date"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_sale_date"
                 app:layout_constraintStart_toStartOf="parent"
-                app:icon="@drawable/ic_edit_calendar"/>
+                android:drawableLeft="@drawable/ic_edit_calendar"/>
             <Button
                 android:id="@+id/fragment_property_search_button_reset_sale_date"
                 style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
@@ -330,7 +332,7 @@
                 android:text="@string/reset_sale_date"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_search_sale_date"
                 app:layout_constraintStart_toEndOf="@+id/fragment_property_search_button_select_sale_date"
-                app:icon="@drawable/ic_menu_cancel"/>
+                android:drawableLeft="@drawable/ic_menu_cancel"/>
             <TextView
                 android:id="@+id/fragment_property_search_sale_date_range"
                 style="@style/TextviewStyle.Value"

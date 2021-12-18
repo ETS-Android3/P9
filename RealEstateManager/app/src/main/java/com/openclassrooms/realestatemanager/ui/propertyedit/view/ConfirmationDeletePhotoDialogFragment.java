@@ -40,6 +40,6 @@ public class ConfirmationDeletePhotoDialogFragment extends DialogFragment  {
             .create();
     }
 
-    public static final String TAG = "ConfirmationDeletePhotoDialogFragment";
+    public static String TAG = "ConfirmationDeletePhotoDialogFragment";
 
 }

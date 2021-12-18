@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FieldList {
-    private final List<Field> fields = Arrays.asList(
+    private List<Field> fields = Arrays.asList(
             new Field(FieldKey.ADDRESS_TITLE),
             new Field(FieldKey.ADDRESS),
             new Field(FieldKey.PRICE),

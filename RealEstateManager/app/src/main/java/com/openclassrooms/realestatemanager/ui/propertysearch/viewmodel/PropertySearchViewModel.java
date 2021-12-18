@@ -20,6 +20,7 @@ import com.openclassrooms.realestatemanager.data.room.repository.PropertySearchP
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertysearch.viewstate.PropertySearchViewState;
+import com.openclassrooms.realestatemanager.utils.ResourceArrayHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
@@ -67,17 +68,17 @@ public class PropertySearchViewModel extends ViewModel {
                 fullTextMutableLiveData.setValue(text);
     }
 
-    private final MutableLiveData<List<Float>> valuesPriceMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Float>> valuesPriceMutableLiveData = new MutableLiveData<>();
     public void setPriceRange(List<Float> floats){
         valuesPriceMutableLiveData.setValue(floats);
     }
 
-    private final MutableLiveData<List<Float>> valuesSurfaceMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Float>> valuesSurfaceMutableLiveData = new MutableLiveData<>();
     public void setSurfaceRange(List<Float> floats){
         valuesSurfaceMutableLiveData.setValue(floats);
     }
 
-    private final MutableLiveData<List<Float>> valuesRoomsMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Float>> valuesRoomsMutableLiveData = new MutableLiveData<>();
     public void setRoomsRange(List<Float> floats){
         valuesRoomsMutableLiveData.setValue(floats);
     }
@@ -349,7 +350,7 @@ public class PropertySearchViewModel extends ViewModel {
                 values.set(1, minMax.get(1));
             return values;
         }
-    }
+    };
 
     private String getCaptionPrice(List<Float> floats) {
         int min = floats.get(0).intValue() * 1000;
@@ -489,6 +490,18 @@ public class PropertySearchViewModel extends ViewModel {
         }
 
         databaseRepository.getPropertyRepository().setPropertySearchParameters(psp);
+    }
+
+    private float getMaxRangePrice(){
+        return ResourceArrayHelper.getMaxRangeFromArray(R.array.initial_slider_values_search_price);
+    }
+
+    private float getMaxRangeSurface(){
+        return ResourceArrayHelper.getMaxRangeFromArray(R.array.initial_slider_values_search_surface);
+    }
+
+    private float getMaxRangeRooms(){
+        return ResourceArrayHelper.getMaxRangeFromArray(R.array.initial_slider_values_search_rooms);
     }
 
     public void resetSearch(){

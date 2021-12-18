@@ -40,6 +40,7 @@
                 app:startIconDrawable="@drawable/ic_location">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_address_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_address_title"
@@ -102,6 +103,7 @@
                 app:startIconDrawable="@drawable/ic_attach_money">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_price"
@@ -124,6 +126,7 @@
                 app:startIconDrawable="@drawable/ic_settings_overscan">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_surface"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_surface"
@@ -146,6 +149,7 @@
                 app:startIconDrawable="@drawable/ic_pin">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_rooms"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_rooms"
@@ -179,6 +183,7 @@
                 app:startIconDrawable="@drawable/ic_description">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_description"
@@ -198,6 +203,7 @@
                 app:startIconDrawable="@drawable/ic_interests">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_point_of_interest"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/property_point_of_interest"
@@ -218,6 +224,7 @@
                 app:startIconDrawable="@drawable/ic_date">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_entry_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
@@ -250,6 +257,7 @@
                 app:startIconDrawable="@drawable/ic_menu_check">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fragment_property_edit_text_input_edit_text_sale_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
@@ -317,8 +325,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/default_large_padding"
-                android:layout_marginStart="@dimen/default_large_margin"
-                android:layout_marginEnd="@dimen/default_margin"
+                android:layout_marginLeft="@dimen/default_large_margin"
+                android:layout_marginRight="@dimen/default_margin"
                 android:layout_marginTop="@dimen/default_large_margin"
                 android:layout_marginBottom="@dimen/default_large_margin"
 

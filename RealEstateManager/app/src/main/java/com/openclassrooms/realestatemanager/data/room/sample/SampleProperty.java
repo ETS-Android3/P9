@@ -5,14 +5,13 @@ import com.openclassrooms.realestatemanager.data.room.model.Property;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 public class SampleProperty {
     public Property[] getSample() throws ParseException {
-        Date date1 = new SimpleDateFormat("dd/MM/yyy", Locale.getDefault()).parse("09/09/2021");
-        Date date2 = new SimpleDateFormat("dd/MM/yyy", Locale.getDefault()).parse("23/09/2021");
-        Date date3 = new SimpleDateFormat("dd/MM/yyy", Locale.getDefault()).parse("28/09/2021");
-        Date date4 = new SimpleDateFormat("dd/MM/yyy", Locale.getDefault()).parse("19/10/2021");
+        Date date1 = new SimpleDateFormat("dd/MM/yyy").parse("09/09/2021");
+        Date date2 = new SimpleDateFormat("dd/MM/yyy").parse("23/09/2021");
+        Date date3 = new SimpleDateFormat("dd/MM/yyy").parse("28/09/2021");
+        Date date4 = new SimpleDateFormat("dd/MM/yyy").parse("19/10/2021");
 
         return new Property[]{
                 new Property(1,

@@ -60,6 +60,9 @@ public class PropertySearchFragment extends Fragment {
     private TextView textViewRangeRooms;
     private RangeSlider rangeSliderRooms;
 
+    private Button buttonOk;
+    private Button buttonReset;
+
     TextView textViewEntryDateRange;
     TextView textViewSaleDateRange;
 
@@ -145,7 +148,7 @@ public class PropertySearchFragment extends Fragment {
         textInputLayoutAgents = view.findViewById(R.id.fragment_property_search_text_input_layout_agent);
         textInputLayoutPropertyTypes = view.findViewById(R.id.fragment_property_search_text_input_layout_property_type);
 
-        Button buttonOk = view.findViewById(R.id.fragment_property_search_button_apply);
+        buttonOk = view.findViewById(R.id.fragment_property_search_button_apply);
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,7 +156,7 @@ public class PropertySearchFragment extends Fragment {
             }
         });
 
-        Button buttonReset = view.findViewById(R.id.fragment_property_search_button_reset_all);
+        buttonReset = view.findViewById(R.id.fragment_property_search_button_reset_all);
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

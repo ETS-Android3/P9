@@ -57,8 +57,7 @@
                 android:layout_margin="@dimen/default_margin"
                 android:text="@string/discard_permission"
                 android:textAllCaps="false"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                style="?android:attr/buttonBarButtonStyle" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
             <Button
                 android:id="@+id/activity_permission_button_grant_permission"
@@ -68,8 +67,7 @@
                 android:layout_margin="@dimen/default_margin"
                 android:text="@string/grant_permission"
                 android:textAllCaps="false"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                style="?android:attr/buttonBarButtonStyle" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
         </LinearLayout>
 
 

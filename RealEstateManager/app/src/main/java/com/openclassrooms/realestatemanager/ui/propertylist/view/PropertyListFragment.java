@@ -35,6 +35,7 @@ public class PropertyListFragment extends Fragment {
 
     private TextView textViewWarning;
     private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
     PropertyListAdapter propertyListAdapter;
 
     /**
@@ -55,6 +56,8 @@ public class PropertyListFragment extends Fragment {
             throw new ClassCastException(e.toString() + "must implement OnPropertyClickedListener");
         }
     }
+
+    private PropertyListViewModel propertyListViewModel;
 
     public PropertyListFragment() {
         // Required empty public constructor
@@ -91,7 +94,7 @@ public class PropertyListFragment extends Fragment {
 
     private void configureRecyclerView(View view) {
         recyclerView = view.findViewById(R.id.fragment_property_list_recyclerview);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+        layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
         propertyListAdapter = new PropertyListAdapter(getContext(), new OnRowPropertyClickListener() {
@@ -112,7 +115,7 @@ public class PropertyListFragment extends Fragment {
     }
 
     private void configureViewModel() {
-        PropertyListViewModel propertyListViewModel = new ViewModelProvider(
+        propertyListViewModel = new ViewModelProvider(
                 requireActivity(), AppViewModelFactory.getInstance())
                 .get(PropertyListViewModel.class);
         propertyListViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyListViewState>() {

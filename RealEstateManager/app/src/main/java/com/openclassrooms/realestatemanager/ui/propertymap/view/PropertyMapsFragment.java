@@ -46,7 +46,7 @@ public class PropertyMapsFragment extends Fragment {
     private GoogleMap mMap;
     private OnMapListener callbackMap;
 
-    private final OnMapReadyCallback callback = new OnMapReadyCallback() {
+    private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
          * Manipulates the map once available.
@@ -71,7 +71,7 @@ public class PropertyMapsFragment extends Fragment {
         }
     };
 
-    private final GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
+    private GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(@NonNull Marker marker) {
             String strPropertyId = (String) marker.getTag();

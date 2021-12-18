@@ -12,12 +12,12 @@ import java.util.Collection;
 
 @RunWith(Parameterized.class)
 public class LoanCalculatorUtilsTest {
-    private final float amount;
-    private final String expectedAmount;
-    private final float rate;
-    private final String expectedRate;
-    private final double payment;
-    private final String expectedPayment;
+    private float amount;
+    private String expectedAmount;
+    private float rate;
+    private String expectedRate;
+    private double payment;
+    private String expectedPayment;
 
     @Before
     public void initialize(){

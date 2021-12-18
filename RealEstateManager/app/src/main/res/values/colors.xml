@@ -4,6 +4,11 @@
     <color name="primaryLightColor">#718792</color>
     <color name="primaryDarkColor">#1c313a</color>
     <color name="secondaryColor">#e64a19</color>
+    <color name="secondaryLightColor">#ff7d47</color>
+    <color name="secondaryDarkColor">#ac0800</color>
     <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#000000</color>
 
+    <color name="enabledMenuIconColor">@color/primaryTextColor </color>
+    <color name="disabledMenuIconColor">@color/primaryLightColor</color>
 </resources>

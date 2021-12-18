@@ -14,7 +14,7 @@
     <style name="TextviewStyle.Title">
         <item name="android:textColor">@color/primaryDarkColor</item>
         <item name="android:textStyle">bold|italic</item>
-        <item name="android:textSize">30sp</item>
+        <item name="android:textSize">30dp</item>
         <item name="android:layout_marginTop">@dimen/default_large_margin</item>
         <item name="android:layout_marginRight">@dimen/default_margin</item>
         <item name="android:layout_marginBottom">@dimen/default_large_margin</item>
@@ -24,7 +24,7 @@
     <style name="TextviewStyle.Label">
         <item name="android:textColor">@color/primaryLightColor</item>
         <item name="android:textStyle">italic</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">12dp</item>
         <item name="android:layout_marginTop">@dimen/default_margin</item>
         <item name="android:layout_marginRight">@dimen/default_margin</item>
         <item name="android:layout_marginBottom">@dimen/default_small_margin</item>
@@ -34,13 +34,15 @@
 
     <style name="TextviewStyle.Value">
         <item name="android:textColor">@color/primaryDarkColor</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">20dp</item>
         <item name="android:layout_marginTop">@dimen/default_small_margin</item>
         <item name="android:layout_marginRight">@dimen/default_margin</item>
         <item name="android:layout_marginBottom">@dimen/default_margin</item>
         <item name="android:layout_marginLeft">@dimen/default_margin</item>
     </style>
-
+    <style name="TextviewStyle.Value.Small">
+        <item name="android:textSize">14dp</item>
+    </style>
     <style name="TextviewStyle.Value.Bold">
         <item name="android:textStyle">bold</item>
     </style>
@@ -72,7 +74,13 @@
         <item name="android:layout_marginEnd">0dp</item>
     </style>
 
-    <!--
+    <style name="SwitchMaterialStyle">
+        <item name="android:textColor">@color/primaryDarkColor</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:layout_margin">@dimen/default_margin</item>
+    </style>
+
+<!--
         parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
 -->
     <style name="My_TextInputLayoutStyle"
