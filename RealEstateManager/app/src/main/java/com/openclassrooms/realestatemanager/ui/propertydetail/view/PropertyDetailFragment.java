@@ -30,6 +30,7 @@ import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.Property
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -165,7 +166,7 @@ public class PropertyDetailFragment extends Fragment {
     }
 
     private void setRooms(int rooms){
-        binding.propertyDetailRoomsValue.setText(String.format("%d", rooms));
+        binding.propertyDetailRoomsValue.setText(String.format(Locale.getDefault(), "%d", rooms));
     }
 
     private void setDescription(String description){
