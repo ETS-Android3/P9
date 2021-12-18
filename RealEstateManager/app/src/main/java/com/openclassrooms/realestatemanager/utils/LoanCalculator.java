@@ -4,10 +4,10 @@ public class LoanCalculator {
 
     /**
      * calculate monthly payment
-     * @param amount
-     * @param rate (annual rate)
-     * @param duration (duration in month)
-     * @return
+     * @param amount : $
+     * @param rate : annual rate
+     * @param duration : duration in month
+     * @return monthly payment
      */
     public double calculateMonthlyPayment(float amount, double rate, int duration){
 
@@ -35,7 +35,6 @@ public class LoanCalculator {
             return amount / duration;
 
         double pr = rate / 12 / 100;
-        double monthlyPayment = (amount * pr * Math.pow(1 + pr, duration)) / (Math.pow(1 + pr, duration) - 1);
-        return monthlyPayment;
+        return (amount * pr * Math.pow(1 + pr, duration)) / (Math.pow(1 + pr, duration) - 1);
     }
 }
