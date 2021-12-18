@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/row_property_list_picture"
             android:layout_width="@dimen/list_properties_photo_width"
-            android:layout_height="@dimen/list_properties_photo_width"
+            android:layout_height="@dimen/list_properties_photo_height"
             android:layout_margin="10dp"
             android:contentDescription="@string/row_property_list_picture_description"
             android:gravity="center"
