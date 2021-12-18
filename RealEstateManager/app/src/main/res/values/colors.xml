@@ -8,7 +8,4 @@
     <color name="secondaryDarkColor">#ac0800</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#000000</color>
-
-    <color name="enabledMenuIconColor">@color/primaryTextColor </color>
-    <color name="disabledMenuIconColor">@color/primaryLightColor</color>
 </resources>
