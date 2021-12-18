@@ -10,6 +10,7 @@ import com.openclassrooms.realestatemanager.MainApplication;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class FileProviderHelper {
     private static final String SUB_DIRECTORY = "picFromCamera";
@@ -17,7 +18,7 @@ public class FileProviderHelper {
 
     private static String createFileName(){
         // create unique file name with date and time
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_PATTERN);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_PATTERN, Locale.getDefault());
         String strDate = simpleDateFormat.format(new Date());
         String fileName = SUB_DIRECTORY + "-" + strDate;
         Log.d("TAG", "FileProviderHelper.createFileName() = " + fileName);

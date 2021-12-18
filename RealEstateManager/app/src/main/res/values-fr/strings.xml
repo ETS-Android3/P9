@@ -96,4 +96,7 @@
     <string name="title_activity_permission">Autorisation</string>
     <string name="sold">Vendu</string>
     <string name="for_sal">A vendre</string>
+    <string name="image">image</string>
+    <string name="image_from_gallery">Image de la gallerie</string>
+    <string name="picture_from_camera">Photo</string>
 </resources>

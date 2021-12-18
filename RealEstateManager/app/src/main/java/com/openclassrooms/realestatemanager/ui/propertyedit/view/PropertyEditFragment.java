@@ -5,14 +5,12 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,11 +24,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -52,10 +48,7 @@ import com.openclassrooms.realestatemanager.ui.propertyedit.listener.Confirmatio
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.PropertyEditViewModel;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel.FieldKey;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
-import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
-import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyEditViewState;
-import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.StaticMapViewState;
 import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
 import com.openclassrooms.realestatemanager.utils.FileProviderHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
@@ -63,8 +56,8 @@ import com.openclassrooms.realestatemanager.utils.Utils;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 public class PropertyEditFragment extends Fragment implements ConfirmationDeletePhotoListener,
                                                               OnBackPressedInterface  {
@@ -165,63 +158,28 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         imageViewGoogleStaticMap = view.findViewById(R.id.fragment_property_edit_image_view_map);
 
         ImageButton imageButtonEntryDate = view.findViewById(R.id.fragment_property_imageButton_entry_date);
-        imageButtonEntryDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectDate(textInputLayoutEntryDate);
-            }
-        });
+        imageButtonEntryDate.setOnClickListener(v -> selectDate(textInputLayoutEntryDate));
 
         textInputLayoutSaleDate = view.findViewById(R.id.fragment_property_edit_text_input_layout_sale_date);
         ImageButton imageButtonRemoveSaleDate = view.findViewById(R.id.fragment_property_imageButton_remove_sale_date);
-        imageButtonRemoveSaleDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setSaleDate("");
-            }
-        });
+        imageButtonRemoveSaleDate.setOnClickListener(v -> setSaleDate(""));
         ImageButton imageButtonSaleDate = view.findViewById(R.id.fragment_property_imageButton_sale_date);
-        imageButtonSaleDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectDate(textInputLayoutSaleDate);
-            }
-        });
+        imageButtonSaleDate.setOnClickListener(v -> selectDate(textInputLayoutSaleDate));
 
         textInputLayoutAgent = view.findViewById(R.id.fragment_property_edit_text_input_layout_agent);
         textInputLayoutPropertyType = view.findViewById(R.id.fragment_property_edit_text_input_layout_property_type);
 
         Button buttonPhoto = view.findViewById(R.id.property_edit_button_add_photo);
-        buttonPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectPhoto();
-            }
-        });
+        buttonPhoto.setOnClickListener(v -> selectPhoto());
 
         Button buttonTakePicture = view.findViewById(R.id.property_edit_button_take_picture);
-        buttonTakePicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePicture();
-            }
-        });
+        buttonTakePicture.setOnClickListener(v -> takePicture());
 
         buttonOk = view.findViewById(R.id.fragment_property_edit_button_ok);
-        buttonOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validateForm();
-            }
-        });
+        buttonOk.setOnClickListener(v -> validateForm());
 
         Button buttonCancel = view.findViewById(R.id.fragment_property_edit_button_cancel);
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancelForm();
-            }
-        });
+        buttonCancel.setOnClickListener(v -> cancelForm());
     }
 
     private void configureRecyclerView(View view) {
@@ -236,7 +194,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
                 Log.d(Tag.TAG, "onClickRowPhoto() called with: photo = [" + photo + "]");
                 // open photo with call back
                 PhotoEditDialogFragment.newInstance(
-                        getContext().getString(R.string.edit_photo),
+                        getString(R.string.edit_photo),
                         photo.getId(),
                         photo.getOrder(),
                         photo.getUrl(),
@@ -269,17 +227,20 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         recyclerView.setAdapter(photoListAdapter);
     }
 
+    private void setDateToTextInputLayout(Date date, TextInputLayout textInputLayout){
+        if (textInputLayout != null) {
+            Objects.requireNonNull(textInputLayout.getEditText()).setText(Utils.convertDateToLocalFormat(date));
+        }
+    }
+
     private void selectDate(TextInputLayout textInputLayoutDate){
         final Calendar cldr = Calendar.getInstance();
         int day = cldr.get(Calendar.DAY_OF_MONTH);
         int month = cldr.get(Calendar.MONTH);
         int year = cldr.get(Calendar.YEAR);
-        DatePickerDialog picker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                Date date = new GregorianCalendar(year, month, dayOfMonth).getTime();
-                textInputLayoutDate.getEditText().setText(Utils.convertDateToLocalFormat(date));
-            }
+        DatePickerDialog picker = new DatePickerDialog(getContext(), (view, year1, month1, dayOfMonth) -> {
+            Date date = new GregorianCalendar(year1, month1, dayOfMonth).getTime();
+            setDateToTextInputLayout(date, textInputLayoutDate);
         }, year, month, day);
         picker.show();
     }
@@ -298,29 +259,23 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         configureViewState();
      }
 
+    /**
+     * to load gps location and update map when address change
+     */
     private void configureGpsListener(){
-        /**
-         * to load gps location and update map when address change
-         */
-        textInputEditTextAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    String text = getAddress();
-                    Log.d(Tag.TAG, "PropertyEditFragment.onFocusChange() called text = [" + text + "]");
-                    propertyEditViewModel.getAddressMutableLiveData().setValue(text);
-                }
+        textInputEditTextAddress.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                String text = getAddress();
+                Log.d(Tag.TAG, "PropertyEditFragment.onFocusChange() called text = [" + text + "]");
+                propertyEditViewModel.getAddressMutableLiveData().setValue(text);
             }
         });
     }
 
     private void configureImageViewGoogleStaticMap(){
-        propertyEditViewModel.getGoogleStaticMapViewState().observe(getViewLifecycleOwner(), new Observer<StaticMapViewState>() {
-            @Override
-            public void onChanged(StaticMapViewState staticMapViewState) {
-                setPropertyLatLng(staticMapViewState.getLatLang());
-                setImageViewGoogleStaticMap(staticMapViewState.getUrl());
-            }
+        propertyEditViewModel.getGoogleStaticMapViewState().observe(getViewLifecycleOwner(), staticMapViewState -> {
+            setPropertyLatLng(staticMapViewState.getLatLang());
+            setImageViewGoogleStaticMap(staticMapViewState.getUrl());
         });
     }
 
@@ -346,16 +301,11 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     /**
      * Find position element in dropdown list by id, for agent ou property type
-     * @param id
-     * @param items
-     * @return
      */
     private int findDropdownPositionById(long id, List<DropdownItem> items){
         if ((items != null) && (items.size() > 0) && (id >= 0)) {
             int position = 0;
-            Iterator<DropdownItem> iterator = items.iterator();
-            while (iterator.hasNext()) {
-                DropdownItem item = iterator.next();
+            for (DropdownItem item : items) {
                 if (item.getId() == id) {
                     return position;
                 }
@@ -366,61 +316,57 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     }
 
     /**
-     * Load agents list and propertytypes list in drop down components
-     * @param currentAgentId
-     * @param currentPropertyTypeId
+     * Load agents list and property types list in drop down components
+     * @param currentAgentId : agent id
+     * @param currentPropertyTypeId : property type id
      */
     private void configureDropdown(long currentAgentId, long currentPropertyTypeId){
-        // There are two lists in DropdownViewstate, one for the agents list and one for the property types list
-        propertyEditViewModel.getDropDownViewstateMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<DropdownViewstate>() {
-            @Override
-            public void onChanged(DropdownViewstate dropDownViewstate) {
-                // load dropdown agents list
-                if (dropDownViewstate.getAgentItems() != null){
-                    ArrayAdapter adapterAgents = new ArrayAdapter(getContext(), R.layout.list_item, dropDownViewstate.getAgentItems());
-                    AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgent.getEditText();
-                    autoCompleteTextView.setAdapter(adapterAgents);
-                    // update list position with current agent
-                    int position = findDropdownPositionById(currentAgentId, dropDownViewstate.getAgentItems());
-                    if (position >= 0) {
-                        autoCompleteTextView.setListSelection (position);
-                        agentId = currentAgentId;
-                    }
+        // There are two lists in Dropdown View state, one for the agents list and one for the property types list
+        propertyEditViewModel.getDropDownViewstateMediatorLiveData().observe(getViewLifecycleOwner(), viewState -> {
+            // load dropdown agents list
+            if (viewState.getAgentItems() != null){
+                AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgent.getEditText();
+                if (autoCompleteTextView != null){
+                    ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), R.layout.list_item, viewState.getAgentItems());
 
-                    autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            DropdownItem item = (DropdownItem) adapterAgents.getItem(position);
-                            agentId = item.getId();
-                            propertyEditViewModel.rememberValue(FieldKey.AGENT_ID, Long.toString(agentId));
-                            propertyEditViewModel.rememberValue(FieldKey.AGENT_NAME, item.getName());
-                            // to check input
-                            checkAllValues();
-                        }
+                    // update list position with current agent
+                    int position = findDropdownPositionById(currentAgentId, viewState.getAgentItems());
+                    if ((position >= 0) && (position <= arrayAdapter.getCount())) {
+                        this.agentId = currentAgentId;
+                        autoCompleteTextView.setListSelection (position);
+                    }
+                    autoCompleteTextView.setAdapter(arrayAdapter);
+
+                    autoCompleteTextView.setOnItemClickListener((parent, view, position1, id) -> {
+                        // retrieve ArrayAdapter with parent.getAdapter()
+                        DropdownItem item = (DropdownItem) parent.getAdapter().getItem(position1);
+                        agentId = item.getId();
+                        propertyEditViewModel.rememberValue(FieldKey.AGENT_ID, Long.toString(agentId));
+                        propertyEditViewModel.rememberValue(FieldKey.AGENT_NAME, item.getName());
+                        // to check input
+                        checkAllValues();
                     });
                 }
-                // load dropdown property types list
-                if (dropDownViewstate.getPropertyTypeItems() != null){
-                    ArrayAdapter adapterPropertyType = new ArrayAdapter(getContext(), R.layout.list_item, dropDownViewstate.getPropertyTypeItems());
-                    AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutPropertyType.getEditText();
-                    autoCompleteTextView.setAdapter(adapterPropertyType);
+            }
+            // load dropdown property types list
+            if (viewState.getPropertyTypeItems() != null){
+                AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutPropertyType.getEditText();
+                if (autoCompleteTextView != null){
+                    autoCompleteTextView.setAdapter(new ArrayAdapter(getContext(), R.layout.list_item, viewState.getPropertyTypeItems()));
                     // update list position with current property type
-                    int position = findDropdownPositionById(currentPropertyTypeId, dropDownViewstate.getPropertyTypeItems());
+                    int position = findDropdownPositionById(currentPropertyTypeId, viewState.getPropertyTypeItems());
                     if (position >= 0) {
                         autoCompleteTextView.setListSelection (position);
                         propertyTypeId = currentPropertyTypeId;
                     }
 
-                    autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            DropdownItem item = (DropdownItem) adapterPropertyType.getItem(position);
-                            propertyTypeId = item.getId();
-                            propertyEditViewModel.rememberValue(FieldKey.PROPERTY_TYPE_ID, Long.toString(propertyTypeId));
-                            propertyEditViewModel.rememberValue(FieldKey.PROPERTY_TYPE_NAME, item.getName());
-                            // to check input
-                            checkAllValues();
-                        }
+                    autoCompleteTextView.setOnItemClickListener((parent, view, position12, id) -> {
+                        DropdownItem item = (DropdownItem) parent.getAdapter().getItem(position12);
+                        propertyTypeId = item.getId();
+                        propertyEditViewModel.rememberValue(FieldKey.PROPERTY_TYPE_ID, Long.toString(propertyTypeId));
+                        propertyEditViewModel.rememberValue(FieldKey.PROPERTY_TYPE_NAME, item.getName());
+                        // to check input
+                        checkAllValues();
                     });
                 }
             }
@@ -433,26 +379,23 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     private void configureViewState(){
         Log.d(Tag.TAG, "PropertyEditFragment.configureViewState() called");
         propertyEditViewModel.clearCache();
-        propertyEditViewModel.getViewStateLiveData(this.propertyId).observe(getViewLifecycleOwner(), new Observer<PropertyEditViewState>() {
-            @Override
-            public void onChanged(PropertyEditViewState propertyEditViewState) {
-                setAddressTitle(propertyEditViewState.getAddressTitle());
-                setAdrress(propertyEditViewState.getAddress());
-                setDescription(propertyEditViewState.getDescription());
-                setPointOfInterest(propertyEditViewState.getPointOfInterest());
-                setPrice(propertyEditViewState.getPrice());
-                setSurface(propertyEditViewState.getSurface());
-                setRooms(propertyEditViewState.getRooms());
-                setEntryDate(propertyEditViewState.getEntryDate());
-                setSaleDate(propertyEditViewState.getSaleDate());
-                setAgentId(propertyEditViewState.getAgentId(), propertyEditViewState.getAgentName());
-                setPropertyTypeId(propertyEditViewState.getPropertyTypeId(), propertyEditViewState.getPropertyTypeName());
-                setPropertyLatLng(new LatLng(propertyEditViewState.getLatitude(), propertyEditViewState.getLongitude()));
-                configureDropdown(propertyEditViewState.getAgentId(), propertyEditViewState.getPropertyTypeId());
-                setPhotos(propertyEditViewState.getPhotos());
-                setImageViewGoogleStaticMap(propertyEditViewState.getGoogleStaticMapUrl());
-                checkAllValues();
-            }
+        propertyEditViewModel.getViewStateLiveData(this.propertyId).observe(getViewLifecycleOwner(), propertyEditViewState -> {
+            setAddressTitle(propertyEditViewState.getAddressTitle());
+            setAddress(propertyEditViewState.getAddress());
+            setDescription(propertyEditViewState.getDescription());
+            setPointOfInterest(propertyEditViewState.getPointOfInterest());
+            setPrice(propertyEditViewState.getPrice());
+            setSurface(propertyEditViewState.getSurface());
+            setRooms(propertyEditViewState.getRooms());
+            setEntryDate(propertyEditViewState.getEntryDate());
+            setSaleDate(propertyEditViewState.getSaleDate());
+            setAgentId(propertyEditViewState.getAgentId(), propertyEditViewState.getAgentName());
+            setPropertyTypeId(propertyEditViewState.getPropertyTypeId(), propertyEditViewState.getPropertyTypeName());
+            setPropertyLatLng(new LatLng(propertyEditViewState.getLatitude(), propertyEditViewState.getLongitude()));
+            configureDropdown(propertyEditViewState.getAgentId(), propertyEditViewState.getPropertyTypeId());
+            setPhotos(propertyEditViewState.getPhotos());
+            setImageViewGoogleStaticMap(propertyEditViewState.getGoogleStaticMapUrl());
+            checkAllValues();
         });
     }
 
@@ -484,42 +427,25 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
      * setErrorEnabled true or false when agent id was checked
      */
     private void configureControlAgentId(){
-        propertyEditViewModel.getOnCheckAgentIdValueLiveData().observe(getViewLifecycleOwner(), new Observer<FieldState>() {
-            @Override
-            public void onChanged(FieldState fieldState) {
-                setErrorEnabledLayout(textInputLayoutAgent, fieldState);
-            }
-        });
+        propertyEditViewModel.getOnCheckAgentIdValueLiveData().observe(getViewLifecycleOwner(), fieldState -> setErrorEnabledLayout(textInputLayoutAgent, fieldState));
     }
 
     /**
      * setErrorEnabled true or false when property type id was checked
      */
     private void configureControlPropertyTypeId(){
-        propertyEditViewModel.getOnCheckPropertyTypeIdValueLiveData().observe(getViewLifecycleOwner(), new Observer<FieldState>() {
-            @Override
-            public void onChanged(FieldState fieldState) {
-                setErrorEnabledLayout(textInputLayoutPropertyType, fieldState);
-            }
-        });
+        propertyEditViewModel.getOnCheckPropertyTypeIdValueLiveData().observe(getViewLifecycleOwner(), fieldState -> setErrorEnabledLayout(textInputLayoutPropertyType, fieldState));
     }
 
     /**
      * button ok : setEnabled true or false, depends on all values
      */
     private void configureControlAllValues(){
-        propertyEditViewModel.getOnCheckAllValuesLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                buttonOk.setEnabled(aBoolean);
-            }
-        });
+        propertyEditViewModel.getOnCheckAllValuesLiveData().observe(getViewLifecycleOwner(), aBoolean -> buttonOk.setEnabled(aBoolean));
     }
 
     /**
      * show or hide error on component
-     * @param textInputLayout
-     * @param fieldState
      */
     private void setErrorEnabledLayout(TextInputLayout textInputLayout, FieldState fieldState){
         if (fieldState.getResId() == PropertyConst.NO_STRING_ID) {
@@ -533,13 +459,11 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     /**
      * Configure the listener and live data to check the value coming from the TextInputLayout
-     * @param textInputLayout
-     * @param getLiveData
      */
     private void configureControlValue(TextInputLayout textInputLayout,
                                   LiveData<FieldState> getLiveData){
 
-        textInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
+        Objects.requireNonNull(textInputLayout.getEditText()).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -552,16 +476,12 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
             @Override
             public void afterTextChanged(Editable s) {
-                 checkAllValues();
+                checkAllValues();
             }
         });
 
-        getLiveData.observe(getViewLifecycleOwner(), new Observer<FieldState>() {
-            @Override
-            public void onChanged(FieldState fieldState) {
-                setErrorEnabledLayout(textInputLayout, fieldState);
-            }
-        });
+        getLiveData.observe(getViewLifecycleOwner(), fieldState -> setErrorEnabledLayout(textInputLayout, fieldState));
+
     }
 
     private void cancelForm() {
@@ -603,7 +523,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     }
 
     private String getAddressTitle(){
-        return textInputLayoutAddressTitle.getEditText().getText().toString().trim();
+        return Objects.requireNonNull(textInputLayoutAddressTitle.getEditText()).getText().toString().trim();
     }
 
     private TextWatcher createTextWatcher(FieldKey key){
@@ -628,32 +548,32 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     }
 
     private void addCacheListener(TextInputLayout textInputLayout, TextWatcher textWatcher){
-        textInputLayout.getEditText().addTextChangedListener(textWatcher);
+        Objects.requireNonNull(textInputLayout.getEditText()).addTextChangedListener(textWatcher);
     }
 
     private void removeCacheListener(TextInputLayout textInputLayout, TextWatcher textWatcher){
-        textInputLayout.getEditText().removeTextChangedListener(textWatcher);
+        Objects.requireNonNull(textInputLayout.getEditText()).removeTextChangedListener(textWatcher);
     }
 
     private void setValueToComponent(String value, TextInputLayout textInputLayout, TextWatcher cacheListener){
         // Don't want to remember initial value in cache
         removeCacheListener(textInputLayout, cacheListener);
-        textInputLayout.getEditText().setText(value);
+        Objects.requireNonNull(textInputLayout.getEditText()).setText(value);
         // We can activate the cache after saving the value in the component
         addCacheListener(textInputLayout, cacheListener);
     }
 
-    private TextWatcher addressTitleCacheListener = createTextWatcher(FieldKey.ADDRESS_TITLE);
+    private final TextWatcher addressTitleCacheListener = createTextWatcher(FieldKey.ADDRESS_TITLE);
     private void setAddressTitle(String addressTitle){
         setValueToComponent(addressTitle, textInputLayoutAddressTitle, addressTitleCacheListener);
     }
 
     private String getAddress(){
-        return textInputLayoutAddress.getEditText().getText().toString().trim();
+        return Objects.requireNonNull(textInputLayoutAddress.getEditText()).getText().toString().trim();
     }
 
-    private TextWatcher addressCacheListener = createTextWatcher(FieldKey.ADDRESS);
-    private void setAdrress(String address){
+    private final TextWatcher addressCacheListener = createTextWatcher(FieldKey.ADDRESS);
+    private void setAddress(String address){
         setValueToComponent(address, textInputLayoutAddress, addressCacheListener);
     }
 
@@ -664,7 +584,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     private void setAgentId(long id, String name){
         this.agentId = id;
         AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgent.getEditText();
-        autoCompleteTextView.setText(name);
+        Objects.requireNonNull(autoCompleteTextView).setText(name);
     }
 
     private long getPropertyTypeId(){
@@ -674,69 +594,69 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     private void setPropertyTypeId(long id, String name){
         this.propertyTypeId = id;
         AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutPropertyType.getEditText();
-        autoCompleteTextView.setText(name);
+        Objects.requireNonNull(autoCompleteTextView).setText(name);
     }
 
     private String getPrice(){
-        return textInputLayoutPrice.getEditText().getText().toString().trim();
-    };
+        return Objects.requireNonNull(textInputLayoutPrice.getEditText()).getText().toString().trim();
+    }
 
-    private TextWatcher priceCacheListener = createTextWatcher(FieldKey.PRICE);
+    private final TextWatcher priceCacheListener = createTextWatcher(FieldKey.PRICE);
     private void setPrice(String price){
         setValueToComponent(price, textInputLayoutPrice, priceCacheListener);
     }
 
     private String getSurface(){
-        return textInputLayoutSurface.getEditText().getText().toString().trim();
+        return Objects.requireNonNull(textInputLayoutSurface.getEditText()).getText().toString().trim();
     }
 
-    private TextWatcher surfaceCacheListener = createTextWatcher(FieldKey.SURFACE);
+    private final TextWatcher surfaceCacheListener = createTextWatcher(FieldKey.SURFACE);
     private void setSurface(String surface){
         setValueToComponent(surface, textInputLayoutSurface, surfaceCacheListener);
     }
 
     private String getRooms(){
-        return textInputLayoutRooms.getEditText().getText().toString().trim();
+        return Objects.requireNonNull(textInputLayoutRooms.getEditText()).getText().toString().trim();
     }
 
-    private TextWatcher roomsCacheListener = createTextWatcher(FieldKey.ROOMS);
+    private final TextWatcher roomsCacheListener = createTextWatcher(FieldKey.ROOMS);
     private void setRooms(String rooms){
         setValueToComponent(rooms, textInputLayoutRooms, roomsCacheListener);
     }
 
     private String getDescription(){
-        return textInputLayoutDescription.getEditText().getText().toString().trim();
+        return Objects.requireNonNull(textInputLayoutDescription.getEditText()).getText().toString().trim();
     }
 
-    private TextWatcher descriptionCacheListener = createTextWatcher(FieldKey.DESCRIPTION);
+    private final TextWatcher descriptionCacheListener = createTextWatcher(FieldKey.DESCRIPTION);
     private void setDescription(String description){
         setValueToComponent(description, textInputLayoutDescription, descriptionCacheListener);
     }
 
     private String getPointOfInterest(){
-        return textInputLayoutPointOfInterest.getEditText().getText().toString().trim();
+        return Objects.requireNonNull(textInputLayoutPointOfInterest.getEditText()).getText().toString().trim();
     }
 
-    private TextWatcher pointOfInterestCacheListener = createTextWatcher(FieldKey.POINT_OF_INTEREST);
+    private final TextWatcher pointOfInterestCacheListener = createTextWatcher(FieldKey.POINT_OF_INTEREST);
     private void setPointOfInterest(String pointOfInterest){
         setValueToComponent(pointOfInterest, textInputLayoutPointOfInterest, pointOfInterestCacheListener);
     }
 
     private String getEntryDate() {
-        return textInputLayoutEntryDate.getEditText().getText().toString().trim();
+        return Objects.requireNonNull(textInputLayoutEntryDate.getEditText()).getText().toString().trim();
     }
 
-    private TextWatcher entryDateCacheListener = createTextWatcher(FieldKey.ENTRY_DATE);
+    private final TextWatcher entryDateCacheListener = createTextWatcher(FieldKey.ENTRY_DATE);
     private void setEntryDate(String entryDate){
         Log.d(Tag.TAG, "PropertyEditFragment.setEntryDate() called with: entryDate = [" + entryDate + "]");
         setValueToComponent(entryDate, textInputLayoutEntryDate, entryDateCacheListener);
     }
 
     private String getSaleDate() {
-        return textInputLayoutSaleDate.getEditText().getText().toString().trim();
+        return Objects.requireNonNull(textInputLayoutSaleDate.getEditText()).getText().toString().trim();
     }
 
-    private TextWatcher saleDateCacheListener = createTextWatcher(FieldKey.SALE_DATE);
+    private final TextWatcher saleDateCacheListener = createTextWatcher(FieldKey.SALE_DATE);
     private void setSaleDate(String saleDate){
         setValueToComponent(saleDate, textInputLayoutSaleDate, saleDateCacheListener);
     }
@@ -769,12 +689,9 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
                 getAgentId(),
                 getRooms(),
                 propertyLatLng,
-                new PropertyEditViewModel.AddPropertyInterface() {
-                    @Override
-                    public void onPropertyAdded(long propertyId) {
-                        // when data are ok go back to main activity to close form and navigate
-                        callbackEditProperty.onValidateEditProperty(propertyId);
-                    }
+                propertyId -> {
+                    // when data are ok go back to main activity to close form and navigate
+                    callbackEditProperty.onValidateEditProperty(propertyId);
                 });
     }
 
@@ -799,39 +716,36 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
                 propertyLatLng);
     }
 
-    ActivityResultLauncher<String[]> selectPhotoslauncher = registerForActivityResult(
-            new ActivityResultContracts.OpenMultipleDocuments(),
-            new ActivityResultCallback<List<Uri>>() {
-                @Override
-                public void onActivityResult(List<Uri> result) {
-                    for (Uri uri : result) {
-                        //getContext().getContentResolver().takePersistableUriPermission(uri, permissionFlags);
-                        Log.d(Tag.TAG, "PropertyEditFragment.onActivityResult() called with: result = [" + result + "]");
-                        addPhoto(uri, "photo from galery");
-                    }
-                }
-            });
-
     private void selectPhoto(){
-        selectPhotoslauncher.launch(new String[] {"image/*"});
+        selectFromGallery.launch(new String[] {"image/*"});
+    }
+
+    ActivityResultLauncher<String[]> selectFromGallery = registerForActivityResult(
+            new ActivityResultContracts.OpenMultipleDocuments(),
+            this::onActivityResultFromGallery);
+
+    private void onActivityResultFromGallery(List<Uri> result) {
+        for (Uri uri : result) {
+            //getContext().getContentResolver().takePersistableUriPermission(uri, permissionFlags);
+            Log.d(Tag.TAG, "PropertyEditFragment.onActivityResult() called with: result = [" + result + "]");
+            addPhoto(uri, requireActivity().getString(R.string.image_from_gallery));
+        }
+    }
+
+    private void takePicture(){
+        latestUri = FileProviderHelper.createFileUri();
+        takePictureLauncher.launch(latestUri);
     }
 
     private Uri latestUri = null;
 
     ActivityResultLauncher<Uri> takePictureLauncher = registerForActivityResult(
             new ActivityResultContracts.TakePicture(),
-            new ActivityResultCallback<Boolean>() {
-                @Override
-                public void onActivityResult(Boolean result) {
-                    // do what you need with the uri here ...
-                    Log.d("TAG", "PropertyEditFragment.onActivityResult() called with: uri = [" + latestUri + "]");
-                    addPhoto(latestUri, "picture form camera");
-                }
-            });
+            this::onActivityResultFromPictureLauncher);
 
-    private void takePicture(){
-        latestUri = FileProviderHelper.createFileUri();
-        takePictureLauncher.launch(latestUri);
+    private void onActivityResultFromPictureLauncher(Boolean result) {
+        Log.d("TAG", "PropertyEditFragment.onActivityResult() called with: uri = [" + latestUri + "]");
+        addPhoto(latestUri, requireActivity().getString(R.string.picture_from_camera));
     }
 
     private void addPhoto(Uri uri, String caption){
@@ -843,21 +757,19 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         Log.d(Tag.TAG, "PropertyEditFragment.onCreateContextMenu() called with: menu = [" + menu + "], v = [" + v + "], menuInfo = [" + menuInfo + "]");
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
+        MenuInflater inflater = requireActivity().getMenuInflater();
         inflater.inflate(R.menu.fragment_property_edit_context_menu_photo, menu);
     }
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         Log.d(Tag.TAG, "PropertyEditFragment.onContextItemSelected() called with: item = [" + item + "]");
-        //AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        //Log.d(Tag.TAG, "onContextItemSelected() called with: info = [" + info + "]");
-        switch (item.getItemId()){
-            case R.id.fragment_property_edit_context_menu_photo_delete:
-                confirmDeletePhoto();
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+        if (item.getItemId() == R.id.fragment_property_edit_context_menu_photo_delete) {
+            confirmDeletePhoto();
+            return true;
+        }
+        else {
+            return super.onContextItemSelected(item);
         }
     }
 
@@ -884,4 +796,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         Log.d(Tag.TAG, "PropertyEditFragment.onCancelDeletePhoto() called");
         photoToDelete = null;
     }
+
+
 }

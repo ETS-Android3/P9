@@ -74,7 +74,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/fragment_property_edit_text_input_layout_address"
                 app:layout_constraintBottom_toTopOf="@+id/fragment_property_edit_text_input_layout_property_type"
                 android:layout_margin="@dimen/default_margin"
-                tools:src="@tools:sample/avatars" />
+                tools:src="@tools:sample/avatars"
+                android:contentDescription="@string/map" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/fragment_property_edit_text_input_layout_property_type"
