@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.openclassrooms.realestatemanager.utils.localehelper.UnitLocale;
+
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -20,7 +22,7 @@ public class Utils {
 
     /**
      * rate used to convert dollars to euros
-     * @return
+     * @return rate
      */
     private static double getRate(){
         return 0.812f;
@@ -29,8 +31,8 @@ public class Utils {
     /**
      * Conversion d'un prix d'un bien immobilier (Dollars vers Euros)
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
-     * @param dollars
-     * @return
+     * @param dollars - amount
+     * @return converted amount in euro
      */
     public static int convertDollarToEuro(int dollars){
         return (int) Math.round(dollars * Utils.getRate());
@@ -38,8 +40,8 @@ public class Utils {
 
     /**
      *  Converting euros to dollars
-     * @param euros
-     * @return
+     * @param euros - amount
+     * @return converted amount in dollars
      */
     public static int convertEuroToDollar(int euros){
         return (int) Math.round(euros / Utils.getRate());
@@ -47,7 +49,7 @@ public class Utils {
     /**
      * Conversion de la date d'aujourd'hui en un format plus approprié
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
-     * @return
+     * @return formatted today
      */
     public static String getTodayDate(){
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -57,8 +59,8 @@ public class Utils {
     /**
      * Vérification de la connexion réseau
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
-     * @param context
-     * @return
+     * @param context - Context
+     * @return true if internet is available
      */
     public static Boolean isInternetAvailable(Context context){
         //WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
@@ -77,11 +79,12 @@ public class Utils {
         // convert to local currency
         // € : 135000000 -> "135 000 000 €"
         // $ : 135000000 -> "$135,000,000"
-        if (UnitLocale.getDefault() == UnitLocale.Metric) {
-            price = convertDollarToEuro(price);
+        if (UnitLocale.isImperial()) {
+            return formatPrice(price);
         }
-
-        return formatPrice(price);
+        else {
+            return formatPrice(convertDollarToEuro(price));
+        }
     }
 
     public static String formatPrice(int price){
@@ -107,12 +110,8 @@ public class Utils {
         return (int) Math.round(surface / 3.2808);
     }
 
-    public static int convertSurfaceToImperial(int surface){
-        return (int) Math.round(surface * 3.2808);
-    }
-
     public static String convertSurfaceToString(int surface){
-        if (UnitLocale.getDefault() == UnitLocale.Imperial) {
+        if (UnitLocale.isImperial()) {
             return formatSurfaceToImperial(surface);
         } else {
             return formatSurfaceToMeter(convertSurfaceToMeter(surface));
@@ -135,7 +134,7 @@ public class Utils {
     public static String convertDateToString(Date date){
         if (date == null) return "";
 
-        if (UnitLocale.getDefault() == UnitLocale.Imperial) {
+        if (UnitLocale.isImperial()) {
             return formatDateToUS(date);
         }
         else {

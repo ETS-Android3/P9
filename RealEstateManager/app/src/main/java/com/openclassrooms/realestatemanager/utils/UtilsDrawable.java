@@ -7,7 +7,7 @@ import android.graphics.drawable.Drawable;
 
 public class UtilsDrawable {
     public static Bitmap drawableToBitmap (Drawable drawable) {
-        Bitmap bitmap = null;
+        Bitmap bitmap;
 
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
