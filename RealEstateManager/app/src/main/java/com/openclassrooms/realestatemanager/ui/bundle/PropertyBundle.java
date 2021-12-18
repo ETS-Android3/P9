@@ -15,16 +15,10 @@ public class PropertyBundle {
         }
     }
 
-    private static Bundle createBundle(long propertyId, boolean withTitle) {
+    public static Bundle createEditBundle(long propertyId){
         Bundle bundle = new Bundle();
         bundle.putLong(PropertyConst.ARG_PROPERTY_ID_KEY, propertyId);
-        if (withTitle){
-            bundle.putString(PropertyConst.ARG_PROPERTY_TITLE, getBundleTitle(propertyId));
-        }
+        bundle.putString(PropertyConst.ARG_PROPERTY_TITLE, getBundleTitle(propertyId));
         return bundle;
-    }
-
-    public static Bundle createEditBundle(long propertyId){
-        return createBundle(propertyId, true);
     }
 }
