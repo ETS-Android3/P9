@@ -97,7 +97,7 @@ public class PropertyListFragment extends Fragment {
         layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        propertyListAdapter = new PropertyListAdapter(getContext(), new OnRowPropertyClickListener() {
+        propertyListAdapter = new PropertyListAdapter(new OnRowPropertyClickListener() {
             @Override
             public void onClickRowProperty(long propertyId) {
                 // send property id to activity

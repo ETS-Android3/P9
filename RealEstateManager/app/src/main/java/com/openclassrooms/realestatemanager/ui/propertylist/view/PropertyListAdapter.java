@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.propertylist.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +19,10 @@ import java.util.List;
 
 public class PropertyListAdapter extends RecyclerView.Adapter<PropertyListViewHolder>{
 
-    private Context context;
-    private List<RowPropertyViewState> data;
-    private OnRowPropertyClickListener onRowPropertyClickListener;
+    private final List<RowPropertyViewState> data;
+    private final OnRowPropertyClickListener onRowPropertyClickListener;
 
-    public PropertyListAdapter(Context context, OnRowPropertyClickListener onRowPropertyClickListener) {
-        this.context = context;
+    public PropertyListAdapter(OnRowPropertyClickListener onRowPropertyClickListener) {
         this.onRowPropertyClickListener = onRowPropertyClickListener;
         this.data = new ArrayList<>();
     }
@@ -34,13 +33,10 @@ public class PropertyListAdapter extends RecyclerView.Adapter<PropertyListViewHo
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_property_list, parent, false);
         PropertyListViewHolder propertyListViewHolder = new PropertyListViewHolder(view);
 
-        propertyListViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = propertyListViewHolder.getAbsoluteAdapterPosition();
-                long id = data.get(position).getId();
-                onRowPropertyClickListener.onClickRowProperty(id);
-            }
+        propertyListViewHolder.cardView.setOnClickListener(v -> {
+            int position = propertyListViewHolder.getAbsoluteAdapterPosition();
+            long id = data.get(position).getId();
+            onRowPropertyClickListener.onClickRowProperty(id);
         });
 
         return propertyListViewHolder;
@@ -75,6 +71,7 @@ public class PropertyListAdapter extends RecyclerView.Adapter<PropertyListViewHo
         return data.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void updateData(List<RowPropertyViewState> rowPropertyViewStates) {
         data.clear();
         data.addAll(rowPropertyViewStates);
