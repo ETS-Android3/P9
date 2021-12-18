@@ -2,40 +2,33 @@ package com.openclassrooms.realestatemanager.ui.propertylist.view;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnPropertySelectedListener;
-import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnRowPropertyClickListener;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewmodel.PropertyListViewModel;
-import com.openclassrooms.realestatemanager.ui.propertylist.viewstate.PropertyListViewState;
+import com.openclassrooms.realestatemanager.ui.propertylist.viewstate.RowPropertyViewState;
 import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PropertyListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.List;
+
 public class PropertyListFragment extends Fragment {
 
     private TextView textViewWarning;
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
     PropertyListAdapter propertyListAdapter;
 
     /**
@@ -57,15 +50,8 @@ public class PropertyListFragment extends Fragment {
         }
     }
 
-    private PropertyListViewModel propertyListViewModel;
-
     public PropertyListFragment() {
         // Required empty public constructor
-    }
-
-    public static PropertyListFragment newInstance() {
-        PropertyListFragment fragment = new PropertyListFragment();
-        return fragment;
     }
 
     @Override
@@ -94,17 +80,14 @@ public class PropertyListFragment extends Fragment {
 
     private void configureRecyclerView(View view) {
         recyclerView = view.findViewById(R.id.fragment_property_list_recyclerview);
-        layoutManager = new LinearLayoutManager(view.getContext());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        propertyListAdapter = new PropertyListAdapter(new OnRowPropertyClickListener() {
-            @Override
-            public void onClickRowProperty(long propertyId) {
-                // send property id to activity
-                Log.d(Tag.TAG, "PropertyListFragment.onClickRowProperty() called with: propertyId = [" + propertyId + "]");
-                if (callbackPropertySelected != null) {
-                    callbackPropertySelected.onPropertySelectedClicked(propertyId);
-                }
+        propertyListAdapter = new PropertyListAdapter(propertyId -> {
+            // send property id to activity
+            Log.d(Tag.TAG, "PropertyListFragment.onClickRowProperty() called with: propertyId = [" + propertyId + "]");
+            if (callbackPropertySelected != null) {
+                callbackPropertySelected.onPropertySelectedClicked(propertyId);
             }
         });
 
@@ -115,17 +98,14 @@ public class PropertyListFragment extends Fragment {
     }
 
     private void configureViewModel() {
-        propertyListViewModel = new ViewModelProvider(
+        PropertyListViewModel viewModel = new ViewModelProvider(
                 requireActivity(), AppViewModelFactory.getInstance())
                 .get(PropertyListViewModel.class);
-        propertyListViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyListViewState>() {
-            @Override
-            public void onChanged(PropertyListViewState propertyListViewState) {
-                showWarning(propertyListViewState.isShowWarning());
-                ((PropertyListAdapter)recyclerView.getAdapter()).updateData(propertyListViewState.getRowPropertyViewStates());
-            }
+        viewModel.getViewState().observe(getViewLifecycleOwner(), propertyListViewState -> {
+            showWarning(propertyListViewState.isShowWarning());
+            setItems(propertyListViewState.getRowPropertyViewStates());
         });
-        propertyListViewModel.load();
+        viewModel.load();
     }
 
     private void showWarning(boolean showWarning) {
@@ -135,6 +115,13 @@ public class PropertyListFragment extends Fragment {
         } else {
             textViewWarning.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setItems(List<RowPropertyViewState> items) {
+        PropertyListAdapter adapter = (PropertyListAdapter) recyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.updateData(items);
         }
     }
 }

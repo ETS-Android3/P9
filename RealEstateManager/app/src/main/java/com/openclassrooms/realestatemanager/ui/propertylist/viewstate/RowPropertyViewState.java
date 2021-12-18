@@ -1,11 +1,11 @@
 package com.openclassrooms.realestatemanager.ui.propertylist.viewstate;
 
 public class RowPropertyViewState {
-    private long id;
-    private String url;
-    private String type;
-    private String address;
-    private String price;
+    private final long id;
+    private final String url;
+    private final String type;
+    private final String address;
+    private final String price;
 
     public RowPropertyViewState(long id, String url, String type, String address, String price) {
         this.id = id;
