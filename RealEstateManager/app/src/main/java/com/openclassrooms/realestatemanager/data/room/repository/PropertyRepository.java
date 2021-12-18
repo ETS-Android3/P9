@@ -96,7 +96,7 @@ public class PropertyRepository {
 
     public LiveData<List<Property>> getPropertiesWithFilterLiveData(SimpleSQLiteQuery query) {
         return propertyDao.getPropertiesWithFilterLiveData(query);
-    };
+    }
 
     public List<Property> getPropertiesWithFilter(SimpleSQLiteQuery query){
         Callable<List<Property>> callable = new Callable<List<Property>>() {
@@ -120,7 +120,7 @@ public class PropertyRepository {
         return properties;
     }
 
-    private MutableLiveData<PropertySearchParameters> propertySearchParametersMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<PropertySearchParameters> propertySearchParametersMutableLiveData = new MutableLiveData<>();
     public void setPropertySearchParameters(PropertySearchParameters propertySearchParameters) {
         propertySearchParametersMutableLiveData.setValue(propertySearchParameters);
     }

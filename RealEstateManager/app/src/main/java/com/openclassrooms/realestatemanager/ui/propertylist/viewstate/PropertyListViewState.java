@@ -4,8 +4,8 @@ import java.util.List;
 
 public class PropertyListViewState {
 
-    private boolean showWarning;
-    private List<RowPropertyViewState> rowPropertyViewStates;
+    private final boolean showWarning;
+    private final List<RowPropertyViewState> rowPropertyViewStates;
 
     public PropertyListViewState(boolean showWarning, List<RowPropertyViewState> rowPropertyViewStates) {
         this.showWarning = showWarning;

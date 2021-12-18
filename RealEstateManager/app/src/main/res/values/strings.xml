@@ -22,8 +22,6 @@
     <string name="property_point_of_interest_value">Central Park, High schools, Public transport</string>
     <string name="property_state">State</string>
     <string name="property_state_value">For sale</string>
-    <string name="property_available">Available</string>
-    <string name="property_available_value">Yes</string>
     <string name="property_entry_date">Entry date</string>
     <string name="property_entry_date_value">1/1/2021</string>
     <string name="property_sale_date">Sale date</string>
@@ -43,12 +41,6 @@
 
     <string name="property_photo_add">Gallery</string>
     <string name="property_take_picture">Camera</string>
-    <string name="property_photo_legend">Photo legend</string>
-    <string name="property_photo_legend_value">Great place</string>
-
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="no_date">No date</string>
 
     <string name="property_edit_title_create">Add a new property</string>
     <string name="property_edit_title_modify">Modify property</string>
@@ -61,14 +53,10 @@
 
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
 
     <string name="row_property_list_picture_description">Property picture</string>
 
-    <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
-    <string name="sell">Sell</string>
     <string name="title_activity_permission">Permission</string>
 
     <string name="permission_request">Permission Request</string>

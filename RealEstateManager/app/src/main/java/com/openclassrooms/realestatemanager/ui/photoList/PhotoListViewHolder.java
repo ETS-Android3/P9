@@ -11,8 +11,8 @@ import com.openclassrooms.realestatemanager.R;
 
 public class PhotoListViewHolder extends RecyclerView.ViewHolder{
 
-    ImageView image;
-    TextView textView;
+    final ImageView image;
+    final TextView textView;
 
     public PhotoListViewHolder(@NonNull View itemView) {
         super(itemView);

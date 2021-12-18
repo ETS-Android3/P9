@@ -21,12 +21,10 @@ import java.util.List;
 
 public class PropertyListAdapter extends RecyclerView.Adapter<PropertyListViewHolder>{
 
-    private Context context;
-    private List<RowPropertyViewState> data;
-    private OnRowPropertyClickListener onRowPropertyClickListener;
+    private final List<RowPropertyViewState> data;
+    private final OnRowPropertyClickListener onRowPropertyClickListener;
 
     public PropertyListAdapter(Context context, OnRowPropertyClickListener onRowPropertyClickListener) {
-        this.context = context;
         this.onRowPropertyClickListener = onRowPropertyClickListener;
         this.data = new ArrayList<>();
     }

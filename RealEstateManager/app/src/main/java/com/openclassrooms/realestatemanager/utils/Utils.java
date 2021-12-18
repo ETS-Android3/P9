@@ -12,6 +12,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -52,7 +53,7 @@ public class Utils {
      * @return
      */
     public static String getTodayDate(){
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         return dateFormat.format(new Date());
     }
 
@@ -63,8 +64,8 @@ public class Utils {
      * @return
      */
     public static Boolean isInternetAvailable(Context context){
-        //WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-        //return wifi.isWifiEnabled();
+        // WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+        // return wifi.isWifiEnabled();
         ConnectivityManager connectivityManager =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -98,11 +99,11 @@ public class Utils {
      */
     private static String formatSurfaceToImperial(int surface){
         // 9768 -> "9,768 ft²"
-        return String.format("%,d ft²", surface);
+        return String.format(Locale.getDefault(), "%,d ft²", surface);
     }
 
     private static String formatSurfaceToMeter(int surface){
-        return String.format("%,d m²", surface);
+        return String.format(Locale.getDefault(), "%,d m²", surface);
     }
 
     private static int convertSurfaceToMeter(int surface){
@@ -125,12 +126,12 @@ public class Utils {
      * Date
      */
     private static String formatDateToUS(Date date){
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
         return dateFormat.format(date);
     }
 
     private static String formatDateToEuropean(Date date){
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         return dateFormat.format(date);
     }
 

@@ -720,7 +720,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         selectFromGallery.launch(new String[] {"image/*"});
     }
 
-    ActivityResultLauncher<String[]> selectFromGallery = registerForActivityResult(
+    final ActivityResultLauncher<String[]> selectFromGallery = registerForActivityResult(
             new ActivityResultContracts.OpenMultipleDocuments(),
             this::onActivityResultFromGallery);
 
@@ -739,7 +739,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     private Uri latestUri = null;
 
-    ActivityResultLauncher<Uri> takePictureLauncher = registerForActivityResult(
+    final ActivityResultLauncher<Uri> takePictureLauncher = registerForActivityResult(
             new ActivityResultContracts.TakePicture(),
             this::onActivityResultFromPictureLauncher);
 

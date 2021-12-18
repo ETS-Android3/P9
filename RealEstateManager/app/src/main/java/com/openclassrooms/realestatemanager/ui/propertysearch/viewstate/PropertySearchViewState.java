@@ -6,22 +6,22 @@ import java.util.Date;
 import java.util.List;
 
 public class PropertySearchViewState {
-    private List<DropdownItem> agents;
-    private int agentIndex;
-    private List<DropdownItem> propertyTypes;
-    private int propertyTypeIndex;
-    private String fullText;
-    private List<Float> minMaxPrice;
-    private List<Float> valuesPrice;
-    private String captionPrice;
-    private List<Float> minMaxSurface;
-    private List<Float> valuesSurface;
-    private String captionSurface;
-    private List<Float> minMaxRooms;
-    private List<Float> valuesRooms;
-    private String captionRooms;
-    private String captionEntryDate;
-    private String captionSaleDate;
+    private final List<DropdownItem> agents;
+    private final int agentIndex;
+    private final List<DropdownItem> propertyTypes;
+    private final int propertyTypeIndex;
+    private final String fullText;
+    private final List<Float> minMaxPrice;
+    private final List<Float> valuesPrice;
+    private final String captionPrice;
+    private final List<Float> minMaxSurface;
+    private final List<Float> valuesSurface;
+    private final String captionSurface;
+    private final List<Float> minMaxRooms;
+    private final List<Float> valuesRooms;
+    private final String captionRooms;
+    private final String captionEntryDate;
+    private final String captionSaleDate;
 
     public PropertySearchViewState(List<DropdownItem> agents, int agentIndex, List<DropdownItem> propertyTypes, int propertyTypeIndex, String fullText, List<Float> minMaxPrice, List<Float> valuesPrice, String captionPrice, List<Float> minMaxSurface, List<Float> valuesSurface, String captionSurface, List<Float> minMaxRooms, List<Float> valuesRooms, String captionRooms, String captionEntryDate, String captionSaleDate) {
         this.agents = agents;
