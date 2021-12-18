@@ -1,9 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel;
 
-import android.util.Log;
-
-import com.openclassrooms.realestatemanager.tag.Tag;
-
 import java.util.Arrays;
 import java.util.List;
 

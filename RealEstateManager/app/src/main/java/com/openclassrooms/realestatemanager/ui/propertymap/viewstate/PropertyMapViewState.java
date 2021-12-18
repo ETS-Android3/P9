@@ -2,8 +2,6 @@ package com.openclassrooms.realestatemanager.ui.propertymap.viewstate;
 
 import android.location.Location;
 
-import com.openclassrooms.realestatemanager.data.room.model.PropertyLocationData;
-
 import java.util.List;
 
 public class PropertyMapViewState {

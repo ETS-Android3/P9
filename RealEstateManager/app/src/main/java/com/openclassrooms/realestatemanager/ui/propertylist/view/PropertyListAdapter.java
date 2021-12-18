@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.propertylist.view;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertylist.listener.OnRowPropertyClickListener;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewstate.RowPropertyViewState;
 

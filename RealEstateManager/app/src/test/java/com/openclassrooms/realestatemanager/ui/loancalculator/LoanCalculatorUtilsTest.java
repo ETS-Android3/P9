@@ -2,11 +2,6 @@ package com.openclassrooms.realestatemanager.ui.loancalculator;
 
 import static org.junit.Assert.*;
 
-import android.util.Log;
-
-import com.openclassrooms.realestatemanager.tag.Tag;
-import com.openclassrooms.realestatemanager.utils.LoanCalculator;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +9,6 @@ import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 @RunWith(Parameterized.class)
 public class LoanCalculatorUtilsTest {

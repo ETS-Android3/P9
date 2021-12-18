@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.openclassrooms.realestatemanager.data.room.dao.PropertyTypeDao;
 import com.openclassrooms.realestatemanager.data.room.database.AppDatabase;
-import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 
 import java.util.ArrayList;

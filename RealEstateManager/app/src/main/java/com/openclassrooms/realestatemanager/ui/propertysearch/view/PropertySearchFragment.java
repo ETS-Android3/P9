@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,7 +34,6 @@ import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFa
 import com.openclassrooms.realestatemanager.utils.DateRangePickedHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
-import java.util.Date;
 import java.util.List;
 
 public class PropertySearchFragment extends Fragment {

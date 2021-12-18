@@ -1,9 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.viewmodel;
 
-import android.util.Log;
-
-import com.openclassrooms.realestatemanager.tag.Tag;
-
 public class Field {
     private final FieldKey key;
     private String value;

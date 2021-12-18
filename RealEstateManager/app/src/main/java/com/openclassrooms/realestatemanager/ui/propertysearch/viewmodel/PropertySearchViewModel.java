@@ -23,7 +23,6 @@ import com.openclassrooms.realestatemanager.ui.propertysearch.viewstate.Property
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -310,7 +309,7 @@ public class PropertySearchViewModel extends ViewModel {
 
         int min = propertyRange.getMinPrice();
         // truncate (lower round)
-        min = (int) (min / 1000);
+        min = min / 1000;
         int max = propertyRange.getMaxPrice();
         max = Math.round(max / 1000);
 

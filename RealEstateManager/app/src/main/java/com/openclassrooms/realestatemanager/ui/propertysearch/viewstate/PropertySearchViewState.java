@@ -2,7 +2,6 @@ package com.openclassrooms.realestatemanager.ui.propertysearch.viewstate;
 
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 
-import java.util.Date;
 import java.util.List;
 
 public class PropertySearchViewState {

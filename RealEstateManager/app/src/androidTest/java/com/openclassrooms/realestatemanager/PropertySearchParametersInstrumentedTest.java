@@ -26,7 +26,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Consumer;
 
 @RunWith(AndroidJUnit4.class)
 public class PropertySearchParametersInstrumentedTest {
