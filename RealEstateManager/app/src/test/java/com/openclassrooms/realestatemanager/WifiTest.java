@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.content.Context;
@@ -27,7 +28,7 @@ public class WifiTest {
         shadowOfActiveNetworkInfo.setConnectionStatus(NetworkInfo.State.DISCONNECTED);
         boolean isInternetAvailable = Utils.isInternetAvailable(MainApplication.getApplication());
 
-        assertEquals(false, isInternetAvailable);
+        assertFalse(isInternetAvailable);
     }
 
     @Test
@@ -38,6 +39,6 @@ public class WifiTest {
         shadowOfActiveNetworkInfo.setConnectionStatus(NetworkInfo.State.CONNECTED);
         boolean isInternetAvailable = Utils.isInternetAvailable(MainApplication.getApplication());
 
-        assertEquals(true, isInternetAvailable);
+        assertTrue(isInternetAvailable);
     }
 }
