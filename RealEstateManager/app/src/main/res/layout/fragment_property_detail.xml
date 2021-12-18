@@ -20,12 +20,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/property_detail_address_title_value"
                 style="@style/TextviewStyle.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_address_title_value" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/property_detail_recycler_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_margin"
@@ -39,12 +41,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:id="@+id/property_detail_type"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="@string/property_type"
                     style="@style/TextviewStyle.Label"/>
                 <TextView
+                    android:id="@+id/property_detail_state"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -56,12 +60,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/property_detail_type_value"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/property_type_value"
                 style="@style/TextviewStyle.Value"/>
             <TextView
+                android:id="@+id/property_detail_state_value"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -73,12 +79,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/property_detail_price"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/property_price"
                 style="@style/TextviewStyle.Label"/>
             <TextView
+                android:id="@+id/property_detail_surface"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -89,12 +97,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/property_detail_prive_value"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/property_price_value"
                 style="@style/TextviewStyle.Value"/>
             <TextView
+                android:id="@+id/property_detail_surface_value"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -103,22 +113,26 @@
         </LinearLayout>
 
             <TextView
+                android:id="@+id/property_detail_rooms"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_rooms"
                 style="@style/TextviewStyle.Label"/>
             <TextView
+                android:id="@+id/property_detail_rooms_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_rooms_value"
                 style="@style/TextviewStyle.Value"/>
 
             <TextView
+                android:id="@+id/property_detail_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_description"
                 style="@style/TextviewStyle.Label"/>
             <TextView
+                android:id="@+id/property_detail_description_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_description_value"
@@ -126,23 +140,27 @@
 
 
             <TextView
+                android:id="@+id/property_detail_point_of_interest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_point_of_interest"
                 style="@style/TextviewStyle.Label"/>
             <TextView
+                android:id="@+id/property_detail_point_of_interest_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_point_of_interest_value"
                 style="@style/TextviewStyle.Value"/>
 
             <TextView
+                android:id="@+id/property_detail_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_address"
                 style="@style/TextviewStyle.Label"/>
 
             <TextView
+                android:id="@+id/property_detail_address_value"
                 style="@style/TextviewStyle.Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -161,12 +179,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/property_detail_entry_date"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/property_entry_date"
                 style="@style/TextviewStyle.Label"/>
             <TextView
+                android:id="@+id/property_detail_sale_date"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -177,12 +197,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/property_detail_entry_date_value"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/property_entry_date_value"
                 style="@style/TextviewStyle.Value"/>
             <TextView
+                android:id="@+id/property_detail_sale_date_value"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -190,32 +212,38 @@
                 style="@style/TextviewStyle.Value"/>
         </LinearLayout>
             <TextView
+                android:id="@+id/property_detail_agent_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_agent_name"
                 style="@style/TextviewStyle.Label"/>
             <TextView
+                android:id="@+id/property_detail_agent_name_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_agent_name_value"
                 style="@style/TextviewStyle.Value"/>
 
             <TextView
+                android:id="@+id/property_detail_agent_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_agent_email"
                 style="@style/TextviewStyle.Label"/>
             <TextView
+                android:id="@+id/property_detail_agent_email_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_agent_email_value"
                 style="@style/TextviewStyle.Value"/>
             <TextView
+                android:id="@+id/property_detail_agent_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_agent_phone"
                 style="@style/TextviewStyle.Label"/>
             <TextView
+                android:id="@+id/property_detail_agent_phone_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/property_agent_phone_value"
