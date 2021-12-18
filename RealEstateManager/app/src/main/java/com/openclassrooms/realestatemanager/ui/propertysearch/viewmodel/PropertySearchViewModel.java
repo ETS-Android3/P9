@@ -20,7 +20,6 @@ import com.openclassrooms.realestatemanager.data.room.repository.PropertySearchP
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertysearch.viewstate.PropertySearchViewState;
-import com.openclassrooms.realestatemanager.utils.ResourceArrayHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
@@ -490,18 +489,6 @@ public class PropertySearchViewModel extends ViewModel {
         }
 
         databaseRepository.getPropertyRepository().setPropertySearchParameters(psp);
-    }
-
-    private float getMaxRangePrice(){
-        return ResourceArrayHelper.getMaxRangeFromArray(R.array.initial_slider_values_search_price);
-    }
-
-    private float getMaxRangeSurface(){
-        return ResourceArrayHelper.getMaxRangeFromArray(R.array.initial_slider_values_search_surface);
-    }
-
-    private float getMaxRangeRooms(){
-        return ResourceArrayHelper.getMaxRangeFromArray(R.array.initial_slider_values_search_rooms);
     }
 
     public void resetSearch(){
