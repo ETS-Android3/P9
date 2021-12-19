@@ -71,7 +71,7 @@ public class PropertySearchParametersInstrumentedTest {
 
             @Override
             public void onGetProperties(List<Property> properties) {
-                assertEquals(2, properties.size());
+                assertEquals(1, properties.size());
             }
         });
     }
@@ -86,7 +86,7 @@ public class PropertySearchParametersInstrumentedTest {
 
             @Override
             public void onGetProperties(List<Property> properties) {
-                assertEquals(6, properties.size());
+                assertEquals(1, properties.size());
             }
         });
     }
@@ -96,12 +96,12 @@ public class PropertySearchParametersInstrumentedTest {
         testPropertySearchParameters(new PropertySearchParametersTestInterface() {
             @Override
             public void onSetValue(PropertySearchParameters psp) {
-                psp.setSurface(new Pair<>(0, 30));
+                psp.setRooms(new Pair<>(0, 30));
             }
 
             @Override
             public void onGetProperties(List<Property> properties) {
-                assertEquals(1, properties.size());
+                assertEquals(5, properties.size());
             }
         });
     }
@@ -176,7 +176,7 @@ public class PropertySearchParametersInstrumentedTest {
 
             @Override
             public void onGetProperties(List<Property> properties) {
-                assertEquals(5, properties.size());
+                assertEquals(3, properties.size());
             }
         });
     }
@@ -251,7 +251,7 @@ public class PropertySearchParametersInstrumentedTest {
 
             @Override
             public void onGetProperties(List<Property> properties) {
-                assertEquals(8, properties.size());
+                assertEquals(5, properties.size());
             }
         });
     }
@@ -303,7 +303,7 @@ public class PropertySearchParametersInstrumentedTest {
 
             @Override
             public void onGetProperties(List<Property> properties) {
-                assertEquals(1, properties.size());
+                assertEquals(2, properties.size());
             }
         });
     }

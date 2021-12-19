@@ -49,24 +49,6 @@ public class GoogleGeocodeRepository {
     private final MutableLiveData<Geocode> geocodeMutableLiveData = new MutableLiveData<>();
     public LiveData<Geocode> getGeocodeLiveData() { return geocodeMutableLiveData; }
 
-    public void loadGeocode(String address){
-        Call<Geocode> call = getGeocode(address);
-        call.enqueue(new Callback<Geocode>() {
-            @Override
-            public void onResponse(Call<Geocode> call, Response<Geocode> response) {
-                if (response.isSuccessful()) {
-                    Geocode geocode = response.body();
-                    geocodeMutableLiveData.setValue(geocode);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Geocode> call, Throwable t) {
-                errorMutableLiveData.postValue(t.getMessage());
-            }
-        });
-    }
-
     private LatLng extractLocation(Geocode geocode){
         if (geocode != null) {
             List<Result> results = geocode.getResults();

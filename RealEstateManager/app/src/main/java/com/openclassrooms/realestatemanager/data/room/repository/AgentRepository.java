@@ -26,21 +26,14 @@ public class AgentRepository {
     }
 
     public List<Agent> getAgents(){
-        Callable<List<Agent>> callable = new Callable<List<Agent>>() {
-            @Override
-            public List<Agent> call() throws Exception {
-                return agentDao.getAgents();
-            }
-        };
+        Callable<List<Agent>> callable = agentDao::getAgents;
 
         List<Agent> agents = new ArrayList<>();
         Future<List<Agent>> future = AppDatabase.getExecutor().submit(callable);
         try {
             List<Agent> list = future.get();
             agents.addAll(list);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -53,28 +46,20 @@ public class AgentRepository {
         return mutableLiveData;
     }
 
-    public LiveData<Agent> getAgentById(long id) {return agentDao.getAgentById(id);}
-
     public Cursor getAgentsWithCursor(){ return agentDao.getAgentsWithCursor(); }
     public Cursor getAgentByIdWithCursor(long id){
         return agentDao.getAgentByIdWithCursor(id);
     }
 
     public void insert(Agent agent) {
-        AppDatabase.getExecutor().execute(() -> {
-            agentDao.insert(agent);
-        });
+        AppDatabase.getExecutor().execute(() -> agentDao.insert(agent));
     }
 
     public void update(Agent agent) {
-        AppDatabase.getExecutor().execute(() -> {
-            agentDao.update(agent);
-        });
+        AppDatabase.getExecutor().execute(() -> agentDao.update(agent));
     }
 
     public void delete(long id) {
-        AppDatabase.getExecutor().execute(() -> {
-            agentDao.delete(id);
-        });
+        AppDatabase.getExecutor().execute(() -> agentDao.delete(id));
     }
 }

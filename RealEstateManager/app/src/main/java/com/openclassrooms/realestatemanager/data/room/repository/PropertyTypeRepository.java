@@ -24,12 +24,7 @@ public class PropertyTypeRepository {
     }
 
     public List<PropertyType> getPropertyTypes(){
-        Callable<List<PropertyType>> callable = new Callable<List<PropertyType>>() {
-            @Override
-            public List<PropertyType> call() throws Exception {
-                return propertyTypeDao.getPropertyTypes();
-            }
-        };
+        Callable<List<PropertyType>> callable = propertyTypeDao::getPropertyTypes;
 
         List<PropertyType> propertyTypes = new ArrayList<>();
         Future<List<PropertyType>> future = AppDatabase.getExecutor().submit(callable);
@@ -37,9 +32,7 @@ public class PropertyTypeRepository {
         try {
             List<PropertyType> list = future.get();
             propertyTypes.addAll(list);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return propertyTypes;
@@ -50,24 +43,17 @@ public class PropertyTypeRepository {
         mutableLiveData.setValue(getPropertyTypes());
         return mutableLiveData;
     }
-    public LiveData<PropertyType> getPropertyTypeById(long id) {return propertyTypeDao.getPropertyTypeById(id);}
 
     public void insert(PropertyType propertyType) {
-        AppDatabase.getExecutor().execute(() -> {
-            propertyTypeDao.insert(propertyType);
-        });
+        AppDatabase.getExecutor().execute(() -> propertyTypeDao.insert(propertyType));
     }
 
     public void update(PropertyType propertyType) {
-        AppDatabase.getExecutor().execute(() -> {
-            propertyTypeDao.update(propertyType);
-        });
+        AppDatabase.getExecutor().execute(() -> propertyTypeDao.update(propertyType));
     }
 
     public void delete(long id) {
-        AppDatabase.getExecutor().execute(() -> {
-            propertyTypeDao.delete(id);
-        });
+        AppDatabase.getExecutor().execute(() -> propertyTypeDao.delete(id));
     }
 
     public Cursor getPropertyTypeByIdWithCursor(long id){

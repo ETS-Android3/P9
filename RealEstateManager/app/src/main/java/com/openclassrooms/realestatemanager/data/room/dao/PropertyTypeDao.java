@@ -2,7 +2,6 @@ package com.openclassrooms.realestatemanager.data.room.dao;
 
 import android.database.Cursor;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -18,9 +17,6 @@ public interface PropertyTypeDao {
     @Query("SELECT * FROM property_type ORDER BY id")
     List<PropertyType> getPropertyTypes();
 
-    @Query("SELECT * FROM property_type WHERE id = :id")
-    LiveData<PropertyType> getPropertyTypeById(long id);
-
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     long insert(PropertyType propertyType);
 
@@ -35,7 +31,5 @@ public interface PropertyTypeDao {
 
     @Query("SELECT * FROM property_type ORDER BY id")
     Cursor getPropertyTypesWithCursor();
-
-
 }
 

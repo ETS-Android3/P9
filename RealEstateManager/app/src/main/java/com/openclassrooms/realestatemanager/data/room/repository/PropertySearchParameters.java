@@ -83,21 +83,6 @@ public class PropertySearchParameters {
         this.agentId = agentId;
     }
 
-    public void Clear(){
-        price = null;
-        surface = null;
-        rooms = null;
-        description = null;
-        pointOfInterest = null;
-        address = null;
-        addressTitle = null;
-        entryDate = null;
-        saleDate = null;
-        propertyTypeId = null;
-        agentId = null;
-        fullText = null;
-    }
-
     private boolean containsWhere(StringBuilder query){
         return query.toString().toLowerCase().contains("where");
     }
@@ -121,7 +106,7 @@ public class PropertySearchParameters {
             else
                 query.append("WHERE ");
             query.append(String.format("(%s LIKE ?) ", fieldName));
-            // for like statement arg must be surronded by "%"
+            // for like statement arg must be surrounded by "%"
             args.add("%"+value+"%");
         }
     }
@@ -135,7 +120,7 @@ public class PropertySearchParameters {
             for (int i=0; i<fieldNames.size(); i++){
                 String fieldName = fieldNames.get(i);
                 if (i == 0)
-                    query.append(String.format("(", fieldName));
+                    query.append("(");
                 if (i == fieldNames.size() - 1 )
                     query.append(String.format("%s LIKE ?) ", fieldName));
                 else
@@ -201,8 +186,7 @@ public class PropertySearchParameters {
 
         query.append("ORDER BY property.id ");
 
-        SimpleSQLiteQuery simpleSQLiteQuery = new SimpleSQLiteQuery(query.toString(), args.toArray());
-        return simpleSQLiteQuery;
+        return new SimpleSQLiteQuery(query.toString(), args.toArray());
     }
 
 }
