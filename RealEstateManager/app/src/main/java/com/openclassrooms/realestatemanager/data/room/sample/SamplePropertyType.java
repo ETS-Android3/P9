@@ -11,7 +11,6 @@ public class SamplePropertyType {
                 new PropertyType(4, "Manor"),
                 new PropertyType(5, "Condominium"),
                 new PropertyType(6, "Townhouse"),
-
         };
     }
 }

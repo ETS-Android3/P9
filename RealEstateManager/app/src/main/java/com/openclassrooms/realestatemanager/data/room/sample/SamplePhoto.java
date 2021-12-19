@@ -24,7 +24,6 @@ public class SamplePhoto {
 
                 new Photo(13, 6,"https://www.alsacecuisine.fr/image/partial/1/5/3/e2c71f5fc453f3c847106d4caff80c0b_1539598263-alsace-cuisine16-.jpg", "kitchen", 4),
                 new Photo(14, 7,"https://img-3.journaldesfemmes.fr/b_Hbbfovb-06hG3rk9yQ9i1Iqco=/1240x/smart/f5e7b7ba340c47e1ac502948f45d43a4/ccmcms-jdf/12034178.jpg", "bed room", 4),
-
         };
     }
 }

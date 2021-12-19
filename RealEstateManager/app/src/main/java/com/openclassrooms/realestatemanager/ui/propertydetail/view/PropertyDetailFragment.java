@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,48 +26,21 @@ import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFa
 import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertydetail.viewmodel.PropertyDetailViewModel;
-import com.openclassrooms.realestatemanager.ui.propertydetail.viewstate.PropertyDetailViewState;
 
 import java.util.List;
 import java.util.Locale;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PropertyDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PropertyDetailFragment extends Fragment {
 
     private FragmentPropertyDetailBinding binding;
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private long propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
 
+    private long propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
     private ImageView imageViewGoogleStaticMap;
 
     private PropertyDetailViewModel propertyDetailViewModel;
 
-    private void setPropertyDetailViewModel(PropertyDetailViewModel propertyDetailViewModel) {
-        this.propertyDetailViewModel = propertyDetailViewModel;
-    }
-
     public PropertyDetailFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param propertyId Parameter 1.
-     * @return A new instance of fragment PropertyDetailFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PropertyDetailFragment newInstance(long propertyId) {
-        PropertyDetailFragment fragment = new PropertyDetailFragment();
-        Bundle args = new Bundle();
-        args.putLong(PropertyConst.ARG_PROPERTY_ID_KEY, propertyId);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -77,7 +49,7 @@ public class PropertyDetailFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(Tag.TAG, "PropertyDetailFragment.onCreateView() called with: container = [" + container + "]");
         // Inflate the layout for this fragment
@@ -116,7 +88,10 @@ public class PropertyDetailFragment extends Fragment {
     }
 
     private void setPhotos(List<Photo> photos){
-        ((PhotoListAdapter) binding.propertyDetailRecyclerView.getAdapter()).updateData(photos);
+        PhotoListAdapter adapter = (PhotoListAdapter) binding.propertyDetailRecyclerView.getAdapter();
+        if (adapter != null){
+            adapter.updateData(photos);
+        }
     }
 
     private void configureDetailViewModel(){
@@ -124,36 +99,30 @@ public class PropertyDetailFragment extends Fragment {
                 requireActivity(), AppViewModelFactory.getInstance())
                 .get(PropertyDetailViewModel.class);
 
-        propertyDetailViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyDetailViewState>() {
-            @Override
-            public void onChanged(PropertyDetailViewState propertyDetailViewState) {
-                setPrice(propertyDetailViewState.getPropertyDetailData().getPrice());
-                setSurface(propertyDetailViewState.getPropertyDetailData().getSurface());
-                setRooms(propertyDetailViewState.getPropertyDetailData().getRooms());
-                setDescription(propertyDetailViewState.getPropertyDetailData().getDescription());
-                setAddressTitle(propertyDetailViewState.getPropertyDetailData().getAddressTitle());
-                setAddress(propertyDetailViewState.getPropertyDetailData().getAddress());
-                setPointOfInterest(propertyDetailViewState.getPropertyDetailData().getPointsOfInterest());
-                setState(propertyDetailViewState.getPropertyStateResId());
-                setEntryDate(propertyDetailViewState.getEntryDate());
-                setSaleDate(propertyDetailViewState.getSaleDate());
-                setAgentName(propertyDetailViewState.getPropertyDetailData().getAgentName());
-                setAgentEmail(propertyDetailViewState.getPropertyDetailData().getAgentEmail());
-                setAgentPhone(propertyDetailViewState.getPropertyDetailData().getAgentPhone());
-                setTypeName(propertyDetailViewState.getPropertyDetailData().getTypeName());
-                setImageViewGoogleStaticMap(propertyDetailViewState.getStaticMapUrl());
-                // list photos
-                setPhotos(propertyDetailViewState.getPhotos());
-            }
+        propertyDetailViewModel.getViewState().observe(getViewLifecycleOwner(), viewState -> {
+            setPrice(viewState.getPropertyDetailData().getPrice());
+            setSurface(viewState.getPropertyDetailData().getSurface());
+            setRooms(viewState.getPropertyDetailData().getRooms());
+            setDescription(viewState.getPropertyDetailData().getDescription());
+            setAddressTitle(viewState.getPropertyDetailData().getAddressTitle());
+            setAddress(viewState.getPropertyDetailData().getAddress());
+            setPointOfInterest(viewState.getPropertyDetailData().getPointsOfInterest());
+            setState(viewState.getPropertyStateResId());
+            setEntryDate(viewState.getEntryDate());
+            setSaleDate(viewState.getSaleDate());
+            setAgentName(viewState.getPropertyDetailData().getAgentName());
+            setAgentEmail(viewState.getPropertyDetailData().getAgentEmail());
+            setAgentPhone(viewState.getPropertyDetailData().getAgentPhone());
+            setTypeName(viewState.getPropertyDetailData().getTypeName());
+            setImageViewGoogleStaticMap(viewState.getStaticMapUrl());
+            // list photos
+            setPhotos(viewState.getPhotos());
         });
 
-        propertyDetailViewModel.getFirstOrValidId(propertyId).observe(getViewLifecycleOwner(), new Observer<Long>() {
-            @Override
-            public void onChanged(Long aLong) {
-                Log.d(Tag.TAG, "PropertyDetailFragment.configureDetailViewModel()->getFirstOrValidId->onChanged called with: aLong = [" + aLong + "]");
-                propertyId = aLong;
-                propertyDetailViewModel.load(propertyId);
-            }
+        propertyDetailViewModel.getFirstOrValidId(propertyId).observe(getViewLifecycleOwner(), aLong -> {
+            Log.d(Tag.TAG, "PropertyDetailFragment.configureDetailViewModel()->getFirstOrValidId->onChanged called with: aLong = [" + aLong + "]");
+            propertyId = aLong;
+            propertyDetailViewModel.load(propertyId);
         });
     }
 
