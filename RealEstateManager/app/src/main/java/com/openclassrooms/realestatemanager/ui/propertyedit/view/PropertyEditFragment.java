@@ -102,8 +102,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     @Override
     public void onBackPressed() {
-        Log.d(Tag.TAG, "PropertyEditFragment.onBackPressed() called. to clearCache.");
-        propertyEditViewModel.clearCache();
+        Log.d(Tag.TAG, "PropertyEditFragment.onBackPressed() called.");
     }
 
     @Override
@@ -123,7 +122,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(Tag.TAG, "PropertyEditFragment.onCreateView() called with: inflater = [" + inflater + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
+        Log.d(Tag.TAG, "PropertyEditFragment.onCreateView() called");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_property_edit, container, false);
 
@@ -191,7 +190,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         photoListAdapter = new PhotoListAdapter(new OnRowPhotoListener() {
             @Override
             public void onClickRowPhoto(Photo photo) {
-                Log.d(Tag.TAG, "onClickRowPhoto() called with: photo = [" + photo + "]");
                 // open photo with call back
                 PhotoEditDialogFragment.newInstance(
                         getString(R.string.edit_photo),
@@ -203,7 +201,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
                         .setPhotoEditListener(new OnPhotoEditListener() {
                             @Override
                             public void onPhotoEditOk(long id, int order, String url, String caption, long propertyId) {
-                                Log.d(Tag.TAG, "PropertyEditFragment.onPhotoEditOk() called with: id = [" + id + "], order = [" + order + "], url = [" + url + "], caption = [" + caption + "], propertyId = [" + propertyId + "]");
                                 Photo photo = new Photo(id, order, url, caption, propertyId);
                                 propertyEditViewModel.updatePhoto(photo);
                             }
@@ -218,7 +215,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
             @Override
             public void onLongClickRowPhoto(View view, Photo photo) {
-                Log.d(Tag.TAG, "PropertyEditFragment.onLongClickRowPhoto() called with: view = [" + view + "], photo = [" + photo + "]");
                 // cache photo to delete
                 photoToDelete = photo;
             }
@@ -266,7 +262,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
         textInputEditTextAddress.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 String text = getAddress();
-                Log.d(Tag.TAG, "PropertyEditFragment.onFocusChange() called text = [" + text + "]");
                 propertyEditViewModel.getAddressMutableLiveData().setValue(text);
             }
         });
@@ -378,7 +373,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
      */
     private void configureViewState(){
         Log.d(Tag.TAG, "PropertyEditFragment.configureViewState() called");
-        propertyEditViewModel.clearCache();
         propertyEditViewModel.getViewStateLiveData(this.propertyId).observe(getViewLifecycleOwner(), propertyEditViewState -> {
             setAddressTitle(propertyEditViewState.getAddressTitle());
             setAddress(propertyEditViewState.getAddress());
@@ -502,7 +496,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(Tag.TAG, "PropertyEditFragment.onResume()");
         propertyId = PropertyConst.PROPERTY_ID_NOT_INITIALIZED;
         if ((getArguments() != null) && (getArguments().containsKey(PropertyConst.ARG_PROPERTY_ID_KEY))){
             propertyId = getArguments().getLong(PropertyConst.ARG_PROPERTY_ID_KEY, PropertyConst.PROPERTY_ID_NOT_INITIALIZED);
@@ -648,7 +641,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     private final TextWatcher entryDateCacheListener = createTextWatcher(FieldKey.ENTRY_DATE);
     private void setEntryDate(String entryDate){
-        Log.d(Tag.TAG, "PropertyEditFragment.setEntryDate() called with: entryDate = [" + entryDate + "]");
         setValueToComponent(entryDate, textInputLayoutEntryDate, entryDateCacheListener);
     }
 
@@ -662,7 +654,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     }
 
     private void setPhotos(List<Photo> photos){
-        Log.d(Tag.TAG, "PropertyEditFragment.setPhotos() called with: photos = [" + photos + "]");
         photoListAdapter.updateData(photos);
     }
 
@@ -727,7 +718,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     private void onActivityResultFromGallery(List<Uri> result) {
         for (Uri uri : result) {
             //getContext().getContentResolver().takePersistableUriPermission(uri, permissionFlags);
-            Log.d(Tag.TAG, "PropertyEditFragment.onActivityResult() called with: result = [" + result + "]");
             addPhoto(uri, requireActivity().getString(R.string.image_from_gallery));
         }
     }
@@ -744,12 +734,10 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
             this::onActivityResultFromPictureLauncher);
 
     private void onActivityResultFromPictureLauncher(Boolean result) {
-        Log.d("TAG", "PropertyEditFragment.onActivityResult() called with: uri = [" + latestUri + "]");
         addPhoto(latestUri, requireActivity().getString(R.string.picture_from_camera));
     }
 
     private void addPhoto(Uri uri, String caption){
-        Log.d(Tag.TAG, "PropertyEditFragment.addPhoto() called with: uri = [" + uri + "], caption = [" + caption + "]");
         propertyEditViewModel.addPhoto(uri, caption, propertyId);
     }
 
@@ -774,7 +762,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
     }
 
     private void confirmDeletePhoto(){
-        Log.d(Tag.TAG, "PropertyEditFragment.confirmDeletePhoto() photoToDelete=" + photoToDelete);
         if (photoToDelete != null) {
             ConfirmationDeletePhotoDialogFragment confirmationDeletePhotoDialogFragment = new ConfirmationDeletePhotoDialogFragment();
             confirmationDeletePhotoDialogFragment.setListener(this);
@@ -784,7 +771,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     @Override
     public void onConfirmDeletePhoto() {
-        Log.d(Tag.TAG, "PropertyEditFragment.onConfirmDeletePhoto() called");
         if (photoToDelete != null){
             propertyEditViewModel.deletePhoto(photoToDelete);
             photoToDelete = null;
@@ -793,9 +779,6 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     @Override
     public void onCancelDeletePhoto() {
-        Log.d(Tag.TAG, "PropertyEditFragment.onCancelDeletePhoto() called");
         photoToDelete = null;
     }
-
-
 }

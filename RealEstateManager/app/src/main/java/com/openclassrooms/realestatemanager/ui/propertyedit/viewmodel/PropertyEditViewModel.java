@@ -67,8 +67,8 @@ public class PropertyEditViewModel extends ViewModel {
         this.googleStaticMapRepository = googleStaticMapRepository;
 
         cache = new CachePropertyEditViewModel();
-        cache.getAgents().addAll(databaseRepository.getAgentRepository().getAgents());
-        cache.getPropertyTypes().addAll(databaseRepository.getPropertyTypeRepository().getPropertyTypes());
+        cache.setAgents(databaseRepository.getAgentRepository().getAgents());
+        cache.setPropertyTypes(databaseRepository.getPropertyTypeRepository().getPropertyTypes());
 
         // default control values
         onCheckAddressTitleValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
@@ -98,21 +98,18 @@ public class PropertyEditViewModel extends ViewModel {
     }
 
     public void configureGoogleStaticMapUrlLiveData(){
-        Log.d(Tag.TAG, "PropertyEditViewModel.configureGoogleStaticMapUrlLiveData() called");
         LiveData<LatLng> latLngLiveData = Transformations.switchMap(addressMutableLiveData,
                 address -> {return googleGeocodeRepository.getLocationByAddressLiveData(address);});
 
         googleStaticMapViewStateMediatorLiveData.addSource(addressMutableLiveData, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                Log.d(Tag.TAG, "PropertyEditViewModel.configureGoogleStaticMapUrlLiveData -> address onChanged() called with: s = [" + s + "]");
             }
         });
 
         googleStaticMapViewStateMediatorLiveData.addSource(latLngLiveData, new Observer<LatLng>() {
             @Override
             public void onChanged(LatLng latLng) {
-                Log.d(Tag.TAG, "PropertyEditViewModel.configureGoogleStaticMapUrlLiveData -> url onChanged() called with: latLng = [" + latLng + "]");
                 cache.setValue(FieldKey.LATITUDE, Double.toString(latLng.latitude));
                 cache.setValue(FieldKey.LONGITUDE, Double.toString(latLng.longitude));
                 String url = googleStaticMapRepository.getUrlImage(latLng.latitude, latLng.longitude);
@@ -123,6 +120,7 @@ public class PropertyEditViewModel extends ViewModel {
 
     public LiveData<PropertyEditViewState> getViewStateLiveData(long propertyId) {
         Log.d(Tag.TAG, "PropertyEditViewModel.getViewStateLiveData.() called with: propertyId = [" + propertyId + "]");
+        cache.setPropertyId(propertyId);
         LiveData<List<Photo>> pendingPhotosLiveData = cache.getPendingPhotosLiveData();
         LiveData<PropertyDetailData> propertyDetailDataLiveData = databaseRepository.getPropertyRepository().getPropertyDetailByIdLiveData(propertyId);
         LiveData<List<Photo>> databasePhotosLiveData = databaseRepository.getPhotoRepository().getPhotosByPropertyId(propertyId);
@@ -132,7 +130,6 @@ public class PropertyEditViewModel extends ViewModel {
                 new Observer<PropertyDetailData>() {
                     @Override
                     public void onChanged(PropertyDetailData propertyDetailData) {
-                        Log.d(Tag.TAG, "PropertyEditViewModel.getViewStateLiveData()->combine 1. propertyId = [" + propertyId + "]");
                         combine(mediatorLiveData,
                                 propertyId,
                                 propertyDetailData,
@@ -145,8 +142,6 @@ public class PropertyEditViewModel extends ViewModel {
                 new Observer<List<Photo>>() {
                     @Override
                     public void onChanged(List<Photo> photos) {
-                        Log.d(Tag.TAG, "PropertyEditViewModel.getViewStateLiveData()->combine 2. propertyId = [" + propertyId + "]");
-
                         combine(mediatorLiveData,
                                 propertyId,
                                 propertyDetailDataLiveData.getValue(),
@@ -159,8 +154,6 @@ public class PropertyEditViewModel extends ViewModel {
                 new Observer<List<Photo>>() {
                     @Override
                     public void onChanged(List<Photo> photos) {
-                        Log.d(Tag.TAG, "PropertyEditViewModel.getViewStateLiveData()->combine 3. propertyId = [" + propertyId + "]");
-
                         combine(mediatorLiveData,
                                 propertyId,
                                 propertyDetailDataLiveData.getValue(),
@@ -616,7 +609,6 @@ public class PropertyEditViewModel extends ViewModel {
 
 
     public void addPhoto(Uri uri, String caption, long propertyId){
-        Log.d(Tag.TAG, "PropertyEditViewModel.addPhoto() called with: caption = [" + caption + "], propertyId = [" + propertyId + "], uri = [\" + uri + \"]");
         Photo photo = new Photo(0, 0, uri.toString(), caption, propertyId);
         updatePhoto(photo);
     }
@@ -626,7 +618,7 @@ public class PropertyEditViewModel extends ViewModel {
      * @param photo
      */
     public void updatePhoto(Photo photo){
-        if ((photo.getPropertyId() == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) || (!cache.isValidePhoto(photo))) {
+        if ((photo.getPropertyId() == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) || (cache.isNotValidPhoto(photo))) {
             cache.update(photo);
         }
         else {
@@ -640,8 +632,7 @@ public class PropertyEditViewModel extends ViewModel {
         }
     }
 
-    public void clearCache(){
-        cache.clear();
+    public void clearCache(){ cache.clear();
     }
 
     public boolean rememberValue(FieldKey key, String value){
