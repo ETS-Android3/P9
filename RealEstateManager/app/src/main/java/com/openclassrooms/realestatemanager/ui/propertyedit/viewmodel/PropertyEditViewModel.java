@@ -25,7 +25,7 @@ import com.openclassrooms.realestatemanager.data.room.repository.DatabaseReposit
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
-import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewstate;
+import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownViewState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.FieldState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.PropertyEditViewState;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.StaticMapViewState;
@@ -262,8 +262,8 @@ public class PropertyEditViewModel extends ViewModel {
         mediatorLiveData.setValue(propertyEditViewState);
     }
 
-    private final MediatorLiveData<DropdownViewstate> dropDownViewStateMediatorLiveData = new MediatorLiveData<>();
-    public MediatorLiveData<DropdownViewstate> getDropDownViewStateMediatorLiveData() {
+    private final MediatorLiveData<DropdownViewState> dropDownViewStateMediatorLiveData = new MediatorLiveData<>();
+    public MediatorLiveData<DropdownViewState> getDropDownViewStateMediatorLiveData() {
         return dropDownViewStateMediatorLiveData;
     }
 
@@ -296,7 +296,7 @@ public class PropertyEditViewModel extends ViewModel {
         if ((agentItems == null) || (propertyTypeItems == null)) {
             return;
         }
-        dropDownViewStateMediatorLiveData.setValue(new DropdownViewstate(agentItems, propertyTypeItems));
+        dropDownViewStateMediatorLiveData.setValue(new DropdownViewState(agentItems, propertyTypeItems));
     }
 
     private PropertyType findPropertyTypeById(long id) {

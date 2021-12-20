@@ -24,7 +24,7 @@ public class DropdownItem {
 
     /**
      * With toString() function, by default will display the name in Dropdown list.
-     * @return
+     * @return : name
      */
     @NonNull
     @Override

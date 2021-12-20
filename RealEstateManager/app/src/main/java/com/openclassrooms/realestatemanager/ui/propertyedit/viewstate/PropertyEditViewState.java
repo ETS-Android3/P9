@@ -1,9 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.propertyedit.viewstate;
 
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
-import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PropertyEditViewState {
@@ -24,50 +22,6 @@ public class PropertyEditViewState {
     private final double longitude;
     private final List<Photo> photos;
     private final String googleStaticMapUrl;
-
-    public PropertyEditViewState() {
-        this.addressTitle = "";
-        this.address = "";
-        this.description = "";
-        this.pointOfInterest = "";
-        this.price = "";
-        this.surface = "";
-        this.rooms = "";
-        this.entryDate = "";
-        this.saleDate = "";
-        this.agentId = PropertyConst.AGENT_ID_NOT_INITIALIZED;
-        this.agentName = "";
-        this.propertyTypeId = PropertyConst.PROPERTY_TYPE_ID_NOT_INITIALIZED;
-        this.propertyTypeName = "";
-        this.latitude = 0;
-        this.longitude = 0;
-        this.photos = new ArrayList<>();
-        this.googleStaticMapUrl = "";
-    }
-
-    public PropertyEditViewState(List<Photo> photos) {
-        this.addressTitle = "";
-        this.address = "";
-        this.description = "";
-        this.pointOfInterest = "";
-        this.price = "";
-        this.surface = "";
-        this.rooms = "";
-        this.entryDate = "";
-        this.saleDate = "";
-        this.agentId = PropertyConst.AGENT_ID_NOT_INITIALIZED;
-        this.agentName = "";
-        this.propertyTypeId = PropertyConst.PROPERTY_TYPE_ID_NOT_INITIALIZED;
-        this.propertyTypeName = "";
-        this.latitude = 0;
-        this.longitude = 0;
-        if (photos == null) {
-            this.photos = new ArrayList<>();
-        } else {
-            this.photos = photos;
-        }
-        this.googleStaticMapUrl = "";
-    }
 
     public PropertyEditViewState(String addressTitle, String address, String description, String pointOfInterest, String price, String surface, String rooms, String entryDate, String saleDate, long agentId, String agentName, long propertyTypeId, String propertyTypeName, double latitude, double longitude, List<Photo> photos, String googleStaticMapUrl) {
         this.addressTitle = addressTitle;
