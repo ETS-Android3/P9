@@ -5,19 +5,18 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.openclassrooms.realestatemanager.data.room.repository.PropertySearchParameters;
-import com.openclassrooms.realestatemanager.tag.Tag;
-import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.data.room.model.Agent;
 import com.openclassrooms.realestatemanager.data.room.model.Photo;
 import com.openclassrooms.realestatemanager.data.room.model.Property;
 import com.openclassrooms.realestatemanager.data.room.model.PropertyType;
 import com.openclassrooms.realestatemanager.data.room.repository.DatabaseRepository;
+import com.openclassrooms.realestatemanager.data.room.repository.PropertySearchParameters;
+import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewstate.PropertyListViewState;
 import com.openclassrooms.realestatemanager.ui.propertylist.viewstate.RowPropertyViewState;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,48 +46,28 @@ public class PropertyListViewModel extends ViewModel {
         LiveData<List<Property>> propertiesLiveData = databaseRepository.getPropertyRepository().getProperties();
         LiveData<List<PropertyType>> typesLiveData = databaseRepository.getPropertyTypeRepository().getPropertyTypesLiveData();
 
-        propertyListViewStateMediatorLiveData.addSource(agentsLiveData, new Observer<List<Agent>>() {
-            @Override
-            public void onChanged(List<Agent> agents) {
-                combine(agents,
-                        photosLiveData.getValue(),
-                        propertiesLiveData.getValue(),
-                        typesLiveData.getValue());
-            }
-        });
+        propertyListViewStateMediatorLiveData.addSource(agentsLiveData, agents -> combine(agents,
+                photosLiveData.getValue(),
+                propertiesLiveData.getValue(),
+                typesLiveData.getValue()));
 
-        propertyListViewStateMediatorLiveData.addSource(photosLiveData, new Observer<List<Photo>>() {
-            @Override
-            public void onChanged(List<Photo> photos) {
-                combine(agentsLiveData.getValue(),
-                        photos,
-                        propertiesLiveData.getValue(),
-                        typesLiveData.getValue()
-                );
-            }
-        });
+        propertyListViewStateMediatorLiveData.addSource(photosLiveData, photos -> combine(agentsLiveData.getValue(),
+                photos,
+                propertiesLiveData.getValue(),
+                typesLiveData.getValue()
+        ));
 
-        propertyListViewStateMediatorLiveData.addSource(propertiesLiveData, new Observer<List<Property>>() {
-            @Override
-            public void onChanged(List<Property> properties) {
-                combine(agentsLiveData.getValue(),
-                        photosLiveData.getValue(),
-                        properties,
-                        typesLiveData.getValue()
-                );
-            }
-        });
+        propertyListViewStateMediatorLiveData.addSource(propertiesLiveData, properties -> combine(agentsLiveData.getValue(),
+                photosLiveData.getValue(),
+                properties,
+                typesLiveData.getValue()
+        ));
 
-        propertyListViewStateMediatorLiveData.addSource(typesLiveData, new Observer<List<PropertyType>>() {
-            @Override
-            public void onChanged(List<PropertyType> propertyTypes) {
-                combine(agentsLiveData.getValue(),
-                        photosLiveData.getValue(),
-                        propertiesLiveData.getValue(),
-                        propertyTypes
-                );
-            }
-        });
+        propertyListViewStateMediatorLiveData.addSource(typesLiveData, propertyTypes -> combine(agentsLiveData.getValue(),
+                photosLiveData.getValue(),
+                propertiesLiveData.getValue(),
+                propertyTypes
+        ));
     }
 
     public void load(){
@@ -119,12 +98,6 @@ public class PropertyListViewModel extends ViewModel {
                          @Nullable List<Property> properties,
                          @Nullable List<PropertyType> types){
         Log.d(Tag.TAG, "PropertyListViewModel.combine()");
-/*
-        Log.d(Tag.TAG, "PropertyListViewModel.combine() called with: agents = [" + agents +
-                "], photos = [" + photos +
-                "], properties = [" + properties +
-                "], types = [" + types + "]");
-*/
 
         if (agents == null || photos == null || properties == null || types == null) {
             return;
