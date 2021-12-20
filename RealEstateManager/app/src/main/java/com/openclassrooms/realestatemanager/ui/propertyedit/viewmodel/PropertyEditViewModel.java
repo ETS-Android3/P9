@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
@@ -34,7 +33,6 @@ import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -46,19 +44,11 @@ public class PropertyEditViewModel extends ViewModel {
     @NonNull
     private final GoogleStaticMapRepository googleStaticMapRepository;
 
-    private MutableLiveData<String> errorMutableLiveData = new MutableLiveData<>();
-    public LiveData<String> getErrorLiveData() { return errorMutableLiveData; }
-
     /**
      * cache
      */
-    private CachePropertyEditViewModel cache;
+    private final CachePropertyEditViewModel cache;
 
-    /**
-     * constructor
-     * @param databaseRepository
-     * @param googleGeocodeRepository
-     */
     public PropertyEditViewModel(@NonNull DatabaseRepository databaseRepository,
                                  @NonNull GoogleGeocodeRepository googleGeocodeRepository,
                                  @NonNull GoogleStaticMapRepository googleStaticMapRepository) {
@@ -83,38 +73,32 @@ public class PropertyEditViewModel extends ViewModel {
         onCheckAgentIdValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
         onCheckPropertyTypeIdValueMutableLiveData.setValue(new FieldState(getResIdError(true)));
 
-        initDropdownViewstateMediatorLiveData();
+        initDropdownViewStateMediatorLiveData();
         configureGoogleStaticMapUrlLiveData();
     }
 
-    private MutableLiveData<String> addressMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> addressMutableLiveData = new MutableLiveData<>();
     public MutableLiveData<String> getAddressMutableLiveData() {
         return addressMutableLiveData;
     }
 
-    private MediatorLiveData<StaticMapViewState> googleStaticMapViewStateMediatorLiveData = new MediatorLiveData<>();
+    private final MediatorLiveData<StaticMapViewState> googleStaticMapViewStateMediatorLiveData = new MediatorLiveData<>();
     public LiveData<StaticMapViewState> getGoogleStaticMapViewState() {
         return googleStaticMapViewStateMediatorLiveData;
     }
 
     public void configureGoogleStaticMapUrlLiveData(){
         LiveData<LatLng> latLngLiveData = Transformations.switchMap(addressMutableLiveData,
-                address -> {return googleGeocodeRepository.getLocationByAddressLiveData(address);});
+                googleGeocodeRepository::getLocationByAddressLiveData);
 
-        googleStaticMapViewStateMediatorLiveData.addSource(addressMutableLiveData, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-            }
+        googleStaticMapViewStateMediatorLiveData.addSource(addressMutableLiveData, s -> {
         });
 
-        googleStaticMapViewStateMediatorLiveData.addSource(latLngLiveData, new Observer<LatLng>() {
-            @Override
-            public void onChanged(LatLng latLng) {
-                cache.setValue(FieldKey.LATITUDE, Double.toString(latLng.latitude));
-                cache.setValue(FieldKey.LONGITUDE, Double.toString(latLng.longitude));
-                String url = googleStaticMapRepository.getUrlImage(latLng.latitude, latLng.longitude);
-                googleStaticMapViewStateMediatorLiveData.setValue(new StaticMapViewState(latLng, url));
-            }
+        googleStaticMapViewStateMediatorLiveData.addSource(latLngLiveData, latLng -> {
+            cache.setValue(FieldKey.LATITUDE, Double.toString(latLng.latitude));
+            cache.setValue(FieldKey.LONGITUDE, Double.toString(latLng.longitude));
+            String url = googleStaticMapRepository.getUrlImage(latLng.latitude, latLng.longitude);
+            googleStaticMapViewStateMediatorLiveData.setValue(new StaticMapViewState(latLng, url));
         });
     }
 
@@ -127,40 +111,25 @@ public class PropertyEditViewModel extends ViewModel {
 
         MediatorLiveData<PropertyEditViewState> mediatorLiveData = new MediatorLiveData<>();
         mediatorLiveData.addSource(propertyDetailDataLiveData,
-                new Observer<PropertyDetailData>() {
-                    @Override
-                    public void onChanged(PropertyDetailData propertyDetailData) {
-                        combine(mediatorLiveData,
-                                propertyId,
-                                propertyDetailData,
-                                databasePhotosLiveData.getValue(),
-                                pendingPhotosLiveData.getValue());
-                    }
-                });
+                propertyDetailData -> combine(mediatorLiveData,
+                        propertyId,
+                        propertyDetailData,
+                        databasePhotosLiveData.getValue(),
+                        pendingPhotosLiveData.getValue()));
 
         mediatorLiveData.addSource(databasePhotosLiveData,
-                new Observer<List<Photo>>() {
-                    @Override
-                    public void onChanged(List<Photo> photos) {
-                        combine(mediatorLiveData,
-                                propertyId,
-                                propertyDetailDataLiveData.getValue(),
-                                photos,
-                                pendingPhotosLiveData.getValue());
-                    }
-                });
+                photos -> combine(mediatorLiveData,
+                        propertyId,
+                        propertyDetailDataLiveData.getValue(),
+                        photos,
+                        pendingPhotosLiveData.getValue()));
 
         mediatorLiveData.addSource(pendingPhotosLiveData,
-                new Observer<List<Photo>>() {
-                    @Override
-                    public void onChanged(List<Photo> photos) {
-                        combine(mediatorLiveData,
-                                propertyId,
-                                propertyDetailDataLiveData.getValue(),
-                                databasePhotosLiveData.getValue(),
-                                photos);
-                    }
-                });
+                photos -> combine(mediatorLiveData,
+                        propertyId,
+                        propertyDetailDataLiveData.getValue(),
+                        databasePhotosLiveData.getValue(),
+                        photos));
         return mediatorLiveData;
     }
 
@@ -293,12 +262,12 @@ public class PropertyEditViewModel extends ViewModel {
         mediatorLiveData.setValue(propertyEditViewState);
     }
 
-    private final MediatorLiveData<DropdownViewstate> dropDownViewstateMediatorLiveData = new MediatorLiveData<>();
-    public MediatorLiveData<DropdownViewstate> getDropDownViewstateMediatorLiveData() {
-        return dropDownViewstateMediatorLiveData;
+    private final MediatorLiveData<DropdownViewstate> dropDownViewStateMediatorLiveData = new MediatorLiveData<>();
+    public MediatorLiveData<DropdownViewstate> getDropDownViewStateMediatorLiveData() {
+        return dropDownViewStateMediatorLiveData;
     }
 
-    private void initDropdownViewstateMediatorLiveData(){
+    private void initDropdownViewStateMediatorLiveData(){
         LiveData<List<DropdownItem>> agentItemsLiveData = Transformations.map(databaseRepository.getAgentRepository().getAgentsLiveData(),
                 agents -> {
                     List<DropdownItem> items = new ArrayList<>();
@@ -317,35 +286,22 @@ public class PropertyEditViewModel extends ViewModel {
                     return items;
                 });
 
-        dropDownViewstateMediatorLiveData.addSource(agentItemsLiveData, new Observer<List<DropdownItem>>() {
-            @Override
-            public void onChanged(List<DropdownItem> items) {
-                conbineDropDown(items, propertyTypeItemsLiveData.getValue());
-            }
-        });
-
-        dropDownViewstateMediatorLiveData.addSource(propertyTypeItemsLiveData, new Observer<List<DropdownItem>>() {
-            @Override
-            public void onChanged(List<DropdownItem> items) {
-                conbineDropDown(agentItemsLiveData.getValue(), items);
-            }
-        });
+        dropDownViewStateMediatorLiveData.addSource(agentItemsLiveData, items -> combineDropDown(items, propertyTypeItemsLiveData.getValue()));
+        dropDownViewStateMediatorLiveData.addSource(propertyTypeItemsLiveData, items -> combineDropDown(agentItemsLiveData.getValue(), items));
     }
 
-    private void conbineDropDown(@Nullable List<DropdownItem> agentItems,
+    private void combineDropDown(@Nullable List<DropdownItem> agentItems,
                                  @Nullable List<DropdownItem> propertyTypeItems){
 
         if ((agentItems == null) || (propertyTypeItems == null)) {
             return;
         }
-        dropDownViewstateMediatorLiveData.setValue(new DropdownViewstate(agentItems, propertyTypeItems));
+        dropDownViewStateMediatorLiveData.setValue(new DropdownViewstate(agentItems, propertyTypeItems));
     }
 
     private PropertyType findPropertyTypeById(long id) {
         if ((cache != null) && (cache.getPropertyTypes() != null)){
-            Iterator<PropertyType> iterator = cache.getPropertyTypes().iterator();
-            while (iterator.hasNext()) {
-                PropertyType propertyType = iterator.next();
+            for (PropertyType propertyType : cache.getPropertyTypes()) {
                 if (propertyType.getId() == id) {
                     return propertyType;
                 }
@@ -354,8 +310,8 @@ public class PropertyEditViewModel extends ViewModel {
         return null;
     }
 
-    private static boolean emptyString(String value){
-        return TextUtils.isEmpty(value.trim());
+    private static boolean noEmptyString(String value){
+        return !TextUtils.isEmpty(value.trim());
     }
 
     public static boolean validDate(String text){
@@ -368,9 +324,7 @@ public class PropertyEditViewModel extends ViewModel {
 
     private Agent findAgentById(long id) {
         if ((cache != null) && (cache.getAgents() != null)){
-            Iterator<Agent> iterator = cache.getAgents().iterator();
-            while (iterator.hasNext()) {
-                Agent agent = iterator.next();
+            for (Agent agent : cache.getAgents()) {
                 if (agent.getId() == id) {
                     return agent;
                 }
@@ -392,39 +346,39 @@ public class PropertyEditViewModel extends ViewModel {
         }
     }
 
-    private MutableLiveData<FieldState> onCheckAddressTitleValueMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<FieldState> onCheckAddressTitleValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckAddressTitleValueLiveData() { return onCheckAddressTitleValueMutableLiveData; }
     public boolean checkAddressTitleValue(String value){
-        boolean valueOk = !PropertyEditViewModel.emptyString(value);
+        boolean valueOk = PropertyEditViewModel.noEmptyString(value);
         onCheckAddressTitleValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
         return valueOk;
     }
 
-    private MutableLiveData<FieldState> onCheckAddressValueMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<FieldState> onCheckAddressValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckAddressValueLiveData() { return onCheckAddressValueMutableLiveData; }
     public boolean checkAddressValue(String value){
-        boolean valueOk = !PropertyEditViewModel.emptyString(value);
+        boolean valueOk = PropertyEditViewModel.noEmptyString(value);
         onCheckAddressValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
         return valueOk;
     }
 
-    private MutableLiveData<FieldState> onCheckDescriptionValueMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<FieldState> onCheckDescriptionValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckDescriptionValueLiveData() { return onCheckDescriptionValueMutableLiveData; }
     public boolean checkDescriptionValue(String value){
-        boolean valueOk =!PropertyEditViewModel.emptyString(value);
+        boolean valueOk = PropertyEditViewModel.noEmptyString(value);
         onCheckDescriptionValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
         return valueOk;
     }
 
-    private MutableLiveData<FieldState> onCheckPointOfInterestValueMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<FieldState> onCheckPointOfInterestValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckPointOfInterestValueLiveData() { return onCheckPointOfInterestValueMutableLiveData; }
     public boolean checkPointOfInterestValue(String value){
-        boolean valueOk = !PropertyEditViewModel.emptyString(value);
+        boolean valueOk = PropertyEditViewModel.noEmptyString(value);
         onCheckPointOfInterestValueMutableLiveData.setValue(new FieldState(getResIdError(!valueOk)));
         return valueOk;
     }
 
-    private MutableLiveData<FieldState> onCheckPriceValueMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<FieldState> onCheckPriceValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckPriceValueLiveData() { return onCheckPriceValueMutableLiveData; }
     public boolean checkPriceValue(String value){
         boolean valueOk = checkIsInt(value);
@@ -432,7 +386,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private MutableLiveData<FieldState> onCheckSurfaceValueMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<FieldState> onCheckSurfaceValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckSurfaceValueLiveData() { return onCheckSurfaceValueMutableLiveData; }
     public boolean checkSurfaceValue(String value){
         boolean valueOk = checkIsInt(value);
@@ -440,7 +394,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private MutableLiveData<FieldState> onCheckRoomsValueMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<FieldState> onCheckRoomsValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckRoomsValueLiveData() { return onCheckRoomsValueMutableLiveData; }
     public boolean checkRoomsValue(String value){
         boolean valueOk = checkIsInt(value);
@@ -448,7 +402,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private MutableLiveData<FieldState> onCheckEntryDateValueMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<FieldState> onCheckEntryDateValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckEntryDateValueLiveData() { return onCheckEntryDateValueMutableLiveData; }
     public boolean checkEntryDateValue(String value){
         boolean valueOk = PropertyEditViewModel.validDate(value);
@@ -456,7 +410,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private MutableLiveData<FieldState> onCheckSaleDateValueMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<FieldState> onCheckSaleDateValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckSaleDateValueLiveData() { return onCheckSaleDateValueMutableLiveData; }
     public boolean checkSaleDateValue(String value){
         boolean valueOk = PropertyEditViewModel.validOrNullDate(value);
@@ -464,7 +418,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private MutableLiveData<FieldState> onCheckAgentIdValueMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<FieldState> onCheckAgentIdValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckAgentIdValueLiveData() { return onCheckAgentIdValueMutableLiveData; }
     public boolean checkAgentIdValue(long id){
         boolean valueOk = (findAgentById(id) != null);
@@ -472,7 +426,7 @@ public class PropertyEditViewModel extends ViewModel {
         return valueOk;
     }
 
-    private MutableLiveData<FieldState> onCheckPropertyTypeIdValueMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<FieldState> onCheckPropertyTypeIdValueMutableLiveData = new MutableLiveData<>();
     public LiveData<FieldState> getOnCheckPropertyTypeIdValueLiveData() { return onCheckPropertyTypeIdValueMutableLiveData; }
     public boolean checkPropertyTypeIdValue(long id){
         boolean valueOk = (findPropertyTypeById(id) != null);
@@ -490,19 +444,6 @@ public class PropertyEditViewModel extends ViewModel {
      /**
      * check values,
      * if values are ok send data to database and emit ok to view
-     *
-     * @param price
-     * @param surface
-     * @param description
-     * @param addressTitle
-     * @param address
-     * @param pointOfInterest
-     * @param entryDate
-     * @param saleDate
-     * @param propertyTypeId
-     * @param agentId
-     * @param rooms
-     * @param latLng
      */
     public void insertOrUpdateProperty(
                             long propertyId,
@@ -522,7 +463,7 @@ public class PropertyEditViewModel extends ViewModel {
 
         // check all values
         boolean valuesOk = checkAllValues(price, surface, description, addressTitle, address,
-                pointOfInterest, entryDate, saleDate, propertyTypeId, agentId, rooms, latLng);
+                pointOfInterest, entryDate, saleDate, propertyTypeId, agentId, rooms);
 
         if (valuesOk) {
             double latitude = (latLng == null) ? 0 : latLng.latitude;
@@ -554,8 +495,7 @@ public class PropertyEditViewModel extends ViewModel {
                 if (propertyId == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) {
                     propertyId = databaseRepository.getPropertyRepository().insert(property);
                     // now we have new property id and we can send pending photos to database
-                    List<Photo> photos = new ArrayList<>();
-                    photos.addAll(cache.getPendingPhotos());
+                    List<Photo> photos = new ArrayList<>(cache.getPendingPhotos());
                     for (Photo photo : photos) {
                         // change property id with new property id
                         photo.setPropertyId(propertyId);
@@ -566,15 +506,13 @@ public class PropertyEditViewModel extends ViewModel {
                     databaseRepository.getPropertyRepository().update(property);
                 // Callback to close windows
                 addPropertyInterface.onPropertyAdded(propertyId);
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private MutableLiveData<Boolean> onCheckAllValuesMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> onCheckAllValuesMutableLiveData = new MutableLiveData<>();
     public MutableLiveData<Boolean> getOnCheckAllValuesLiveData() {return onCheckAllValuesMutableLiveData;}
     public boolean checkAllValues(String price,
                                   String surface,
@@ -586,8 +524,7 @@ public class PropertyEditViewModel extends ViewModel {
                                   String saleDate,
                                   long propertyTypeId,
                                   long agentId,
-                                  String rooms,
-                                  LatLng latLng){
+                                  String rooms){
 
         // check all values
         boolean valuesOk = checkPriceValue(price) &
@@ -615,7 +552,7 @@ public class PropertyEditViewModel extends ViewModel {
 
     /**
      * send photo to cache or to database
-     * @param photo
+     * @param photo - photo
      */
     public void updatePhoto(Photo photo){
         if ((photo.getPropertyId() == PropertyConst.PROPERTY_ID_NOT_INITIALIZED) || (cache.isNotValidPhoto(photo))) {
@@ -635,9 +572,8 @@ public class PropertyEditViewModel extends ViewModel {
     public void clearCache(){ cache.clear();
     }
 
-    public boolean rememberValue(FieldKey key, String value){
+    public void rememberValue(FieldKey key, String value){
         cache.setValue(key, value);
-        return false;
     }
 
     public void deletePhoto(Photo photo){

@@ -317,7 +317,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
      */
     private void configureDropdown(long currentAgentId, long currentPropertyTypeId){
         // There are two lists in Dropdown View state, one for the agents list and one for the property types list
-        propertyEditViewModel.getDropDownViewstateMediatorLiveData().observe(getViewLifecycleOwner(), viewState -> {
+        propertyEditViewModel.getDropDownViewStateMediatorLiveData().observe(getViewLifecycleOwner(), viewState -> {
             // load dropdown agents list
             if (viewState.getAgentItems() != null){
                 AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgent.getEditText();
@@ -703,8 +703,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
                 getSaleDate(),
                 getPropertyTypeId(),
                 getAgentId(),
-                getRooms(),
-                propertyLatLng);
+                getRooms());
     }
 
     private void selectPhoto(){
