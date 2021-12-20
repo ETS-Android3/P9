@@ -42,8 +42,12 @@ public class LoanCalculatorViewModel extends ViewModel {
     }
 
     private void combine(Float amount, Float rate, Float duration){
-        if ((amount == null) || (rate == null) || (duration == null))
+        if ((amount == null) && (rate == null) && (duration == null))
             return;
+
+        if (amount == null) amount = 0f;
+        if (rate == null) rate = 0f;
+        if (duration == null) duration = 0f;
 
         String strAmount = LoanCalculatorUtils.formatAmount(amount);
         String strRate = LoanCalculatorUtils.formatRate(rate);
