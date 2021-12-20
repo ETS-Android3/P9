@@ -1,12 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.propertymap.view;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -15,6 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,12 +30,12 @@ import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertymap.listener.OnMapListener;
 import com.openclassrooms.realestatemanager.ui.propertymap.viewmodel.PropertyMapViewModel;
 import com.openclassrooms.realestatemanager.ui.propertymap.viewstate.PropertyMapItem;
-import com.openclassrooms.realestatemanager.ui.propertymap.viewstate.PropertyMapViewState;
 import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
 import com.openclassrooms.realestatemanager.utils.UtilsDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PropertyMapsFragment extends Fragment {
 
@@ -46,7 +45,7 @@ public class PropertyMapsFragment extends Fragment {
     private GoogleMap mMap;
     private OnMapListener callbackMap;
 
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+    private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
          * Manipulates the map once available.
@@ -58,7 +57,7 @@ public class PropertyMapsFragment extends Fragment {
          * user has installed Google Play services and returned to the app.
          */
         @Override
-        public void onMapReady(GoogleMap googleMap) {
+        public void onMapReady(@NonNull GoogleMap googleMap) {
             mMap = googleMap;
 
             UiSettings uiSettings = mMap.getUiSettings();
@@ -71,14 +70,15 @@ public class PropertyMapsFragment extends Fragment {
         }
     };
 
-    private GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
+    private final GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(@NonNull Marker marker) {
             String strPropertyId = (String) marker.getTag();
-            Log.d(Tag.TAG, "PropertyMapsFragment.onMarkerClick() propertyId = [" + strPropertyId + "]");
             try {
-                long id = Long.parseLong(strPropertyId);
-                callbackMap.OnMapClicked(id);
+                if ((strPropertyId != null) && (!strPropertyId.isEmpty())) {
+                    long id = Long.parseLong(strPropertyId);
+                    callbackMap.OnMapClicked(id);
+                }
             } catch (NumberFormatException nfe) {
                 Log.e(Tag.TAG, "PropertyMapsFragment.onMarkerClick: " + nfe.getMessage());
             }
@@ -147,12 +147,9 @@ public class PropertyMapsFragment extends Fragment {
                 requireActivity(), AppViewModelFactory.getInstance())
                 .get(PropertyMapViewModel.class);
 
-        viewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertyMapViewState>() {
-            @Override
-            public void onChanged(PropertyMapViewState propertyMapViewState) {
-                setUserLocation(propertyMapViewState.getUserLocation());
-                setPropertyMapItems(propertyMapViewState.getPropertyMapItems());
-            }
+        viewModel.getViewState().observe(getViewLifecycleOwner(), propertyMapViewState -> {
+            setUserLocation(propertyMapViewState.getUserLocation());
+            setPropertyMapItems(propertyMapViewState.getPropertyMapItems());
         });
     }
 
@@ -177,9 +174,8 @@ public class PropertyMapsFragment extends Fragment {
     }
 
     private void drawPropertyLocations() {
-        Log.d(Tag.TAG, "PropertyMapsFragment.drawPropertieslocation()");
         if ((mMap != null) && (this.propertyMapItems != null)) {
-            Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_dark_red, getContext().getTheme()));
+            Bitmap bitmap = UtilsDrawable.drawableToBitmap(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_dark_red, requireContext().getTheme()));
             for (PropertyMapItem item : propertyMapItems) {
                 LatLng latlng = new LatLng(item.getLatitude(), item.getLongitude());
                 Marker marker = mMap.addMarker(new MarkerOptions()
@@ -187,7 +183,7 @@ public class PropertyMapsFragment extends Fragment {
                         .title(item.getTitle())
                         .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
                 String tag = String.format("%s", item.getId());
-                marker.setTag(tag);
+                Objects.requireNonNull(marker).setTag(tag);
                 mMap.setOnMarkerClickListener(markerClickListener);
             }
         }
