@@ -2,23 +2,20 @@ package com.openclassrooms.realestatemanager.ui.propertysearch.view;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
@@ -29,7 +26,6 @@ import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
 import com.openclassrooms.realestatemanager.ui.propertyedit.viewstate.DropdownItem;
 import com.openclassrooms.realestatemanager.ui.propertysearch.listener.PropertySearchListener;
 import com.openclassrooms.realestatemanager.ui.propertysearch.viewmodel.PropertySearchViewModel;
-import com.openclassrooms.realestatemanager.ui.propertysearch.viewstate.PropertySearchViewState;
 import com.openclassrooms.realestatemanager.ui.view_model_factory.AppViewModelFactory;
 import com.openclassrooms.realestatemanager.utils.DateRangePickedHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
@@ -59,9 +55,6 @@ public class PropertySearchFragment extends Fragment {
 
     private TextView textViewRangeRooms;
     private RangeSlider rangeSliderRooms;
-
-    private Button buttonOk;
-    private Button buttonReset;
 
     TextView textViewEntryDateRange;
     TextView textViewSaleDateRange;
@@ -148,21 +141,11 @@ public class PropertySearchFragment extends Fragment {
         textInputLayoutAgents = view.findViewById(R.id.fragment_property_search_text_input_layout_agent);
         textInputLayoutPropertyTypes = view.findViewById(R.id.fragment_property_search_text_input_layout_property_type);
 
-        buttonOk = view.findViewById(R.id.fragment_property_search_button_apply);
-        buttonOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validateForm();
-            }
-        });
+        Button buttonOk = view.findViewById(R.id.fragment_property_search_button_apply);
+        buttonOk.setOnClickListener(v -> validateForm());
 
-        buttonReset = view.findViewById(R.id.fragment_property_search_button_reset_all);
-        buttonReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetForm();
-            }
-        });
+        Button buttonReset = view.findViewById(R.id.fragment_property_search_button_reset_all);
+        buttonReset.setOnClickListener(v -> resetForm());
 
         textViewEntryDateRange = view.findViewById(R.id.fragment_property_search_entry_date_range);
         textViewSaleDateRange = view.findViewById(R.id.fragment_property_search_sale_date_range);
@@ -175,54 +158,24 @@ public class PropertySearchFragment extends Fragment {
 
     private void configureDateComponents(View view) {
         Button buttonSelectEntryDate = view.findViewById(R.id.fragment_property_search_button_select_entry_date);
-        buttonSelectEntryDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectEntryDate();
-            }
-        });
+        buttonSelectEntryDate.setOnClickListener(v -> selectEntryDate());
 
         Button buttonResetEntryDate = view.findViewById(R.id.fragment_property_search_button_reset_entry_date);
-        buttonResetEntryDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetDate(textViewEntryDateRange);
-            }
-        });
+        buttonResetEntryDate.setOnClickListener(v -> resetDate(textViewEntryDateRange));
 
         Button buttonSelectSaleDate = view.findViewById(R.id.fragment_property_search_button_select_sale_date);
-        buttonSelectSaleDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectSaleDate();
-            }
-        });
+        buttonSelectSaleDate.setOnClickListener(v -> selectSaleDate());
 
         Button buttonResetSaleDate = view.findViewById(R.id.fragment_property_search_button_reset_sale_date);
-        buttonResetSaleDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetDate(textViewSaleDateRange);
-            }
-        });
+        buttonResetSaleDate.setOnClickListener(v -> resetDate(textViewSaleDateRange));
     }
 
     private void selectEntryDate(){
-        DateRangePickedHelper.Show(getChildFragmentManager(), new DateRangePickedHelper.DateRangePickerHelperInterface() {
-            @Override
-            public void onValidate(Object selection) {
-                propertySearchViewModel.setValueEntryDate(selection);
-            }
-        });
+        DateRangePickedHelper.Show(getChildFragmentManager(), selection -> propertySearchViewModel.setValueEntryDate(selection));
     }
 
     private void selectSaleDate(){
-        DateRangePickedHelper.Show(getChildFragmentManager(), new DateRangePickedHelper.DateRangePickerHelperInterface() {
-            @Override
-            public void onValidate(Object selection) {
-                propertySearchViewModel.setValueSaleDate(selection);
-            }
-        });
+        DateRangePickedHelper.Show(getChildFragmentManager(), selection -> propertySearchViewModel.setValueSaleDate(selection));
     }
 
     private void resetDate(TextView textView){
@@ -232,57 +185,40 @@ public class PropertySearchFragment extends Fragment {
     private void configurePriceComponents(View view) {
         textViewRangePrice = view.findViewById(R.id.fragment_property_search_price_range);
         rangeSliderPrice = view.findViewById(R.id.fragment_property_search_range_slider_price);
-        rangeSliderPrice.addOnChangeListener(new RangeSlider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
-                Log.d(Tag.TAG, "PropertySearch fragment price onValueChange() called with: slider.getValues = [" + slider.getValues().get(0) + " and " + slider.getValues().get(1) );
-                propertySearchViewModel.setPriceRange(slider.getValues());
-            }
+        rangeSliderPrice.addOnChangeListener((slider, value, fromUser) -> {
+            Log.d(Tag.TAG, "PropertySearch fragment price onValueChange() called with: slider.getValues = [" + slider.getValues().get(0) + " and " + slider.getValues().get(1) );
+            propertySearchViewModel.setPriceRange(slider.getValues());
         });
 
-        LabelFormatter priceFormater = new LabelFormatter() {
-            @NonNull
-            @Override
-            public String getFormattedValue(float value) {
-                int price = (int)value;
-                price = price * 1000;
-                return Utils.convertPriceToString(price);
-            }
+        LabelFormatter priceFormatter = value -> {
+            int price = (int)value;
+            price = price * 1000;
+            return Utils.convertPriceToString(price);
         };
-        rangeSliderPrice.setLabelFormatter(priceFormater);
+        rangeSliderPrice.setLabelFormatter(priceFormatter);
     }
 
     private void configureSurfaceComponents(View view) {
         textViewRangeSurface = view.findViewById(R.id.fragment_property_search_surface_range);
         rangeSliderSurface = view.findViewById(R.id.fragment_property_search_range_slider_surface);
-        rangeSliderSurface.addOnChangeListener(new RangeSlider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
-                Log.d(Tag.TAG, "PropertySearch fragment onValueChange() called with: slider.getValues = [" + slider.getValues().get(0) + " and " + slider.getValues().get(1) );
-                propertySearchViewModel.setSurfaceRange(slider.getValues());
-            }
+        rangeSliderSurface.addOnChangeListener((slider, value, fromUser) -> {
+            Log.d(Tag.TAG, "PropertySearch fragment onValueChange() called with: slider.getValues = [" + slider.getValues().get(0) + " and " + slider.getValues().get(1) );
+            propertySearchViewModel.setSurfaceRange(slider.getValues());
         });
 
-        LabelFormatter surfaceFormater = new LabelFormatter() {
-            @NonNull
-            @Override
-            public String getFormattedValue(float value) {
-                int surface = (int)value;
-                return Utils.convertSurfaceToString(surface);
-            }
+        LabelFormatter surfaceFormatter = value -> {
+            int surface = (int)value;
+            return Utils.convertSurfaceToString(surface);
         };
-        rangeSliderSurface.setLabelFormatter(surfaceFormater);
+        rangeSliderSurface.setLabelFormatter(surfaceFormatter);
     }
 
     private void configureRoomsComponents(View view) {
         textViewRangeRooms = view.findViewById(R.id.fragment_property_search_rooms_range);
         rangeSliderRooms = view.findViewById(R.id.fragment_property_search_range_slider_rooms);
-        rangeSliderRooms.addOnChangeListener(new RangeSlider.OnChangeListener() {
-            @Override
-            public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
-                Log.d(Tag.TAG, "PropertySearch fragment onValueChange() called with: slider.getValues = [" + slider.getValues().get(0) + " and " + slider.getValues().get(1) );
-                propertySearchViewModel.setRoomsRange(slider.getValues());
-            }
+        rangeSliderRooms.addOnChangeListener((slider, value, fromUser) -> {
+            Log.d(Tag.TAG, "PropertySearch fragment onValueChange() called with: slider.getValues = [" + slider.getValues().get(0) + " and " + slider.getValues().get(1) );
+            propertySearchViewModel.setRoomsRange(slider.getValues());
         });
     }
 
@@ -292,25 +228,22 @@ public class PropertySearchFragment extends Fragment {
                 requireActivity(), AppViewModelFactory.getInstance())
                 .get(PropertySearchViewModel.class);
 
-        propertySearchViewModel.getViewState().observe(getViewLifecycleOwner(), new Observer<PropertySearchViewState>() {
-            @Override
-            public void onChanged(PropertySearchViewState propertySearchViewState) {
-                Log.d(Tag.TAG, "PropertySearch Fragment observe -> onChanged() called with: propertySearchViewState = [" + propertySearchViewState + "]");
-                Log.d(Tag.TAG, "PropertySearch Fragment observe -> onChanged() fullText = [" + propertySearchViewState.getFullText() + "]");
-                setFullText(propertySearchViewState.getFullText());
-                setAgents(propertySearchViewState.getAgents(), propertySearchViewState.getAgentIndex());
-                setPropertyTypes(propertySearchViewState.getPropertyTypes(), propertySearchViewState.getPropertyTypeIndex());
+        propertySearchViewModel.getViewState().observe(getViewLifecycleOwner(), propertySearchViewState -> {
+            Log.d(Tag.TAG, "PropertySearch Fragment observe -> onChanged() called with: propertySearchViewState = [" + propertySearchViewState + "]");
+            Log.d(Tag.TAG, "PropertySearch Fragment observe -> onChanged() fullText = [" + propertySearchViewState.getFullText() + "]");
+            setFullText(propertySearchViewState.getFullText());
+            setAgents(propertySearchViewState.getAgents(), propertySearchViewState.getAgentIndex());
+            setPropertyTypes(propertySearchViewState.getPropertyTypes(), propertySearchViewState.getPropertyTypeIndex());
 
-                setRangeSliderValuesPrice(propertySearchViewState.getMinMaxPrice(), propertySearchViewState.getValuesPrice());
-                setCaptionPrice(propertySearchViewState.getCaptionPrice());
-                setRangeSliderValuesSurface(propertySearchViewState.getMinMaxSurface(), propertySearchViewState.getValuesSurface());
-                setCaptionSurface(propertySearchViewState.getCaptionSurface());
-                setRangeSliderValuesRooms(propertySearchViewState.getMinMaxRooms(), propertySearchViewState.getValuesRooms());
-                setCaptionRooms(propertySearchViewState.getCaptionRooms());
+            setRangeSliderValuesPrice(propertySearchViewState.getMinMaxPrice(), propertySearchViewState.getValuesPrice());
+            setCaptionPrice(propertySearchViewState.getCaptionPrice());
+            setRangeSliderValuesSurface(propertySearchViewState.getMinMaxSurface(), propertySearchViewState.getValuesSurface());
+            setCaptionSurface(propertySearchViewState.getCaptionSurface());
+            setRangeSliderValuesRooms(propertySearchViewState.getMinMaxRooms(), propertySearchViewState.getValuesRooms());
+            setCaptionRooms(propertySearchViewState.getCaptionRooms());
 
-                setCaptionEntryDate(propertySearchViewState.getCaptionEntryDate());
-                setCaptionSaleDate(propertySearchViewState.getCaptionSaleDate());
-            }
+            setCaptionEntryDate(propertySearchViewState.getCaptionEntryDate());
+            setCaptionSaleDate(propertySearchViewState.getCaptionSaleDate());
         });
     }
 
@@ -386,14 +319,11 @@ public class PropertySearchFragment extends Fragment {
             autoCompleteTextView.setAdapter(arrayAdapter);
             autoCompleteTextView.setListSelection (index);
 
-            autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Log.d(Tag.TAG, "PropertySearchFragment.onItemClick() called with:  position = [" + position + "], id = [" + id + "]");
-                    DropdownItem item = (DropdownItem) arrayAdapter.getItem(position);
-                    agentId = item.getId();
-                    propertySearchViewModel.getAgentIndexMutableLiveData().setValue(position);
-                }
+            autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+                Log.d(Tag.TAG, "PropertySearchFragment.onItemClick() called with:  position = [" + position + "], id = [" + id + "]");
+                DropdownItem item = (DropdownItem) arrayAdapter.getItem(position);
+                agentId = item.getId();
+                propertySearchViewModel.getAgentIndexMutableLiveData().setValue(position);
             });
         }
     }
@@ -414,13 +344,10 @@ public class PropertySearchFragment extends Fragment {
             autoCompleteTextView.setAdapter(arrayAdapter);
             autoCompleteTextView.setListSelection (index);
 
-            autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    DropdownItem item = (DropdownItem) arrayAdapter.getItem(position);
-                    propertyTypeId = item.getId();
-                    propertySearchViewModel.getPropertyTypeMutableLiveData().setValue(position);
-                }
+            autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+                DropdownItem item = (DropdownItem) arrayAdapter.getItem(position);
+                propertyTypeId = item.getId();
+                propertySearchViewModel.getPropertyTypeMutableLiveData().setValue(position);
             });
         }
     }
