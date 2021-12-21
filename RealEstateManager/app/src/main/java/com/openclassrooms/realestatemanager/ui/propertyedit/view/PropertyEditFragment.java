@@ -322,15 +322,13 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
             if (viewState.getAgentItems() != null){
                 AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgent.getEditText();
                 if (autoCompleteTextView != null){
-                    ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), R.layout.list_item, viewState.getAgentItems());
-
+                    autoCompleteTextView.setAdapter(new ArrayAdapter<>(getContext(), R.layout.list_item, viewState.getAgentItems()));
                     // update list position with current agent
                     int position = findDropdownPositionById(currentAgentId, viewState.getAgentItems());
-                    if ((position >= 0) && (position <= arrayAdapter.getCount())) {
+                    if ((position >= 0) && (position <= autoCompleteTextView.getAdapter().getCount())) {
                         this.agentId = currentAgentId;
                         autoCompleteTextView.setListSelection (position);
                     }
-                    autoCompleteTextView.setAdapter(arrayAdapter);
 
                     autoCompleteTextView.setOnItemClickListener((parent, view, position1, id) -> {
                         // retrieve ArrayAdapter with parent.getAdapter()
@@ -347,10 +345,11 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
             if (viewState.getPropertyTypeItems() != null){
                 AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutPropertyType.getEditText();
                 if (autoCompleteTextView != null){
-                    autoCompleteTextView.setAdapter(new ArrayAdapter(getContext(), R.layout.list_item, viewState.getPropertyTypeItems()));
+                    autoCompleteTextView.setAdapter(new ArrayAdapter<>(getContext(), R.layout.list_item, viewState.getPropertyTypeItems()));
                     // update list position with current property type
                     int position = findDropdownPositionById(currentPropertyTypeId, viewState.getPropertyTypeItems());
-                    if (position >= 0) {
+
+                    if ((position >= 0) && (position <= autoCompleteTextView.getAdapter().getCount())) {
                         autoCompleteTextView.setListSelection (position);
                         propertyTypeId = currentPropertyTypeId;
                     }

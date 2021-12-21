@@ -6,7 +6,6 @@ import android.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
@@ -28,10 +27,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class PropertySearchViewModel extends ViewModel {
-
-    private final float RANGE_PRICE_MAX = 50000f;
-    private final float RANGE_SURFACE_MAX = 20000f;
-    private final float RANGE_ROOMS_MAX = 50f;
 
     private List<Float> minMaxPrice;
     private List<Float> minMaxSurface;
@@ -67,17 +62,17 @@ public class PropertySearchViewModel extends ViewModel {
                 fullTextMutableLiveData.setValue(text);
     }
 
-    private MutableLiveData<List<Float>> valuesPriceMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Float>> valuesPriceMutableLiveData = new MutableLiveData<>();
     public void setPriceRange(List<Float> floats){
         valuesPriceMutableLiveData.setValue(floats);
     }
 
-    private MutableLiveData<List<Float>> valuesSurfaceMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Float>> valuesSurfaceMutableLiveData = new MutableLiveData<>();
     public void setSurfaceRange(List<Float> floats){
         valuesSurfaceMutableLiveData.setValue(floats);
     }
 
-    private MutableLiveData<List<Float>> valuesRoomsMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Float>> valuesRoomsMutableLiveData = new MutableLiveData<>();
     public void setRoomsRange(List<Float> floats){
         valuesRoomsMutableLiveData.setValue(floats);
     }
@@ -88,13 +83,13 @@ public class PropertySearchViewModel extends ViewModel {
     }
 
     private final MutableLiveData<Integer> agentIndexMutableLiveData = new MutableLiveData<>();
-    public MutableLiveData<Integer> getAgentIndexMutableLiveData() {
-        return agentIndexMutableLiveData;
+    public void setAgentIndex(int index){
+        agentIndexMutableLiveData.setValue(index);
     }
 
     private final MutableLiveData<Integer> propertyTypeIndexMutableLiveData = new MutableLiveData<>();
-    public MutableLiveData<Integer> getPropertyTypeMutableLiveData() {
-        return propertyTypeIndexMutableLiveData;
+    public void setPropertyTypeIndex(int index){
+        propertyTypeIndexMutableLiveData.setValue(index);
     }
 
     private final MutableLiveData<Object> valueEntryDateMutableLiveData = new MutableLiveData<>();
@@ -130,171 +125,118 @@ public class PropertySearchViewModel extends ViewModel {
                     return items;
                 });
 
-        propertySearchViewStateMediatorLiveData.addSource(agentItemsLiveData, new Observer<List<DropdownItem>>() {
-            @Override
-            public void onChanged(List<DropdownItem> items) {
-                combine(items, agentIndexMutableLiveData.getValue(),
-                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
-                        fullTextMutableLiveData.getValue(),
-                        minMaxLiveData.getValue(),
-                        valuesPriceMutableLiveData.getValue(),
-                        valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue(),
-                        valueEntryDateMutableLiveData.getValue(),
-                        valueSaleDateMutableLiveData.getValue());
-            }
+        propertySearchViewStateMediatorLiveData.addSource(agentItemsLiveData, items -> combine(items, agentIndexMutableLiveData.getValue(),
+                propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                fullTextMutableLiveData.getValue(),
+                minMaxLiveData.getValue(),
+                valuesPriceMutableLiveData.getValue(),
+                valuesSurfaceMutableLiveData.getValue(),
+                valuesRoomsMutableLiveData.getValue(),
+                valueEntryDateMutableLiveData.getValue(),
+                valueSaleDateMutableLiveData.getValue()));
+
+        propertySearchViewStateMediatorLiveData.addSource(agentIndexMutableLiveData, integer -> {
+            Log.d(Tag.TAG, "PropertySearch ViewModel configureMediatorLiveData->agentIndexMutableLiveData->onChanged() called with: integer = [" + integer + "]");
+            combine(agentItemsLiveData.getValue(), integer,
+                    propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                    fullTextMutableLiveData.getValue(),
+                    minMaxLiveData.getValue(),
+                    valuesPriceMutableLiveData.getValue(),
+                    valuesSurfaceMutableLiveData.getValue(),
+                    valuesRoomsMutableLiveData.getValue(),
+                    valueEntryDateMutableLiveData.getValue(),
+                    valueSaleDateMutableLiveData.getValue());
         });
 
-        propertySearchViewStateMediatorLiveData.addSource(agentIndexMutableLiveData, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                Log.d(Tag.TAG, "PropertySearch ViewModel configureMediatorLiveData->agentIndexMutableLiveData->onChanged() called with: integer = [" + integer + "]");
-                combine(agentItemsLiveData.getValue(), integer,
-                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
-                        fullTextMutableLiveData.getValue(),
-                        minMaxLiveData.getValue(),
-                        valuesPriceMutableLiveData.getValue(),
-                        valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue(),
-                        valueEntryDateMutableLiveData.getValue(),
-                        valueSaleDateMutableLiveData.getValue());
-            }
-        });
+        propertySearchViewStateMediatorLiveData.addSource(propertyTypeItemsLiveData, items -> combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                items, propertyTypeIndexMutableLiveData.getValue(),
+                fullTextMutableLiveData.getValue(),
+                minMaxLiveData.getValue(),
+                valuesPriceMutableLiveData.getValue(),
+                valuesSurfaceMutableLiveData.getValue(),
+                valuesRoomsMutableLiveData.getValue(),
+                valueEntryDateMutableLiveData.getValue(),
+                valueSaleDateMutableLiveData.getValue()));
 
-        propertySearchViewStateMediatorLiveData.addSource(propertyTypeItemsLiveData, new Observer<List<DropdownItem>>() {
-            @Override
-            public void onChanged(List<DropdownItem> items) {
-                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
-                        items, propertyTypeIndexMutableLiveData.getValue(),
-                        fullTextMutableLiveData.getValue(),
-                        minMaxLiveData.getValue(),
-                        valuesPriceMutableLiveData.getValue(),
-                        valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue(),
-                        valueEntryDateMutableLiveData.getValue(),
-                        valueSaleDateMutableLiveData.getValue());
-            }
-        });
+        propertySearchViewStateMediatorLiveData.addSource(propertyTypeIndexMutableLiveData, integer -> combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                propertyTypeItemsLiveData.getValue(), integer,
+                fullTextMutableLiveData.getValue(),
+                minMaxLiveData.getValue(),
+                valuesPriceMutableLiveData.getValue(),
+                valuesSurfaceMutableLiveData.getValue(),
+                valuesRoomsMutableLiveData.getValue(),
+                valueEntryDateMutableLiveData.getValue(),
+                valueSaleDateMutableLiveData.getValue()));
 
-        propertySearchViewStateMediatorLiveData.addSource(propertyTypeIndexMutableLiveData, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
-                        propertyTypeItemsLiveData.getValue(), integer,
-                        fullTextMutableLiveData.getValue(),
-                        minMaxLiveData.getValue(),
-                        valuesPriceMutableLiveData.getValue(),
-                        valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue(),
-                        valueEntryDateMutableLiveData.getValue(),
-                        valueSaleDateMutableLiveData.getValue());
-            }
-        });
+        propertySearchViewStateMediatorLiveData.addSource(fullTextMutableLiveData, s -> combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                s,
+                minMaxLiveData.getValue(),
+                valuesPriceMutableLiveData.getValue(),
+                valuesSurfaceMutableLiveData.getValue(),
+                valuesRoomsMutableLiveData.getValue(),
+                valueEntryDateMutableLiveData.getValue(),
+                valueSaleDateMutableLiveData.getValue()));
 
-        propertySearchViewStateMediatorLiveData.addSource(fullTextMutableLiveData, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
-                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
-                        s,
-                        minMaxLiveData.getValue(),
-                        valuesPriceMutableLiveData.getValue(),
-                        valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue(),
-                        valueEntryDateMutableLiveData.getValue(),
-                        valueSaleDateMutableLiveData.getValue());
-            }
-        });
+        propertySearchViewStateMediatorLiveData.addSource(minMaxLiveData, propertyRange -> combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                fullTextMutableLiveData.getValue(),
+                propertyRange,
+                valuesPriceMutableLiveData.getValue(),
+                valuesSurfaceMutableLiveData.getValue(),
+                valuesRoomsMutableLiveData.getValue(),
+                valueEntryDateMutableLiveData.getValue(),
+                valueSaleDateMutableLiveData.getValue()));
 
-        propertySearchViewStateMediatorLiveData.addSource(minMaxLiveData, new Observer<PropertyRange>() {
-            @Override
-            public void onChanged(PropertyRange propertyRange) {
-                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
-                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
-                        fullTextMutableLiveData.getValue(),
-                        propertyRange,
-                        valuesPriceMutableLiveData.getValue(),
-                        valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue(),
-                        valueEntryDateMutableLiveData.getValue(),
-                        valueSaleDateMutableLiveData.getValue());
-            }
-        });
+        propertySearchViewStateMediatorLiveData.addSource(valuesPriceMutableLiveData, floats -> combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                fullTextMutableLiveData.getValue(),
+                minMaxLiveData.getValue(),
+                floats,
+                valuesSurfaceMutableLiveData.getValue(),
+                valuesRoomsMutableLiveData.getValue(),
+                valueEntryDateMutableLiveData.getValue(),
+                valueSaleDateMutableLiveData.getValue()));
 
-        propertySearchViewStateMediatorLiveData.addSource(valuesPriceMutableLiveData, new Observer<List<Float>>() {
-            @Override
-            public void onChanged(List<Float> floats) {
-                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
-                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
-                        fullTextMutableLiveData.getValue(),
-                        minMaxLiveData.getValue(),
-                        floats,
-                        valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue(),
-                        valueEntryDateMutableLiveData.getValue(),
-                        valueSaleDateMutableLiveData.getValue());
-            }
-        });
+        propertySearchViewStateMediatorLiveData.addSource(valuesSurfaceMutableLiveData, floats -> combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                fullTextMutableLiveData.getValue(),
+                minMaxLiveData.getValue(),
+                valuesPriceMutableLiveData.getValue(),
+                floats,
+                valuesRoomsMutableLiveData.getValue(),
+                valueEntryDateMutableLiveData.getValue(),
+                valueSaleDateMutableLiveData.getValue()));
 
-        propertySearchViewStateMediatorLiveData.addSource(valuesSurfaceMutableLiveData, new Observer<List<Float>>() {
-            @Override
-            public void onChanged(List<Float> floats) {
-                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
-                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
-                        fullTextMutableLiveData.getValue(),
-                        minMaxLiveData.getValue(),
-                        valuesPriceMutableLiveData.getValue(),
-                        floats,
-                        valuesRoomsMutableLiveData.getValue(),
-                        valueEntryDateMutableLiveData.getValue(),
-                        valueSaleDateMutableLiveData.getValue());
-            }
-        });
+        propertySearchViewStateMediatorLiveData.addSource(valuesRoomsMutableLiveData, floats -> combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                fullTextMutableLiveData.getValue(),
+                minMaxLiveData.getValue(),
+                valuesPriceMutableLiveData.getValue(),
+                valuesSurfaceMutableLiveData.getValue(),
+                floats,
+                valueEntryDateMutableLiveData.getValue(),
+                valueSaleDateMutableLiveData.getValue()));
 
-        propertySearchViewStateMediatorLiveData.addSource(valuesRoomsMutableLiveData, new Observer<List<Float>>() {
-            @Override
-            public void onChanged(List<Float> floats) {
-                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
-                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
-                        fullTextMutableLiveData.getValue(),
-                        minMaxLiveData.getValue(),
-                        valuesPriceMutableLiveData.getValue(),
-                        valuesSurfaceMutableLiveData.getValue(),
-                        floats,
-                        valueEntryDateMutableLiveData.getValue(),
-                        valueSaleDateMutableLiveData.getValue());
-            }
-        });
+        propertySearchViewStateMediatorLiveData.addSource(valueEntryDateMutableLiveData, o -> combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                fullTextMutableLiveData.getValue(),
+                minMaxLiveData.getValue(),
+                valuesPriceMutableLiveData.getValue(),
+                valuesSurfaceMutableLiveData.getValue(),
+                valuesRoomsMutableLiveData.getValue(),
+                o,
+                valueSaleDateMutableLiveData.getValue()));
 
-        propertySearchViewStateMediatorLiveData.addSource(valueEntryDateMutableLiveData, new Observer<Object>() {
-            @Override
-            public void onChanged(Object o) {
-                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
-                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
-                        fullTextMutableLiveData.getValue(),
-                        minMaxLiveData.getValue(),
-                        valuesPriceMutableLiveData.getValue(),
-                        valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue(),
-                        o,
-                        valueSaleDateMutableLiveData.getValue());
-            }
-        });
-
-        propertySearchViewStateMediatorLiveData.addSource(valueSaleDateMutableLiveData, new Observer<Object>() {
-            @Override
-            public void onChanged(Object o) {
-                combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
-                        propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
-                        fullTextMutableLiveData.getValue(),
-                        minMaxLiveData.getValue(),
-                        valuesPriceMutableLiveData.getValue(),
-                        valuesSurfaceMutableLiveData.getValue(),
-                        valuesRoomsMutableLiveData.getValue(),
-                        valueEntryDateMutableLiveData.getValue(),
-                        o);
-            }
-        });
+        propertySearchViewStateMediatorLiveData.addSource(valueSaleDateMutableLiveData, o -> combine(agentItemsLiveData.getValue(), agentIndexMutableLiveData.getValue(),
+                propertyTypeItemsLiveData.getValue(), propertyTypeIndexMutableLiveData.getValue(),
+                fullTextMutableLiveData.getValue(),
+                minMaxLiveData.getValue(),
+                valuesPriceMutableLiveData.getValue(),
+                valuesSurfaceMutableLiveData.getValue(),
+                valuesRoomsMutableLiveData.getValue(),
+                valueEntryDateMutableLiveData.getValue(),
+                o));
     }
 
     private List<Float> minMaxToListFloats(int min, int max){
@@ -311,7 +253,7 @@ public class PropertySearchViewModel extends ViewModel {
         // truncate (lower round)
         min = min / 1000;
         int max = propertyRange.getMaxPrice();
-        max = Math.round(max / 1000);
+        max = Math.round((float) (max / 1000));
 
         return  minMaxToListFloats(min, max);
     }
@@ -349,7 +291,7 @@ public class PropertySearchViewModel extends ViewModel {
                 values.set(1, minMax.get(1));
             return values;
         }
-    };
+    }
 
     private String getCaptionPrice(List<Float> floats) {
         int min = floats.get(0).intValue() * 1000;
@@ -390,19 +332,17 @@ public class PropertySearchViewModel extends ViewModel {
                         Utils.convertDateToString(new Date(range.second)));
     }
 
-
+    @SuppressWarnings("unchecked")
     private Pair<Long, Long> convertPair(Object range){
         // rangePicker provide range in Object who is androidx.core.util.Pair
         // convert to android.util.Pair to be compatible with PropertySearchParameters
         if (range == null) return null;
-
         androidx.core.util.Pair<Long, Long> coreUtilPair = (androidx.core.util.Pair<Long, Long>) range;
-        android.util.Pair<Long, Long> convertedPair = new android.util.Pair<Long, Long>(coreUtilPair.first, coreUtilPair.second);
-        return convertedPair;
+        return new Pair<>(coreUtilPair.first, coreUtilPair.second);
     }
 
-    private void combine(List<DropdownItem> agents, int agentIndex,
-                         List<DropdownItem> propertyTypes, int propertyTypeIndex,
+    private void combine(List<DropdownItem> agents, Integer agentIndex,
+                         List<DropdownItem> propertyTypes, Integer propertyTypeIndex,
                          String fullText,
                          PropertyRange propertyRange,
                          List<Float> valuesPrice, List<Float> valuesSurface, List<Float> valuesRooms,

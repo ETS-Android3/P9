@@ -31,6 +31,7 @@ import com.openclassrooms.realestatemanager.utils.DateRangePickedHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PropertySearchFragment extends Fragment {
 
@@ -119,7 +120,7 @@ public class PropertySearchFragment extends Fragment {
         Log.d(Tag.TAG, "PropertySearch Fragment configureComponents() called with: view = [" + view + "]");
 
         textInputLayoutFullText = view.findViewById(R.id.fragment_property_search_text_input_layout_fulltext);
-        textInputLayoutFullText.getEditText().addTextChangedListener(new TextWatcher() {
+        Objects.requireNonNull(textInputLayoutFullText.getEditText()).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -293,7 +294,7 @@ public class PropertySearchFragment extends Fragment {
 
     private void setFullText(String text){
         Log.d(Tag.TAG, "PropertySearch Fragment setFullText() called with: text = [" + text + "]");
-        String input = textInputLayoutFullText.getEditText().getText().toString();
+        String input = Objects.requireNonNull(textInputLayoutFullText.getEditText()).getText().toString();
         if ((text != null) && ( ! input.equals(text))) {
             textInputLayoutFullText.getEditText().setText(text);
             textInputLayoutFullText.getEditText().setSelection(text.length());
@@ -303,52 +304,60 @@ public class PropertySearchFragment extends Fragment {
     private void setAgents(List<DropdownItem> agents, int index) {
         Log.d(Tag.TAG, "PropertySearch Fragment setAgents() called with: agents = [" + agents + "], index = [" + index + "]");
         if (agents != null){
-            ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), R.layout.list_item, agents);
-            AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgents.getEditText();
-
-            // must do setText before setAdapter
-            if ((index >= 0) && (index <= arrayAdapter.getCount())) {
-                DropdownItem item = (DropdownItem) arrayAdapter.getItem(index);
+            String name = "";
+            if ((index >= 0) && (index <= agents.size())){
+                DropdownItem item = agents.get(index);
                 this.agentId = item.getId();
-                // set adapter to null to avoid autoComplete dropdown appearing when text is set
-                autoCompleteTextView.setAdapter(null);
-                if (!autoCompleteTextView.getText().toString().equals(item.getName()))
-                    autoCompleteTextView.setText(item.getName());
+                name = item.getName();
             }
 
-            autoCompleteTextView.setAdapter(arrayAdapter);
-            autoCompleteTextView.setListSelection (index);
+            AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutAgents.getEditText();
+            if (autoCompleteTextView != null) {
+                // must do setText before setAdapter
+                // set adapter to null to avoid autoComplete dropdown appearing when text is set
+                autoCompleteTextView.setAdapter(null);
+                if (!autoCompleteTextView.getText().toString().equals(name))
+                    autoCompleteTextView.setText(name);
 
-            autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
-                Log.d(Tag.TAG, "PropertySearchFragment.onItemClick() called with:  position = [" + position + "], id = [" + id + "]");
-                DropdownItem item = (DropdownItem) arrayAdapter.getItem(position);
-                agentId = item.getId();
-                propertySearchViewModel.getAgentIndexMutableLiveData().setValue(position);
-            });
+                autoCompleteTextView.setAdapter(new ArrayAdapter<>(getContext(), R.layout.list_item, agents));
+                autoCompleteTextView.setListSelection (index);
+
+                autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+                    Log.d(Tag.TAG, "PropertySearchFragment.onItemClick() called with:  position = [" + position + "], id = [" + id + "]");
+                    DropdownItem item = (DropdownItem) autoCompleteTextView.getAdapter().getItem(position);
+                    agentId = item.getId();
+                    propertySearchViewModel.setAgentIndex(position);
+                });
+            }
         }
     }
 
     private void setPropertyTypes(List<DropdownItem> propertyTypes, int index) {
         Log.d(Tag.TAG, "PropertySearch Fragment setPropertyTypes() called with: propertyTypes = [" + propertyTypes + "], index = [" + index + "]");
         if (propertyTypes != null){
-            ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), R.layout.list_item, propertyTypes);
-            AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutPropertyTypes.getEditText();
-            if ((index >= 0) && (index <= arrayAdapter.getCount())) {
-                DropdownItem item = (DropdownItem) arrayAdapter.getItem(index);
+            String name = "";
+            if ((index >= 0) && (index <= propertyTypes.size())) {
+                DropdownItem item = propertyTypes.get(index);
                 this.propertyTypeId = item.getId();
+                name = item.getName();
+            }
+
+            AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) textInputLayoutPropertyTypes.getEditText();
+            if (autoCompleteTextView != null) {
                 // set adapter to null to avoid autoComplete dropdown appearing when text is set
                 autoCompleteTextView.setAdapter(null);
-                if (!autoCompleteTextView.getText().toString().equals(item.getName()))
-                    autoCompleteTextView.setText(item.getName());
-            }
-            autoCompleteTextView.setAdapter(arrayAdapter);
-            autoCompleteTextView.setListSelection (index);
+                if (!autoCompleteTextView.getText().toString().equals(name))
+                    autoCompleteTextView.setText(name);
 
-            autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
-                DropdownItem item = (DropdownItem) arrayAdapter.getItem(position);
-                propertyTypeId = item.getId();
-                propertySearchViewModel.getPropertyTypeMutableLiveData().setValue(position);
-            });
+                autoCompleteTextView.setAdapter(new ArrayAdapter<>(getContext(), R.layout.list_item, propertyTypes));
+                autoCompleteTextView.setListSelection (index);
+
+                autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+                    DropdownItem item = (DropdownItem) autoCompleteTextView.getAdapter().getItem(position);
+                    propertyTypeId = item.getId();
+                    propertySearchViewModel.setPropertyTypeIndex(position);
+                });
+            }
         }
     }
 
