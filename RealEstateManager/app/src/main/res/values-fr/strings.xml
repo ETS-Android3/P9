@@ -88,4 +88,5 @@
     <string name="image">image</string>
     <string name="image_from_gallery">Image de la gallerie</string>
     <string name="picture_from_camera">Photo</string>
+    <string name="center_position">Center la position</string>
 </resources>

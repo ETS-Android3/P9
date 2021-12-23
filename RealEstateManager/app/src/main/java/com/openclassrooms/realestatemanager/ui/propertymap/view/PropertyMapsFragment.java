@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.tag.Tag;
 import com.openclassrooms.realestatemanager.ui.constantes.PropertyConst;
@@ -38,6 +39,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class PropertyMapsFragment extends Fragment {
+
+    private final float DEFAULT_MAP_ZOOM = 13f;
 
     private PropertyMapViewModel viewModel;
     private Location userLocation;
@@ -120,6 +123,7 @@ public class PropertyMapsFragment extends Fragment {
             mapFragment.getMapAsync(callback);
         }
         configureViewModel();
+        configureFab(view);
     }
 
     @Override
@@ -164,7 +168,7 @@ public class PropertyMapsFragment extends Fragment {
             LatLng latlng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latlng).title(getResources().getString(R.string.your_position)));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 13));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, DEFAULT_MAP_ZOOM));
         }
     }
 
@@ -186,6 +190,18 @@ public class PropertyMapsFragment extends Fragment {
                 Objects.requireNonNull(marker).setTag(tag);
                 mMap.setOnMarkerClickListener(markerClickListener);
             }
+        }
+    }
+
+    private void configureFab(View view){
+        FloatingActionButton fab = view.findViewById(R.id.fragment_property_map_floatingActionButton);
+        fab.setOnClickListener(v -> centerUserPosition());
+    }
+
+    private void centerUserPosition(){
+        if ((mMap != null) && (this.userLocation != null)) {
+            LatLng latlng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, DEFAULT_MAP_ZOOM));
         }
     }
 }

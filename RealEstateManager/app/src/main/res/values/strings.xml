@@ -107,6 +107,7 @@
     <string name="image">image</string>
     <string name="image_from_gallery">Image from gallery</string>
     <string name="picture_from_camera">Picture from camera</string>
+    <string name="center_position">Center position</string>
 
 
     <plurals name="month">
