@@ -33,7 +33,6 @@ public class PropertyRepository {
 
     // return a long. This is the newly generated ID
     public long insert(Property property) throws ExecutionException, InterruptedException {
-        Log.d(Tag.TAG, "insert() called with: property = [" + property + "]");
         Callable<Long> callable = () -> propertyDao.insert(property);
 
         Future<Long> future = AppDatabase.getExecutor().submit(callable);
@@ -43,7 +42,6 @@ public class PropertyRepository {
 
     // Return the number of updated rows
     public int update(Property property) throws ExecutionException, InterruptedException {
-        Log.d(Tag.TAG, "update() called with: property = [" + property + "]");
         Callable<Integer> callable = () -> propertyDao.update(property);
 
         Future<Integer> future = AppDatabase.getExecutor().submit(callable);

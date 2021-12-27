@@ -31,7 +31,6 @@ public class PropertyListViewModel extends ViewModel {
     public LiveData<PropertyListViewState> getViewState() { return propertyListViewStateMediatorLiveData; }
 
     public PropertyListViewModel(DatabaseRepository databaseRepository) {
-        Log.d(Tag.TAG, "PropertyListViewModel() called with: databaseRepository = [" + databaseRepository + "]");
         this.databaseRepository = databaseRepository;
         // no search by default
         databaseRepository.getPropertyRepository().setPropertySearchParameters(new PropertySearchParameters());
@@ -40,7 +39,6 @@ public class PropertyListViewModel extends ViewModel {
     }
 
     private void configureMediatorLiveData() {
-        Log.d(Tag.TAG, "PropertyListViewModel.configureMediatorLiveData() called");
         LiveData<List<Agent>> agentsLiveData = databaseRepository.getAgentRepository().getAgentsLiveData();
         LiveData<List<Photo>> photosLiveData = databaseRepository.getPhotoRepository().getPhotos();
         LiveData<List<Property>> propertiesLiveData = databaseRepository.getPropertyRepository().getProperties();
@@ -97,7 +95,6 @@ public class PropertyListViewModel extends ViewModel {
                          @Nullable List<Photo> photos,
                          @Nullable List<Property> properties,
                          @Nullable List<PropertyType> types){
-        Log.d(Tag.TAG, "PropertyListViewModel.combine()");
 
         if (agents == null || photos == null || properties == null || types == null) {
             return;
