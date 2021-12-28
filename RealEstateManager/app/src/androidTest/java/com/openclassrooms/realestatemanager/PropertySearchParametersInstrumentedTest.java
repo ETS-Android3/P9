@@ -86,7 +86,7 @@ public class PropertySearchParametersInstrumentedTest {
 
             @Override
             public void onGetProperties(List<Property> properties) {
-                assertEquals(1, properties.size());
+                assertEquals(2, properties.size());
             }
         });
     }
@@ -101,7 +101,7 @@ public class PropertySearchParametersInstrumentedTest {
 
             @Override
             public void onGetProperties(List<Property> properties) {
-                assertEquals(5, properties.size());
+                assertEquals(6, properties.size());
             }
         });
     }
@@ -176,7 +176,7 @@ public class PropertySearchParametersInstrumentedTest {
 
             @Override
             public void onGetProperties(List<Property> properties) {
-                assertEquals(3, properties.size());
+                assertEquals(4, properties.size());
             }
         });
     }
