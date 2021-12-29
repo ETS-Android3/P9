@@ -99,7 +99,7 @@ public class PropertyListFragment extends Fragment {
 
     private void configureViewModel() {
         PropertyListViewModel viewModel = new ViewModelProvider(
-                requireActivity(), AppViewModelFactory.getInstance())
+                this, AppViewModelFactory.getInstance())
                 .get(PropertyListViewModel.class);
         viewModel.getViewState().observe(getViewLifecycleOwner(), propertyListViewState -> {
             showWarning(propertyListViewState.isShowWarning());

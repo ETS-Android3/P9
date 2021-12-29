@@ -243,7 +243,7 @@ public class PropertyEditFragment extends Fragment implements ConfirmationDelete
 
     private void configureViewModel() {
         propertyEditViewModel = new ViewModelProvider(
-                requireActivity(),
+                this,
                 AppViewModelFactory.getInstance()).get(PropertyEditViewModel.class);
 
         configureGpsListener();

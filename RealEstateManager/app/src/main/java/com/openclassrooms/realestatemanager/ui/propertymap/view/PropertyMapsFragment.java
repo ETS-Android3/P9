@@ -148,7 +148,7 @@ public class PropertyMapsFragment extends Fragment {
 
     private void configureViewModel(){
         viewModel = new ViewModelProvider(
-                requireActivity(), AppViewModelFactory.getInstance())
+                this, AppViewModelFactory.getInstance())
                 .get(PropertyMapViewModel.class);
 
         viewModel.getViewState().observe(getViewLifecycleOwner(), propertyMapViewState -> {

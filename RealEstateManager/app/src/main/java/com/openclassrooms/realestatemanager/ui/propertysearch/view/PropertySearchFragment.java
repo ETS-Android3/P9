@@ -226,7 +226,7 @@ public class PropertySearchFragment extends Fragment {
     private void configureViewModel() {
         Log.d(Tag.TAG, "PropertySearch Fragment configureViewModel() called");
         propertySearchViewModel = new ViewModelProvider(
-                requireActivity(), AppViewModelFactory.getInstance())
+                this, AppViewModelFactory.getInstance())
                 .get(PropertySearchViewModel.class);
 
         propertySearchViewModel.getViewState().observe(getViewLifecycleOwner(), propertySearchViewState -> {

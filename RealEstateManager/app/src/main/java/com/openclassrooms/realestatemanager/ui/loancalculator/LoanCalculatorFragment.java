@@ -91,7 +91,7 @@ public class LoanCalculatorFragment extends Fragment {
     }
 
     private void configureViewModel() {
-        viewModel = new ViewModelProvider(requireActivity(), AppViewModelFactory.getInstance())
+        viewModel = new ViewModelProvider(this, AppViewModelFactory.getInstance())
                 .get(LoanCalculatorViewModel.class);
         viewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), loanCalculatorViewState -> {
             setStrMonthlyPayment(loanCalculatorViewState.getStrMonthlyPayment());

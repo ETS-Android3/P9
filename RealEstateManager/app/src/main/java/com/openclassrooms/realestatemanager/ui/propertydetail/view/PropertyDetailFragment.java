@@ -96,7 +96,7 @@ public class PropertyDetailFragment extends Fragment {
 
     private void configureDetailViewModel(){
         propertyDetailViewModel = new ViewModelProvider(
-                requireActivity(), AppViewModelFactory.getInstance())
+                this, AppViewModelFactory.getInstance())
                 .get(PropertyDetailViewModel.class);
 
         propertyDetailViewModel.getViewState().observe(getViewLifecycleOwner(), viewState -> {
