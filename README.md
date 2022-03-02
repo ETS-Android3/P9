@@ -7,6 +7,8 @@ Application développée en **java** avec **Android Studio**.
 
 ***Devenez un as de la gestion immobilière***
 
+>[Consulter la présentation fonctionelle et techniques de l'application au format pdf.](https://github.com/gtdevgit/P9/blob/main/Documentation/Pr%C3%A9sentation%20-%20Real%20Estate%20Manager.pdf)
+
 ## Fonctionnalités principales
 
 >[Consulter la documentation fonctionnelles complete au format pdf.](https://github.com/gtdevgit/P9/blob/main/Documentation/P9_Documentation%20fonctionnelle%20Real%20Estate%20Manager.pdf)
