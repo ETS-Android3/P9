@@ -1,6 +1,9 @@
-![Android](https://img.shields.io/badge/Android-Studio-blue)
-# Projet 9
-## Application Real Estate Manager
-Devenez un as de la gestion immobilière
+# Projet 9 - Application [Realestate Manager](https://github.com/gtdevgit/P9)
 
-Le projet est développé en __java__ avec __Android Studio__.
+Application développée en **java** avec **Android Studio**.
+
+![Android](https://img.shields.io/badge/Android-Studio-blue)
+![git](https://img.shields.io/github/languages/code-size/gtdevgit/P9)
+
+***Devenez un as de la gestion immobilière***
+
