@@ -9,6 +9,8 @@ Application développée en **java** avec **Android Studio**.
 
 ## Fonctionnalités principales
 
+>[Consulter la documentation fonctionnelles complete au format pdf.](https://github.com/gtdevgit/P9/blob/main/Documentation/P9_Documentation%20fonctionnelle%20Real%20Estate%20Manager.pdf)
+
 - Gérer les annonces (consultation, création, modification, vente)
 - Géolocaliser chaque biens et afficher l’ensemble des biens sur une carte interactive
 - Rechercher un bien
