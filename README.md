@@ -39,7 +39,7 @@ Application développée en **java** avec **Android Studio**.
 > https://github.com/gtdevgit/P9
 
 - Services tiers **Google** : *Map*, *Geocode*, *StaticMap*
-  - L'application reqiére une **cle d'API** Google qui doit être intégrée dans le fichier *gradle.property*.
+  - L'application requiére une **cle d'API** Google qui doit être intégrée dans le fichier *gradle.property*.
 - **Geolocation** obtenue avec *FusedLocationProviderClient*.
 - **Autorisation** *ACCESS_FINE_LOCATION* nécessaire.
 - **Affichage de la Map** avec *Google Map SDK*.
